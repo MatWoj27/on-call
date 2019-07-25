@@ -1,6 +1,12 @@
 package com.mattech.on_call;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Acti
     public static final String ON_CALL_PERSON_TAG = "on-call-person";
     public static final String PROJECT_TAG = "project";
     public static final String TEAM_TAG = "team";
+    public static final int REQUEST_CALL_PERMISSION_CODE = 1;
     private OnCallPerson onCallPerson;
     private String project;
     private String team;
@@ -56,6 +63,17 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Acti
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALL_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startForwarding();
+            } else {
+                Toast.makeText(this, "Setting forwarding is not possible without call permission", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(ON_CALL_PERSON_TAG, onCallPerson);
@@ -77,7 +95,16 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Acti
     @Override
     public void startForwarding() {
         if (onCallPerson != null) {
-            // set forwarding
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+                requestPermissions(permissions, REQUEST_CALL_PERMISSION_CODE);
+            } else {
+                Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
+                String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
+                Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
+                callForwardingIntent.setData(gsmCode);
+                startActivity(callForwardingIntent);
+            }
         }
     }
 
