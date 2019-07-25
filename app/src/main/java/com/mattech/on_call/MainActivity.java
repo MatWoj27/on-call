@@ -53,7 +53,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Acti
             onCallPerson = savedInstanceState.getParcelable(ON_CALL_PERSON_TAG);
             project = savedInstanceState.getString(PROJECT_TAG);
             team = savedInstanceState.getString(TEAM_TAG);
-        } else{
+        } else {
+            onCallPerson = new OnCallPerson();
+            onCallPerson.setPhoneNumber("123456789");
+            onCallPerson.setName("Mateusz");
+            onCallPerson.setMail("mati.dupa@gmail.com");
             // try to get the oncall person data from sqlite or some other storage
             // if not present try to get project and team data from storage
             // if not go to SettingsProject
