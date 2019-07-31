@@ -26,6 +26,12 @@ public class MainFragment extends Fragment {
     @BindView(R.id.on_call_person_name)
     TextView onCallPersonName;
 
+    @BindView(R.id.on_call_person_phone_num)
+    TextView onCallPersonPhoneNumber;
+
+    @BindView(R.id.on_call_person_mail)
+    TextView onCallPersonMail;
+
     @BindView(R.id.start)
     Button startBtn;
 
@@ -83,6 +89,8 @@ public class MainFragment extends Fragment {
     private void updateUI(OnCallPerson onCallPerson) {
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             onCallPersonName.setText(onCallPerson.getName());
+            onCallPersonPhoneNumber.setText(onCallPerson.getPhoneNumber());
+            onCallPersonMail.setText(onCallPerson.getMail());
         }
     }
 }
