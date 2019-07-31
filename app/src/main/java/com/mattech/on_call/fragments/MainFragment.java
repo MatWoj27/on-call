@@ -1,7 +1,10 @@
 package com.mattech.on_call.fragments;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.mattech.on_call.OnCallPersonViewModel;
 import com.mattech.on_call.R;
 import com.mattech.on_call.models.OnCallPerson;
 
@@ -17,7 +21,7 @@ import butterknife.ButterKnife;
 
 public class MainFragment extends Fragment {
     private ActionPerformedListener listener;
-    private OnCallPerson onCallPerson;
+    private OnCallPersonViewModel viewModel;
 
     @BindView(R.id.on_call_person_name)
     TextView onCallPersonName;
@@ -30,7 +34,6 @@ public class MainFragment extends Fragment {
 
     public interface ActionPerformedListener {
         void startForwarding();
-
         void goToSettings();
     }
 
@@ -42,6 +45,13 @@ public class MainFragment extends Fragment {
         } else {
             throw new RuntimeException(context.toString() + " has to implement MainFragment.ActionPerformedListener");
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(getActivity()).get(OnCallPersonViewModel.class);
+        viewModel.getOnCallPersonLiveData().observe(this, this::updateUI);
     }
 
     @Override
@@ -60,5 +70,19 @@ public class MainFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (viewModel.getOnCallPersonLiveData().getValue() != null) {
+            updateUI(viewModel.getOnCallPersonLiveData().getValue());
+        }
+    }
+
+    private void updateUI(OnCallPerson onCallPerson) {
+        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+            onCallPersonName.setText(onCallPerson.getName());
+        }
     }
 }

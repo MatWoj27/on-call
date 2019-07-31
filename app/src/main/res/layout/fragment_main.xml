@@ -16,9 +16,9 @@
         android:id="@+id/on_call_person_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
         android:layout_margin="@dimen/component_margin"
-        android:text="@string/fetching_data" />
+        android:text="@string/fetching_data"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/start"

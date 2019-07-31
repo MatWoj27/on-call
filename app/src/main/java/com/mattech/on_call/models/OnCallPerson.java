@@ -1,7 +1,11 @@
 package com.mattech.on_call.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.mattech.on_call.JSONAttr;
@@ -11,7 +15,9 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 
-public class OnCallPerson implements Parcelable {
+@Entity(tableName = "onCallPeople")
+public class OnCallPerson {
+    @Ignore
     private static final String ERROR_TAG = OnCallPerson.class.getSimpleName();
 
     @JSONAttr
@@ -21,15 +27,11 @@ public class OnCallPerson implements Parcelable {
     private String mail;
 
     @JSONAttr
+    @PrimaryKey
+    @NonNull
     private String phoneNumber;
 
     public OnCallPerson() {
-    }
-
-    protected OnCallPerson(Parcel in) {
-        name = in.readString();
-        mail = in.readString();
-        phoneNumber = in.readString();
     }
 
     public static OnCallPerson fromJson(JSONObject json) throws JSONException {
@@ -56,18 +58,6 @@ public class OnCallPerson implements Parcelable {
         return onCallPerson;
     }
 
-    public static final Creator<OnCallPerson> CREATOR = new Creator<OnCallPerson>() {
-        @Override
-        public OnCallPerson createFromParcel(Parcel in) {
-            return new OnCallPerson(in);
-        }
-
-        @Override
-        public OnCallPerson[] newArray(int size) {
-            return new OnCallPerson[size];
-        }
-    };
-
     public String getName() {
         return name;
     }
@@ -90,17 +80,5 @@ public class OnCallPerson implements Parcelable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(name);
-        parcel.writeString(mail);
-        parcel.writeString(phoneNumber);
     }
 }

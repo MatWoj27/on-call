@@ -1,22 +1,24 @@
 package com.mattech.on_call.fragments;
 
-
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.mattech.on_call.OnCallPersonViewModel;
 import com.mattech.on_call.R;
-import com.mattech.on_call.models.OnCallPerson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingsFragment extends Fragment {
     private ActionPerformedListener listener;
+    private OnCallPersonViewModel viewModel;
 
     @BindView(R.id.back)
     Button backBtn;
@@ -48,4 +50,15 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(getActivity()).get(OnCallPersonViewModel.class);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // update view with ViewModel data
+    }
 }
