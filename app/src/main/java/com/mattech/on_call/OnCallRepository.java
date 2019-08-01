@@ -54,22 +54,29 @@ public class OnCallRepository {
         @Override
         protected Void doInBackground(Void... voids) {
             OnCallPerson result = null;
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .get()
-                    .url(webApiUrl)
-                    .build();
-            try {
-                Response response = client.newCall(request).execute();
-                String body = response.body().string();
-                result = OnCallPerson.fromJson(new JSONObject(body));
-                if (result == null) {
-                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentOnCallPerson, asyncDao).execute(), 30 * 1000);
-                } else if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
-                    asyncDao.insert(result);
-                }
-            } catch (IOException | JSONException e) {
-                Log.e(ERROR_TAG, "error", e);
+//            OkHttpClient client = new OkHttpClient();
+//            Request request = new Request.Builder()
+//                    .get()
+//                    .url(webApiUrl)
+//                    .build();
+//            try {
+//                Response response = client.newCall(request).execute();
+//                String body = response.body().string();
+//                result = OnCallPerson.fromJson(new JSONObject(body));
+//                if (result == null) {
+//                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentOnCallPerson, asyncDao).execute(), 30 * 1000);
+//                } else if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
+//                    asyncDao.insert(result);
+//                }
+//            } catch (IOException | JSONException e) {
+//                Log.e(ERROR_TAG, "error", e);
+//            }
+            result = new OnCallPerson();
+            result.setName("Artur");
+            result.setMail("artur.machowicz@atos.net");
+            result.setPhoneNumber("123456789");
+            if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
+                asyncDao.insert(result);
             }
             return null;
         }
