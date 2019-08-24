@@ -51,7 +51,7 @@ public class MainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getActivity()).get(OnCallPersonViewModel.class);
-        viewModel.getOnCallPersonLiveData().observe(this, this::updateUI);
+        viewModel.getOnCallPerson().observe(this, this::updateUI);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (viewModel.getOnCallPersonLiveData().getValue() != null) {
-            updateUI(viewModel.getOnCallPersonLiveData().getValue());
+        if (viewModel.getOnCallPerson().getValue() != null) {
+            updateUI(viewModel.getOnCallPerson().getValue());
         }
     }
 

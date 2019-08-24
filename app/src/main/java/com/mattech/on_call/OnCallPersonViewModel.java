@@ -8,17 +8,17 @@ import android.support.annotation.NonNull;
 import com.mattech.on_call.models.OnCallPerson;
 
 public class OnCallPersonViewModel extends AndroidViewModel {
-    private LiveData<OnCallPerson> onCallPersonLiveData;
+    private LiveData<OnCallPerson> onCallPerson;
     private OnCallRepository onCallRepository;
 
     public OnCallPersonViewModel(@NonNull Application application) {
         super(application);
         onCallRepository = new OnCallRepository(application);
-        onCallPersonLiveData = onCallRepository.getOnCallPersonLiveData();
+        onCallPerson = onCallRepository.getOnCallPerson();
     }
 
-    public LiveData<OnCallPerson> getOnCallPersonLiveData() {
-        return onCallPersonLiveData;
+    public LiveData<OnCallPerson> getOnCallPerson() {
+        return onCallPerson;
     }
 
     public void updateOnCallPerson() {
