@@ -27,9 +27,6 @@ public class OnCallRepository {
         AppDatabase database = AppDatabase.getInstance(application);
         onCallPersonDAO = database.getOnCallPersonDAO();
         onCallPersonLiveData = onCallPersonDAO.getOnCallPerson();
-        if (onCallPersonLiveData.getValue() == null) {
-            updateOnCallPerson();
-        }
     }
 
     public LiveData<OnCallPerson> getOnCallPersonLiveData() {
