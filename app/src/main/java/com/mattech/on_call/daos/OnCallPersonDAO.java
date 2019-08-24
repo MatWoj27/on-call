@@ -14,8 +14,8 @@ public interface OnCallPersonDAO {
     @Insert
     void insert(OnCallPerson... onCallPeople);
 
-    @Delete
-    void delete(OnCallPerson onCallPerson);
+    @Query("DELETE FROM onCallPeople")
+    void deleteAll();
 
     @Query("SELECT * FROM onCallPeople LIMIT 1")
     LiveData<OnCallPerson> getOnCallPerson();

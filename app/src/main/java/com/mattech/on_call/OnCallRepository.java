@@ -21,33 +21,33 @@ import okhttp3.Response;
 public class OnCallRepository {
     private static final String webApiUrl = "http://10.84.136.193/api/v1/onCall/Sky/L2";
     private OnCallPersonDAO onCallPersonDAO;
-    private LiveData<OnCallPerson> onCallPersonLiveData;
+    private LiveData<OnCallPerson> onCallPerson;
 
     public OnCallRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
         onCallPersonDAO = database.getOnCallPersonDAO();
-        onCallPersonLiveData = onCallPersonDAO.getOnCallPerson();
-        if (onCallPersonLiveData.getValue() == null) {
-            updateOnCallPerson();
-        }
+        onCallPerson = onCallPersonDAO.getOnCallPerson();
     }
 
-    public LiveData<OnCallPerson> getOnCallPersonLiveData() {
-        return onCallPersonLiveData;
+    public LiveData<OnCallPerson> getOnCallPerson() {
+        return onCallPerson;
     }
 
     public void updateOnCallPerson() {
-        UpdateOnCallPersonTask updateTask = new UpdateOnCallPersonTask(onCallPersonLiveData.getValue(), onCallPersonDAO);
+        UpdateOnCallPersonTask updateTask = new UpdateOnCallPersonTask(onCallPersonDAO);
         updateTask.execute();
+    }
+
+    public void setCustomOnCallPerson(OnCallPerson customOnCallPerson) {
+        InsertOnCallPersonTask insertTask = new InsertOnCallPersonTask(onCallPersonDAO);
+        insertTask.execute(customOnCallPerson);
     }
 
     private static class UpdateOnCallPersonTask extends AsyncTask<Void, Void, Void> {
         private final String ERROR_TAG = UpdateOnCallPersonTask.class.getSimpleName();
-        private OnCallPerson currentOnCallPerson;
         private OnCallPersonDAO asyncDao;
 
-        UpdateOnCallPersonTask(OnCallPerson currentOnCallPerson, OnCallPersonDAO asyncDao) {
-            this.currentOnCallPerson = currentOnCallPerson;
+        UpdateOnCallPersonTask(OnCallPersonDAO asyncDao) {
             this.asyncDao = asyncDao;
         }
 
@@ -75,9 +75,25 @@ public class OnCallRepository {
             result.setName("Artur");
             result.setMail("artur.machowicz@atos.net");
             result.setPhoneNumber("123456789");
+            OnCallPerson currentOnCallPerson = asyncDao.getOnCallPerson().getValue();
             if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
                 asyncDao.insert(result);
             }
+            return null;
+        }
+    }
+
+    private static class InsertOnCallPersonTask extends AsyncTask<OnCallPerson, Void, Void> {
+        private OnCallPersonDAO asyncDao;
+
+        InsertOnCallPersonTask(OnCallPersonDAO asyncDao) {
+            this.asyncDao = asyncDao;
+        }
+
+        @Override
+        protected Void doInBackground(OnCallPerson... onCallPeople) {
+            asyncDao.deleteAll();
+            asyncDao.insert(onCallPeople[0]);
             return null;
         }
     }
