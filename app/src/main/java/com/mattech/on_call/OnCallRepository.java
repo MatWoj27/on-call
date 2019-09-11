@@ -72,9 +72,9 @@ public class OnCallRepository {
 //                Log.e(ERROR_TAG, "error", e);
 //            }
             result = new OnCallPerson();
-            result.setName("Artur");
+            result.setName("Artur Machowicz");
             result.setMail("artur.machowicz@atos.net");
-            result.setPhoneNumber("123456789");
+            result.setPhoneNumber("876456789");
             OnCallPerson currentOnCallPerson = asyncDao.getOnCallPerson().getValue();
             if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
                 asyncDao.insert(result);

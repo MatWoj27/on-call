@@ -1,48 +1,65 @@
 package com.mattech.on_call;
 
-import android.Manifest;
-import android.content.Intent;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mattech.on_call.fragments.MainFragment;
-import com.mattech.on_call.fragments.SettingsFragment;
+import com.mattech.on_call.adapters.UpdatesAdapter;
+import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Update;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.ActionPerformedListener, SettingsFragment.ActionPerformedListener {
+public class MainActivity extends AppCompatActivity implements UpdatesAdapter.AddUpdateListener {
     public static final int REQUEST_CALL_PERMISSION_CODE = 1;
-    private AnimationDrawable background;
+    private OnCallPersonViewModel viewModel;
 
-    @BindView(R.id.main_layout)
-    LinearLayout mainLayout;
+    @BindView(R.id.info_frame)
+    LinearLayout infoFrame;
 
-    private enum TransitionAnimation {
-        TRANSLATE_LEFT,
-        TRANSLATE_RIGHT,
-        NO_ANIMATION
-    }
+    @BindView(R.id.on_call_person_name)
+    TextView onCallPersonName;
+
+    @BindView(R.id.on_call_person_phone_num)
+    TextView onCallPersonPhoneNumber;
+
+    @BindView(R.id.on_call_person_mail)
+    TextView onCallPersonMail;
+
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        background = (AnimationDrawable) mainLayout.getBackground();
-        background.setEnterFadeDuration(3000);
-        background.setExitFadeDuration(4000);
-        MainFragment fragment = new MainFragment();
-        changeFragment(fragment, TransitionAnimation.NO_ANIMATION);
+        viewModel = ViewModelProviders.of(this).get(OnCallPersonViewModel.class);
+        viewModel.getOnCallPerson().observe(this, this::updateUI);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        UpdatesAdapter adapter = new UpdatesAdapter();
+        // mocked updates to be changed later
+        List<Update> mockedUpdates = new ArrayList<>();
+        mockedUpdates.add(new Update(true, "10:00", true));
+        mockedUpdates.add(new Update(false, "11:00", true));
+        mockedUpdates.add(new Update(true, "12:00", false));
+        adapter.setUpdates(mockedUpdates);
+        adapter.setListener(this);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -57,17 +74,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Acti
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        background.start();
+    public void addUpdate() {
+        Toast.makeText(this, "Adding a new update", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void goToMain() {
-        changeFragment(new MainFragment(), TransitionAnimation.TRANSLATE_LEFT);
-    }
-
-    @Override
     public void startForwarding() {
 //        if (onCallPerson != null) {
 //            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -83,28 +93,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.Acti
 //        }
     }
 
-    @Override
-    public void goToSettings() {
-        changeFragment(new SettingsFragment(), TransitionAnimation.TRANSLATE_RIGHT);
-    }
-
-    private void changeFragment(Fragment fragment, TransitionAnimation animation) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        switch (animation) {
-            case TRANSLATE_LEFT:
-                fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_right, R.anim.enter_from_right, R.anim.exit_left);
-                break;
-            case TRANSLATE_RIGHT:
-                fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_left, R.anim.enter_from_left, R.anim.exit_right);
-                break;
-            case NO_ANIMATION:
-            default:
-                break;
+    private void updateUI(OnCallPerson onCallPerson) {
+        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+            onCallPersonName.setText(onCallPerson.getName());
+            onCallPersonPhoneNumber.setText(onCallPerson.getPhoneNumber());
+            onCallPersonMail.setText(onCallPerson.getMail());
         }
-        fragmentTransaction.replace(R.id.container, fragment);
-        if (!animation.equals(TransitionAnimation.NO_ANIMATION)) {
-            fragmentTransaction.addToBackStack(null);
-        }
-        fragmentTransaction.commit();
     }
 }
