@@ -6,7 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.mattech.on_call.daos.OnCallPersonDAO;
+import com.mattech.on_call.daos.UpdateDAO;
 import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Update;
 
 @Database(entities = {OnCallPerson.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {

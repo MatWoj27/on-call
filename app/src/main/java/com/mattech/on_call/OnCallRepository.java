@@ -7,12 +7,16 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.mattech.on_call.daos.OnCallPersonDAO;
+import com.mattech.on_call.daos.UpdateDAO;
+import com.mattech.on_call.databases.UpdateDatabase;
 import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Update;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,12 +25,17 @@ import okhttp3.Response;
 public class OnCallRepository {
     private static final String webApiUrl = "http://10.84.136.193/api/v1/onCall/Sky/L2";
     private OnCallPersonDAO onCallPersonDAO;
+    private UpdateDAO updateDAO;
     private LiveData<OnCallPerson> onCallPerson;
+    private LiveData<List<Update>> updates;
 
     public OnCallRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
         onCallPersonDAO = database.getOnCallPersonDAO();
+        UpdateDatabase updateDatabase = UpdateDatabase.getInstance(application);
+        updateDAO = updateDatabase.getUpdateDAO();
         onCallPerson = onCallPersonDAO.getOnCallPerson();
+        updates = updateDAO.getUpdates();
     }
 
     public LiveData<OnCallPerson> getOnCallPerson() {
@@ -41,6 +50,15 @@ public class OnCallRepository {
     public void setCustomOnCallPerson(OnCallPerson customOnCallPerson) {
         InsertOnCallPersonTask insertTask = new InsertOnCallPersonTask(onCallPersonDAO);
         insertTask.execute(customOnCallPerson);
+    }
+
+    public LiveData<List<Update>> getUpdates() {
+        return updates;
+    }
+
+    public void addUpdate(Update update){
+        InsertUpdateTask task = new InsertUpdateTask(updateDAO);
+        task.execute(update);
     }
 
     private static class UpdateOnCallPersonTask extends AsyncTask<Void, Void, Void> {
@@ -94,6 +112,20 @@ public class OnCallRepository {
         protected Void doInBackground(OnCallPerson... onCallPeople) {
             asyncDao.deleteAll();
             asyncDao.insert(onCallPeople[0]);
+            return null;
+        }
+    }
+
+    private static class InsertUpdateTask extends AsyncTask<Update, Void, Void>{
+        private UpdateDAO dao;
+
+        public InsertUpdateTask(UpdateDAO dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Update... updates) {
+            dao.insert(updates[0]);
             return null;
         }
     }
