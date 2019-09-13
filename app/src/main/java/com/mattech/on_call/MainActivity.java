@@ -3,7 +3,6 @@ package com.mattech.on_call;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements UpdatesAdapter.AddUpdateListener {
+public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener {
     public static final int REQUEST_CALL_PERMISSION_CODE = 1;
     private OnCallPersonViewModel viewModel;
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Ad
         viewModel.getOnCallPerson().observe(this, this::updateUI);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        UpdatesAdapter adapter = new UpdatesAdapter();
+        UpdatesAdapter adapter = new UpdatesAdapter(this);
         // mocked updates to be changed later
         List<Update> mockedUpdates = new ArrayList<>();
         mockedUpdates.add(new Update(true, "Mon", "10:00", true));
@@ -76,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Ad
     @Override
     public void addUpdate() {
         Toast.makeText(this, "Adding a new update", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void editUpdate(int i) {
+        Toast.makeText(this, "Editing the update: " + i, Toast.LENGTH_SHORT).show();
     }
 
     public void startForwarding() {

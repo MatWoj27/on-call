@@ -1,10 +1,14 @@
 package com.mattech.on_call.adapters;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -18,17 +22,49 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private Context context;
     private List<Update> updates = new ArrayList<>();
-    private AddUpdateListener listener;
+    private UpdateListener listener;
 
-    public interface AddUpdateListener {
+    public interface UpdateListener {
         void addUpdate();
+
+        void editUpdate(int i);
     }
 
     class UpdateHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.main_container)
+        RelativeLayout mainContainer;
 
         @BindView(R.id.update_time)
         TextView time;
+
+        @BindView(R.id.update_date)
+        TextView date;
+
+        @BindView(R.id.update_days_list)
+        LinearLayout daysContainer;
+
+        @BindView(R.id.monday)
+        TextView monday;
+
+        @BindView(R.id.tuesday)
+        TextView tuesday;
+
+        @BindView(R.id.wednesday)
+        TextView wednesday;
+
+        @BindView(R.id.thursday)
+        TextView thursday;
+
+        @BindView(R.id.friday)
+        TextView friday;
+
+        @BindView(R.id.saturday)
+        TextView saturday;
+
+        @BindView(R.id.sunday)
+        TextView sunday;
 
         @BindView(R.id.enable_switch)
         Switch enabled;
@@ -48,6 +84,10 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public UpdatesAdapter(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -86,8 +126,28 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             default:
                 Update update = updates.get(position - 1);
                 UpdateHolder updateHolder = (UpdateHolder) holder;
+                updateHolder.mainContainer.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.editUpdate(position - 1);
+                    }
+                });
                 updateHolder.time.setText(update.getTime());
-                updateHolder.enabled.setChecked(update.isEnabled());
+                updateHolder.enabled.setOnClickListener(v -> {
+                    Switch s = (Switch) v;
+                    if (s.isChecked()) {
+                        updateHolder.time.setTextColor(Color.BLACK);
+                    } else {
+                        updateHolder.time.setTextColor(context.getColor(R.color.disabled));
+                    }
+                });
+                if (update.isEnabled()) {
+                    updateHolder.enabled.setChecked(true);
+                    updateHolder.time.setTextColor(Color.BLACK);
+                }
+                if (!update.isRepeatable()) {
+                    updateHolder.daysContainer.setVisibility(View.GONE);
+                    updateHolder.date.setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }
@@ -107,7 +167,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void setListener(AddUpdateListener listener) {
+    public void setListener(UpdateListener listener) {
         this.listener = listener;
     }
 }
