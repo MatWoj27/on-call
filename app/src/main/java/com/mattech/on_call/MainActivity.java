@@ -26,9 +26,6 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     public static final int REQUEST_CALL_PERMISSION_CODE = 1;
     private OnCallPersonViewModel viewModel;
 
-    @BindView(R.id.info_frame)
-    LinearLayout infoFrame;
-
     @BindView(R.id.on_call_person_name)
     TextView onCallPersonName;
 
