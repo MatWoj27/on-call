@@ -12,4 +12,7 @@
     <string name="friday_short">F</string>
     <string name="saturday_short">S</string>
     <string name="sunday_short">S</string>
+    <string name="set_update_dialog">Set update</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
 </resources>

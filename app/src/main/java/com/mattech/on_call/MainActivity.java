@@ -22,7 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener {
+public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener, UpdateDialogFragment.OnFragmentInteractionListener {
     public static final int REQUEST_CALL_PERMISSION_CODE = 1;
     private OnCallPersonViewModel viewModel;
 
@@ -76,7 +76,15 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
 
     @Override
     public void editUpdate(int i) {
+        UpdateDialogFragment fragment = new UpdateDialogFragment();
+        fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
+        fragment.show(getSupportFragmentManager(), "edit_update");
         Toast.makeText(this, "Editing the update: " + i, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onOkClick() {
+        Toast.makeText(this, "Done :)", Toast.LENGTH_SHORT).show();
     }
 
     public void startForwarding() {
