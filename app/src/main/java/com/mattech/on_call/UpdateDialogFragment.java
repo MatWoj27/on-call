@@ -56,6 +56,13 @@ public class UpdateDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
         ButterKnife.bind(this, view);
+        okBtn.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onOkClick();
+                dismiss();
+            }
+        });
+        cancelBtn.setOnClickListener(v -> dismiss());
         builder.setView(view);
         return builder.create();
     }
