@@ -50,9 +50,12 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         UpdatesAdapter adapter = new UpdatesAdapter(this);
         // mocked updates to be changed later
         List<Update> mockedUpdates = new ArrayList<>();
-        mockedUpdates.add(new Update(true, "Mon", "10:00", true));
-        mockedUpdates.add(new Update(false, "Tue", "11:00", true));
-        mockedUpdates.add(new Update(true, "Fri", "12:00", false));
+        boolean[] updateDays = new boolean[7];
+        updateDays[1] = true;
+        mockedUpdates.add(new Update(true, true, updateDays, "10:00", "12:30"));
+        updateDays[4] = true;
+        mockedUpdates.add(new Update(false, true, updateDays, "11:00", "11:00"));
+        mockedUpdates.add(new Update(true, false, null, "15, Dec 2019", "10:00"));
         adapter.setUpdates(mockedUpdates);
         adapter.setListener(this);
         recyclerView.setAdapter(adapter);

@@ -144,7 +144,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     updateHolder.enabled.setChecked(true);
                     updateHolder.time.setTextColor(Color.BLACK);
                 }
-                if (!update.isRepeatable()) {
+                if (update.isOneTimeUpdate()) {
                     updateHolder.daysContainer.setVisibility(View.GONE);
                     updateHolder.date.setVisibility(View.VISIBLE);
                 }

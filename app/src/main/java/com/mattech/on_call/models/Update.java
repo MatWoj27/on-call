@@ -1,24 +1,40 @@
 package com.mattech.on_call.models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "updates", primaryKeys = {"day", "time"})
-public class Update {
-    private boolean enabled;
+import com.mattech.on_call.UpdateTypeConverters;
 
-    @NonNull
-    private String day;
+@Entity(tableName = "updates")
+public class Update {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    private boolean enabled;
+    private boolean oneTimeUpdate;
+
+    @TypeConverters(UpdateTypeConverters.class)
+    private boolean repetitionDays[];
+    private String exactDate;
 
     @NonNull
     private String time;
-    private boolean repeatable;
 
-    public Update(boolean enabled, String day, String time, boolean repeatable) {
+    public Update(boolean enabled, boolean oneTimeUpdate, boolean[] repetitionDays, String exactDate, @NonNull String time) {
         this.enabled = enabled;
-        this.day = day;
+        this.oneTimeUpdate = oneTimeUpdate;
+        this.repetitionDays = repetitionDays;
+        this.exactDate = exactDate;
         this.time = time;
-        this.repeatable = repeatable;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isEnabled() {
@@ -29,12 +45,28 @@ public class Update {
         this.enabled = enabled;
     }
 
-    public String getDay() {
-        return day;
+    public boolean isOneTimeUpdate() {
+        return oneTimeUpdate;
     }
 
-    public void setDay(String day) {
-        this.day = day;
+    public void setOneTimeUpdate(boolean oneTimeUpdate) {
+        this.oneTimeUpdate = oneTimeUpdate;
+    }
+
+    public boolean[] getRepetitionDays() {
+        return repetitionDays;
+    }
+
+    public void setRepetitionDays(boolean repeatDays[]) {
+        this.repetitionDays = repetitionDays;
+    }
+
+    public String getExactDate() {
+        return exactDate;
+    }
+
+    public void setExactDate(String exactDate) {
+        this.exactDate = exactDate;
     }
 
     public String getTime() {
@@ -43,13 +75,5 @@ public class Update {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public boolean isRepeatable() {
-        return repeatable;
-    }
-
-    public void setRepeatable(boolean repeatable) {
-        this.repeatable = repeatable;
     }
 }
