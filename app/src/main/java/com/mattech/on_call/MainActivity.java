@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     }
 
     private void updateUI(OnCallPerson onCallPerson) {
-        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && onCallPerson != null) {
             onCallPersonName.setText(onCallPerson.getName());
             onCallPersonPhoneNumber.setText(onCallPerson.getPhoneNumber());
             onCallPersonMail.setText(onCallPerson.getMail());
