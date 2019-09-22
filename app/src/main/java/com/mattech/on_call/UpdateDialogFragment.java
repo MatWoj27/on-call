@@ -19,15 +19,17 @@ import butterknife.ButterKnife;
 public class UpdateDialogFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
     private boolean displayDays = true;
+    private boolean[] activeDays = new boolean[7];
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
+    private final String ACTIVE_DAYS_TAG = "activeDays";
 
     @BindView(R.id.hour_picker)
-    NumberPicker hour;
+    NumberPicker hourPicker;
 
     @BindView(R.id.minute_picker)
-    NumberPicker minute;
+    NumberPicker minutePicker;
 
     @BindView(R.id.days_container)
     LinearLayout days;
@@ -75,22 +77,24 @@ public class UpdateDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
         ButterKnife.bind(this, view);
-        hour.setMinValue(0);
-        hour.setMaxValue(23);
-        minute.setMinValue(0);
-        minute.setMaxValue(59);
         if (savedInstanceState != null) {
             displayDays = savedInstanceState.getBoolean(DISPLAY_DAYS_TAG);
-            hour.setValue(savedInstanceState.getInt(HOUR_TAG));
-            minute.setValue(savedInstanceState.getInt(MINUTE_TAG));
+            presetTimePickers(savedInstanceState.getInt(HOUR_TAG), savedInstanceState.getInt(MINUTE_TAG));
+            activeDays = savedInstanceState.getBooleanArray(ACTIVE_DAYS_TAG);
         } else {
-            hour.setValue(12);
-            minute.setValue(0);
+            presetTimePickers(12, 0);
         }
         if (!displayDays) {
             days.setVisibility(View.GONE);
             exactDate.setVisibility(View.VISIBLE);
             updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
+        }
+        TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
+        for (int i = 0; i < 7; i++) {
+            dayViews[i].setOnClickListener(new DayClickListener(i));
+            if (displayDays && activeDays[i]) {
+                displayDayViewAsActive(dayViews[i]);
+            }
         }
         updateTypeSwitch.setOnClickListener(v -> {
             if (displayDays) {
@@ -100,6 +104,11 @@ public class UpdateDialogFragment extends DialogFragment {
             } else {
                 exactDate.setVisibility(View.GONE);
                 days.setVisibility(View.VISIBLE);
+                for (int i = 0; i < 7; i++) {
+                    if (activeDays[i]) {
+                        displayDayViewAsActive(dayViews[i]);
+                    }
+                }
                 updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.calendar, null));
             }
             displayDays = !displayDays;
@@ -136,7 +145,45 @@ public class UpdateDialogFragment extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(DISPLAY_DAYS_TAG, displayDays);
-        outState.putInt(HOUR_TAG, hour.getValue());
-        outState.putInt(MINUTE_TAG, minute.getValue());
+        outState.putInt(HOUR_TAG, hourPicker.getValue());
+        outState.putInt(MINUTE_TAG, minutePicker.getValue());
+        outState.putBooleanArray(ACTIVE_DAYS_TAG, activeDays);
+    }
+
+    private class DayClickListener implements View.OnClickListener {
+        private int index;
+
+        public DayClickListener(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (activeDays[index]) {
+                displayDayViewAsInactive((TextView) view);
+            } else {
+                displayDayViewAsActive((TextView) view);
+            }
+            activeDays[index] = !activeDays[index];
+        }
+    }
+
+    private void presetTimePickers(int hour, int minute) {
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(23);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        hourPicker.setValue(hour);
+        minutePicker.setValue(minute);
+    }
+
+    private void displayDayViewAsActive(TextView dayTextView) {
+        dayTextView.setTextColor(getResources().getColor(R.color.enabled, null));
+        dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_enabled, null));
+    }
+
+    private void displayDayViewAsInactive(TextView dayTextView) {
+        dayTextView.setTextColor(getResources().getColor(R.color.disabled, null));
+        dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_disabled, null));
     }
 }
