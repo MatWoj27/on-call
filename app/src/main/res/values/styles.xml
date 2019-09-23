@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:datePickerDialogTheme">@style/DatePickerStyle</item>
     </style>
 
     <style name="CardViewTheme" parent="AppTheme">
@@ -24,6 +25,25 @@
         <item name="android:editTextColor">@color/colorSecondary</item>
         <item name="android:colorAccent">@color/disabled</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="DatePickerStyle" parent="Theme.AppCompat.Dialog">
+        <!--color for buttons, current day number and selected day highlight-->
+        <item name="colorAccent">@color/colorSecondary</item>
+        <!--color for day numbers and selected date summary on top-->
+        <item name="android:textColorPrimary">@color/disabled</item>
+        <!--color for year info on the top and day names abbreviations -->
+        <item name="android:textColorSecondary">@color/colorSecondary</item>
+        <!--color for current day number and selected day highlight-->
+        <item name="android:colorControlActivated">@color/colorSecondary</item>
+        <!--color for highlighting the day we tap on and hold the tap-->
+        <item name="android:colorControlHighlight">@color/colorSecondary</item>
+        <!--color for the background of month picker, day picker and buttons-->
+        <item name="android:windowBackground">@android:color/white</item>
+        <!--color for the background of whole dialog window-->
+        <item name="android:backgroundTint">@android:color/white</item>
+        <!--color for the thin horizontal stripe between years list and buttons in year picker-->
+        <item name="android:colorForeground">@android:color/white</item>
     </style>
 
 </resources>

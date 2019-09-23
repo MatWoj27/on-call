@@ -1,6 +1,7 @@
 package com.mattech.on_call;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,10 +25,12 @@ public class UpdateDialogFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
     private boolean displayDays = true;
     private boolean[] activeDays = new boolean[7];
+    private String exactDate;
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
     private final String ACTIVE_DAYS_TAG = "activeDays";
+    private final String EXACT_DATE_TAG = "exactDate";
 
     @BindView(R.id.hour_picker)
     NumberPicker hourPicker;
@@ -56,7 +63,7 @@ public class UpdateDialogFragment extends DialogFragment {
     TextView sunday;
 
     @BindView(R.id.exact_date)
-    TextView exactDate;
+    TextView exactDateView;
 
     @BindView(R.id.update_type_switch)
     ImageView updateTypeSwitch;
@@ -81,12 +88,13 @@ public class UpdateDialogFragment extends DialogFragment {
             displayDays = savedInstanceState.getBoolean(DISPLAY_DAYS_TAG);
             presetTimePickers(savedInstanceState.getInt(HOUR_TAG), savedInstanceState.getInt(MINUTE_TAG));
             activeDays = savedInstanceState.getBooleanArray(ACTIVE_DAYS_TAG);
+            exactDate = savedInstanceState.getString(EXACT_DATE_TAG);
         } else {
             presetTimePickers(12, 0);
         }
         if (!displayDays) {
             days.setVisibility(View.GONE);
-            exactDate.setVisibility(View.VISIBLE);
+            exactDateView.setVisibility(View.VISIBLE);
             updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
         }
         TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
@@ -99,10 +107,10 @@ public class UpdateDialogFragment extends DialogFragment {
         updateTypeSwitch.setOnClickListener(v -> {
             if (displayDays) {
                 days.setVisibility(View.GONE);
-                exactDate.setVisibility(View.VISIBLE);
+                exactDateView.setVisibility(View.VISIBLE);
                 updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
             } else {
-                exactDate.setVisibility(View.GONE);
+                exactDateView.setVisibility(View.GONE);
                 days.setVisibility(View.VISIBLE);
                 for (int i = 0; i < 7; i++) {
                     if (activeDays[i]) {
@@ -113,6 +121,7 @@ public class UpdateDialogFragment extends DialogFragment {
             }
             displayDays = !displayDays;
         });
+        presetDatePicker();
         okBtn.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onOkClick();
@@ -148,6 +157,7 @@ public class UpdateDialogFragment extends DialogFragment {
         outState.putInt(HOUR_TAG, hourPicker.getValue());
         outState.putInt(MINUTE_TAG, minutePicker.getValue());
         outState.putBooleanArray(ACTIVE_DAYS_TAG, activeDays);
+        outState.putString(EXACT_DATE_TAG, exactDateView.getText().toString());
     }
 
     private class DayClickListener implements View.OnClickListener {
@@ -175,6 +185,23 @@ public class UpdateDialogFragment extends DialogFragment {
         minutePicker.setMaxValue(59);
         hourPicker.setValue(hour);
         minutePicker.setValue(minute);
+    }
+
+    private void presetDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.US);
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, day);
+            exactDateView.setText(dateFormat.format(calendar.getTime()));
+        };
+        exactDateView.setOnClickListener(v -> new DatePickerDialog(getContext(), dateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show());
+        if (exactDate != null) {
+            exactDateView.setText(exactDate);
+        } else {
+            exactDateView.setText(dateFormat.format(calendar.getTime()));
+        }
     }
 
     private void displayDayViewAsActive(TextView dayTextView) {
