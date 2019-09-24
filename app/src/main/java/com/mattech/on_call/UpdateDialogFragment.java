@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.mattech.on_call.models.Update;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -23,6 +25,7 @@ import butterknife.ButterKnife;
 
 public class UpdateDialogFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
+    private Update updateToEdit;
     private boolean displayDays = true;
     private boolean[] activeDays = new boolean[7];
     private String exactDate;
@@ -75,6 +78,8 @@ public class UpdateDialogFragment extends DialogFragment {
     Button okBtn;
 
     public interface OnFragmentInteractionListener {
+        void updateCreated(Update update);
+
         void onOkClick();
     }
 
@@ -124,7 +129,11 @@ public class UpdateDialogFragment extends DialogFragment {
         presetDatePicker();
         okBtn.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onOkClick();
+                if (updateToEdit != null) {
+                    listener.onOkClick();
+                } else {
+                    listener.updateCreated(createUpdateFromInput());
+                }
                 dismiss();
             }
         });
@@ -158,6 +167,16 @@ public class UpdateDialogFragment extends DialogFragment {
         outState.putInt(MINUTE_TAG, minutePicker.getValue());
         outState.putBooleanArray(ACTIVE_DAYS_TAG, activeDays);
         outState.putString(EXACT_DATE_TAG, exactDateView.getText().toString());
+    }
+
+    private Update createUpdateFromInput() {
+        Update update = new Update();
+        update.setEnabled(true);
+        update.setOneTimeUpdate(!displayDays);
+        update.setTime(String.valueOf(hourPicker.getValue()) + ":" + String.valueOf(minutePicker.getValue()));
+        update.setExactDate(exactDateView.getText().toString());
+        update.setRepetitionDays(activeDays);
+        return update;
     }
 
     private class DayClickListener implements View.OnClickListener {
@@ -212,5 +231,9 @@ public class UpdateDialogFragment extends DialogFragment {
     private void displayDayViewAsInactive(TextView dayTextView) {
         dayTextView.setTextColor(getResources().getColor(R.color.disabled, null));
         dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_disabled, null));
+    }
+
+    public void setUpdateToEdit(Update updateToEdit) {
+        this.updateToEdit = updateToEdit;
     }
 }

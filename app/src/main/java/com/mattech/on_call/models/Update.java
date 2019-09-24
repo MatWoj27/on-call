@@ -21,6 +21,9 @@ public class Update {
     @NonNull
     private String time;
 
+    public Update() {
+    }
+
     public Update(boolean enabled, boolean oneTimeUpdate, boolean[] repetitionDays, String exactDate, @NonNull String time) {
         this.enabled = enabled;
         this.oneTimeUpdate = oneTimeUpdate;

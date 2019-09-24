@@ -45,18 +45,10 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         ButterKnife.bind(this);
         viewModel = ViewModelProviders.of(this).get(OnCallPersonViewModel.class);
         viewModel.getOnCallPerson().observe(this, this::updateUI);
+        UpdatesAdapter adapter = new UpdatesAdapter(this);
+        viewModel.getUpdates().observe(this, adapter::setUpdates);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        UpdatesAdapter adapter = new UpdatesAdapter(this);
-        // mocked updates to be changed later
-        List<Update> mockedUpdates = new ArrayList<>();
-        boolean[] updateDays = new boolean[7];
-        updateDays[1] = true;
-        mockedUpdates.add(new Update(true, true, updateDays, "10:00", "12:30"));
-        updateDays[4] = true;
-        mockedUpdates.add(new Update(false, true, updateDays, "11:00", "11:00"));
-        mockedUpdates.add(new Update(true, false, null, "15, Dec 2019", "10:00"));
-        adapter.setUpdates(mockedUpdates);
         adapter.setListener(this);
         recyclerView.setAdapter(adapter);
     }
@@ -74,15 +66,24 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
 
     @Override
     public void addUpdate() {
+        UpdateDialogFragment fragment = new UpdateDialogFragment();
+        fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
+        fragment.show(getSupportFragmentManager(), "add_update");
         Toast.makeText(this, "Adding a new update", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void editUpdate(int i) {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
+        fragment.setUpdateToEdit(new Update());     // mocked update - to be changed later
         fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
         fragment.show(getSupportFragmentManager(), "edit_update");
         Toast.makeText(this, "Editing the update: " + i, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateCreated(Update update) {
+        viewModel.addUpdate(update);
     }
 
     @Override
