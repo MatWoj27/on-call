@@ -23,7 +23,7 @@
 
     <style name="NumberPickerStyle" parent="AppTheme">
         <item name="android:editTextColor">@color/colorSecondary</item>
-        <item name="android:colorAccent">@color/disabled</item>
+        <item name="android:colorAccent">@color/disabledInactive</item>
         <item name="android:textSize">20sp</item>
     </style>
 
@@ -31,7 +31,7 @@
         <!--color for buttons, current day number and selected day highlight-->
         <item name="colorAccent">@color/colorSecondary</item>
         <!--color for day numbers and selected date summary on top-->
-        <item name="android:textColorPrimary">@color/disabled</item>
+        <item name="android:textColorPrimary">@color/disabledInactive</item>
         <!--color for year info on the top and day names abbreviations -->
         <item name="android:textColorSecondary">@color/colorSecondary</item>
         <!--color for current day number and selected day highlight-->

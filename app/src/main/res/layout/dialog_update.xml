@@ -59,69 +59,69 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="4dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/monday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
                 <TextView
                     android:id="@+id/tuesday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="4dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/tuesday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
                 <TextView
                     android:id="@+id/wednesday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="4dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/wednesday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
                 <TextView
                     android:id="@+id/thursday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="4dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/thursday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
                 <TextView
                     android:id="@+id/friday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="4dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/friday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
                 <TextView
                     android:id="@+id/saturday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="4dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/saturday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
                 <TextView
                     android:id="@+id/sunday"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/round_day_toggle_disabled"
+                    android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/sunday_short"
-                    android:textColor="@color/disabled" />
+                    android:textColor="@color/disabledInactive" />
 
             </LinearLayout>
 
@@ -132,7 +132,7 @@
                 android:layout_gravity="center_vertical|right"
                 android:text="19, Dec 2019"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/disabled"
+                android:textColor="@color/disabledInactive"
                 android:visibility="gone" />
 
         </FrameLayout>

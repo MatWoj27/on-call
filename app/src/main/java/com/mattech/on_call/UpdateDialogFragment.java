@@ -224,13 +224,13 @@ public class UpdateDialogFragment extends DialogFragment {
     }
 
     private void displayDayViewAsActive(TextView dayTextView) {
-        dayTextView.setTextColor(getResources().getColor(R.color.enabled, null));
+        dayTextView.setTextColor(getResources().getColor(R.color.enabledActive, null));
         dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_enabled, null));
     }
 
     private void displayDayViewAsInactive(TextView dayTextView) {
-        dayTextView.setTextColor(getResources().getColor(R.color.disabled, null));
-        dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_disabled, null));
+        dayTextView.setTextColor(getResources().getColor(R.color.disabledInactive, null));
+        dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_disabled_inactive, null));
     }
 
     public void setUpdateToEdit(Update updateToEdit) {

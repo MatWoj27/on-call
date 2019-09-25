@@ -82,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     }
 
     @Override
+    public void changeUpdateEnableStatus(Update update) {
+        Toast.makeText(this, "Updating enable status", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void updateCreated(Update update) {
         viewModel.addUpdate(update);
     }

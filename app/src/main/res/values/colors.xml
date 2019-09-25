@@ -7,6 +7,7 @@
     <color name="whiteTransparent">#77FFFFFF</color>
     <color name="gray">#FF888888</color>
     <color name="lightGray">#EFEFEF</color>
-    <color name="disabled">#ABABAB</color>
-    <color name="enabled">@color/colorSecondary</color>
+    <color name="disabledInactive">#ABABAB</color>
+    <color name="disabledActive">@color/gray</color>
+    <color name="enabledActive">@color/colorSecondary</color>
 </resources>

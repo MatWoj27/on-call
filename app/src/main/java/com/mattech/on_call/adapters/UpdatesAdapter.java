@@ -30,6 +30,8 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         void addUpdate();
 
         void editUpdate(int i);
+
+        void changeUpdateEnableStatus(Update update);
     }
 
     class UpdateHolder extends RecyclerView.ViewHolder {
@@ -72,6 +74,11 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public UpdateHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        TextView[] getDayViewsArray() {
+            TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
+            return dayViews;
         }
     }
 
@@ -131,15 +138,20 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         listener.editUpdate(position - 1);
                     }
                 });
-                updateHolder.time.setText(update.getTime());
                 updateHolder.enabled.setOnClickListener(v -> {
-                    Switch s = (Switch) v;
-                    if (s.isChecked()) {
-                        updateHolder.time.setTextColor(Color.BLACK);
-                    } else {
-                        updateHolder.time.setTextColor(context.getColor(R.color.disabled));
+                    update.setEnabled(!update.isEnabled());
+                    if (listener != null) {
+                        listener.changeUpdateEnableStatus(update);
                     }
+                    if (update.isOneTimeUpdate()) {
+                        updateHolder.date.setTextColor(context.getResources().getColor(update.isEnabled() ? R.color.disabledActive :
+                                R.color.disabledInactive, null));
+                    } else {
+                        applyColorsToDayViews(updateHolder, update);
+                    }
+                    updateHolder.time.setTextColor(update.isEnabled() ? Color.BLACK : context.getColor(R.color.disabledActive));
                 });
+                updateHolder.time.setText(update.getTime());
                 if (update.isEnabled()) {
                     updateHolder.enabled.setChecked(true);
                     updateHolder.time.setTextColor(Color.BLACK);
@@ -147,8 +159,33 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if (update.isOneTimeUpdate()) {
                     updateHolder.daysContainer.setVisibility(View.GONE);
                     updateHolder.date.setVisibility(View.VISIBLE);
+                    updateHolder.date.setText(update.getExactDate());
+                    if (update.isEnabled()) {
+                        updateHolder.date.setTextColor(context.getResources().getColor(R.color.disabledActive, null));
+                    }
+                } else {
+                    applyColorsToDayViews(updateHolder, update);
                 }
                 break;
+        }
+    }
+
+    private void applyColorsToDayViews(UpdateHolder holder, Update update) {
+        TextView[] dayViews = holder.getDayViewsArray();
+        for (int i = 0; i < 7; i++) {
+            int colorId, backgroundDrawableId;
+            if (update.getRepetitionDays()[i] && update.isEnabled()) {
+                colorId = R.color.enabledActive;
+                backgroundDrawableId = R.drawable.round_day_toggle_enabled;
+            } else if (update.getRepetitionDays()[i]) {
+                colorId = R.color.disabledActive;
+                backgroundDrawableId = R.drawable.round_day_toggle_disabled_active;
+            } else {
+                colorId = R.color.disabledInactive;
+                backgroundDrawableId = R.drawable.round_day_toggle_disabled_inactive;
+            }
+            dayViews[i].setTextColor(context.getResources().getColor(colorId, null));
+            dayViews[i].setBackground(context.getResources().getDrawable(backgroundDrawableId, null));
         }
     }
 
