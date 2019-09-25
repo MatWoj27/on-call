@@ -60,7 +60,7 @@ public class Update {
         return repetitionDays;
     }
 
-    public void setRepetitionDays(boolean repeatDays[]) {
+    public void setRepetitionDays(boolean repetitionDays[]) {
         this.repetitionDays = repetitionDays;
     }
 
