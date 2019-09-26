@@ -173,19 +173,15 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void applyColorsToDayViews(UpdateHolder holder, Update update) {
         TextView[] dayViews = holder.getDayViewsArray();
         for (int i = 0; i < 7; i++) {
-            int colorId, backgroundDrawableId;
+            int colorId;
             if (update.getRepetitionDays()[i] && update.isEnabled()) {
                 colorId = R.color.enabledActive;
-                backgroundDrawableId = R.drawable.round_day_toggle_enabled;
             } else if (update.getRepetitionDays()[i]) {
                 colorId = R.color.disabledActive;
-                backgroundDrawableId = R.drawable.round_day_toggle_disabled_active;
             } else {
                 colorId = R.color.disabledInactive;
-                backgroundDrawableId = R.drawable.round_day_toggle_disabled_inactive;
             }
             dayViews[i].setTextColor(context.getResources().getColor(colorId, null));
-            dayViews[i].setBackground(context.getResources().getDrawable(backgroundDrawableId, null));
         }
     }
 
