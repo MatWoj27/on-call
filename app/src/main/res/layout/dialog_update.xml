@@ -56,8 +56,8 @@
 
                 <TextView
                     android:id="@+id/monday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
@@ -66,8 +66,8 @@
 
                 <TextView
                     android:id="@+id/tuesday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
@@ -76,8 +76,8 @@
 
                 <TextView
                     android:id="@+id/wednesday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
@@ -86,8 +86,8 @@
 
                 <TextView
                     android:id="@+id/thursday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
@@ -96,8 +96,8 @@
 
                 <TextView
                     android:id="@+id/friday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
@@ -106,8 +106,8 @@
 
                 <TextView
                     android:id="@+id/saturday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:layout_marginRight="4dp"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
@@ -116,8 +116,8 @@
 
                 <TextView
                     android:id="@+id/sunday"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/day_view_diameter"
+                    android:layout_height="@dimen/day_view_diameter"
                     android:background="@drawable/round_day_toggle_disabled_inactive"
                     android:gravity="center"
                     android:text="@string/sunday_short"
