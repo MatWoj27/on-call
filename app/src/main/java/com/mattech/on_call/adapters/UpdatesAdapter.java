@@ -138,10 +138,12 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         listener.editUpdate(position - 1);
                     }
                 });
-                updateHolder.enabled.setOnClickListener(v -> {
-                    update.setEnabled(!update.isEnabled());
-                    if (listener != null) {
-                        listener.changeUpdateEnableStatus(update);
+                updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
+                    if (v.isChecked() != update.isEnabled()) {
+                        update.setEnabled(v.isChecked());
+                        if (listener != null) {
+                            listener.changeUpdateEnableStatus(update);
+                        }
                     }
                     if (update.isOneTimeUpdate()) {
                         updateHolder.date.setTextColor(context.getResources().getColor(update.isEnabled() ? R.color.disabledActive :
