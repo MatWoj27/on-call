@@ -21,4 +21,7 @@ public interface UpdateDAO {
 
     @Query("SELECT * FROM updates")
     LiveData<List<Update>> getUpdates();
+
+    @android.arch.persistence.room.Update
+    void update(Update update);
 }

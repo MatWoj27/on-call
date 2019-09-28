@@ -34,6 +34,10 @@ public class OnCallPersonViewModel extends AndroidViewModel {
         onCallRepository.addUpdate(update);
     }
 
+    public void updateUpdate(Update update) {
+        onCallRepository.updateUpdate(update);
+    }
+
     public void updateOnCallPerson() {
         onCallRepository.updateOnCallPerson();
     }

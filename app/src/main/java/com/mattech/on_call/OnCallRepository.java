@@ -61,6 +61,11 @@ public class OnCallRepository {
         task.execute(update);
     }
 
+    public void updateUpdate(Update update) {
+        UpdateUpdateTask task = new UpdateUpdateTask(updateDAO);
+        task.execute(update);
+    }
+
     private static class UpdateOnCallPersonTask extends AsyncTask<Void, Void, Void> {
         private final String ERROR_TAG = UpdateOnCallPersonTask.class.getSimpleName();
         private OnCallPersonDAO asyncDao;
@@ -126,6 +131,20 @@ public class OnCallRepository {
         @Override
         protected Void doInBackground(Update... updates) {
             dao.insert(updates[0]);
+            return null;
+        }
+    }
+
+    private static class UpdateUpdateTask extends AsyncTask<Update, Void, Void> {
+        UpdateDAO dao;
+
+        public UpdateUpdateTask(UpdateDAO dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Update... updates) {
+            dao.update(updates[0]);
             return null;
         }
     }
