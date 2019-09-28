@@ -56,7 +56,7 @@ public class OnCallRepository {
         return updates;
     }
 
-    public void addUpdate(Update update){
+    public void addUpdate(Update update) {
         InsertUpdateTask task = new InsertUpdateTask(updateDAO);
         task.execute(update);
     }
@@ -121,7 +121,7 @@ public class OnCallRepository {
         }
     }
 
-    private static class InsertUpdateTask extends AsyncTask<Update, Void, Void>{
+    private static class InsertUpdateTask extends AsyncTask<Update, Void, Void> {
         private UpdateDAO dao;
 
         public InsertUpdateTask(UpdateDAO dao) {
