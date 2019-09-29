@@ -31,7 +31,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         void editUpdate(int i);
 
-        void changeUpdateEnableStatus(Update update);
+        void updateEnableStatusChanged(Update update);
     }
 
     class UpdateHolder extends RecyclerView.ViewHolder {
@@ -142,7 +142,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if (v.isChecked() != update.isEnabled()) {
                         update.setEnabled(v.isChecked());
                         if (listener != null) {
-                            listener.changeUpdateEnableStatus(update);
+                            listener.updateEnableStatusChanged(update);
                         }
                     }
                     if (update.isOneTimeUpdate()) {
