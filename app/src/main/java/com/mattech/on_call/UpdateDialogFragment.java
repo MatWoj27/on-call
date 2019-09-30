@@ -204,6 +204,9 @@ public class UpdateDialogFragment extends DialogFragment {
         minutePicker.setMaxValue(59);
         hourPicker.setValue(hour);
         minutePicker.setValue(minute);
+        NumberPicker.Formatter formatter = i -> String.format("%02d", i);
+        hourPicker.setFormatter(formatter);
+        minutePicker.setFormatter(formatter);
     }
 
     private void presetDatePicker() {
