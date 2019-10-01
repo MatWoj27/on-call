@@ -3,6 +3,7 @@ package com.mattech.on_call.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,13 @@ import android.widget.TextView;
 import com.mattech.on_call.R;
 import com.mattech.on_call.models.Update;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -153,7 +159,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                     updateHolder.time.setTextColor(update.isEnabled() ? Color.BLACK : context.getColor(R.color.disabledActive));
                 });
-                updateHolder.time.setText(update.getTime());
+                updateHolder.time.setText(formatTime(update.getTime()));
                 if (update.isEnabled()) {
                     updateHolder.enabled.setChecked(true);
                     updateHolder.time.setTextColor(Color.BLACK);
@@ -170,6 +176,19 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 break;
         }
+    }
+
+    private String formatTime(String time) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        try {
+            Date date = simpleDateFormat.parse(time);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return (String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY)) + ":" + String.format("%02d", calendar.get(Calendar.MINUTE)));
+        } catch (ParseException e) {
+            Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format" + time);
+        }
+        return null;
     }
 
     private void applyColorsToDayViews(UpdateHolder holder, Update update) {
