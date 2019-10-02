@@ -25,6 +25,7 @@
         <item name="android:editTextColor">@color/colorSecondary</item>
         <item name="android:colorAccent">@color/disabledInactive</item>
         <item name="android:colorControlNormal">@android:color/transparent</item>
+        <item name="android:cursorVisible">false</item>
         <item name="android:textSize">20sp</item>
     </style>
 
