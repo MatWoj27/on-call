@@ -89,12 +89,17 @@ public class UpdateDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
         ButterKnife.bind(this, view);
+        TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         if (savedInstanceState != null) {
             displayDays = savedInstanceState.getBoolean(DISPLAY_DAYS_TAG);
             presetTimePickers(savedInstanceState.getInt(HOUR_TAG), savedInstanceState.getInt(MINUTE_TAG));
             activeDays = savedInstanceState.getBooleanArray(ACTIVE_DAYS_TAG);
             exactDate = savedInstanceState.getString(EXACT_DATE_TAG);
+        } else if (updateToEdit != null) {
+            // update views with data from updateToEdit
         } else {
+            int tomorrowIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1; // In Calendar API Sunday is the first day and days are indexed from 1 to 7
+            activeDays[tomorrowIndex] = true;
             presetTimePickers(12, 0);
         }
         if (!displayDays) {
@@ -102,7 +107,6 @@ public class UpdateDialogFragment extends DialogFragment {
             exactDateView.setVisibility(View.VISIBLE);
             updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
         }
-        TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         for (int i = 0; i < 7; i++) {
             dayViews[i].setOnClickListener(new DayClickListener(i));
             if (displayDays && activeDays[i]) {
