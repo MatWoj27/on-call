@@ -115,12 +115,17 @@ public class UpdateDialogFragment extends DialogFragment {
             if (displayDays) {
                 displayExactDateLayout();
             } else {
+                boolean isAnyActiveDay = false;
                 exactDateView.setVisibility(View.GONE);
                 days.setVisibility(View.VISIBLE);
                 for (int i = 0; i < 7; i++) {
                     if (activeDays[i]) {
                         displayDayViewAsActive(dayViews[i]);
+                        isAnyActiveDay = true;
                     }
+                }
+                if (!isAnyActiveDay) {
+                    displayDayViewAsActive(dayViews[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]);
                 }
                 updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.calendar, null));
             }
