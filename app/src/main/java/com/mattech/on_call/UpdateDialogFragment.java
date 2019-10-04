@@ -103,7 +103,7 @@ public class UpdateDialogFragment extends DialogFragment {
             presetTimePickers(12, 0);
         }
         if (!displayDays) {
-            displayExactDayLayout();
+            displayExactDateLayout();
         }
         for (int i = 0; i < 7; i++) {
             dayViews[i].setOnClickListener(new DayClickListener(i));
@@ -113,7 +113,7 @@ public class UpdateDialogFragment extends DialogFragment {
         }
         updateTypeSwitch.setOnClickListener(v -> {
             if (displayDays) {
-                displayExactDayLayout();
+                displayExactDateLayout();
             } else {
                 exactDateView.setVisibility(View.GONE);
                 days.setVisibility(View.VISIBLE);
@@ -199,7 +199,7 @@ public class UpdateDialogFragment extends DialogFragment {
                     }
                 }
                 displayDays = false;
-                displayExactDayLayout();
+                displayExactDateLayout();
             }
         }
     }
@@ -243,7 +243,7 @@ public class UpdateDialogFragment extends DialogFragment {
         dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_disabled_inactive, null));
     }
 
-    private void displayExactDayLayout() {
+    private void displayExactDateLayout() {
         days.setVisibility(View.GONE);
         exactDateView.setVisibility(View.VISIBLE);
         updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
