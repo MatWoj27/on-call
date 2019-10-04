@@ -103,9 +103,7 @@ public class UpdateDialogFragment extends DialogFragment {
             presetTimePickers(12, 0);
         }
         if (!displayDays) {
-            days.setVisibility(View.GONE);
-            exactDateView.setVisibility(View.VISIBLE);
-            updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
+            displayExactDayLayout();
         }
         for (int i = 0; i < 7; i++) {
             dayViews[i].setOnClickListener(new DayClickListener(i));
@@ -115,9 +113,7 @@ public class UpdateDialogFragment extends DialogFragment {
         }
         updateTypeSwitch.setOnClickListener(v -> {
             if (displayDays) {
-                days.setVisibility(View.GONE);
-                exactDateView.setVisibility(View.VISIBLE);
-                updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
+                displayExactDayLayout();
             } else {
                 exactDateView.setVisibility(View.GONE);
                 days.setVisibility(View.VISIBLE);
@@ -192,12 +188,19 @@ public class UpdateDialogFragment extends DialogFragment {
 
         @Override
         public void onClick(View view) {
-            if (activeDays[index]) {
-                displayDayViewAsInactive((TextView) view);
-            } else {
-                displayDayViewAsActive((TextView) view);
-            }
             activeDays[index] = !activeDays[index];
+            if (activeDays[index]) {
+                displayDayViewAsActive((TextView) view);
+            } else {
+                displayDayViewAsInactive((TextView) view);
+                for (int i = 0; i < 7; i++) {
+                    if (activeDays[i]) {
+                        return;
+                    }
+                }
+                displayDays = false;
+                displayExactDayLayout();
+            }
         }
     }
 
@@ -238,6 +241,12 @@ public class UpdateDialogFragment extends DialogFragment {
     private void displayDayViewAsInactive(TextView dayTextView) {
         dayTextView.setTextColor(getResources().getColor(R.color.disabledInactive, null));
         dayTextView.setBackground(getResources().getDrawable(R.drawable.round_day_toggle_disabled_inactive, null));
+    }
+
+    private void displayExactDayLayout() {
+        days.setVisibility(View.GONE);
+        exactDateView.setVisibility(View.VISIBLE);
+        updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
     }
 
     public void setUpdateToEdit(Update updateToEdit) {
