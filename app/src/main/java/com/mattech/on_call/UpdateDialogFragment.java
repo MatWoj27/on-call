@@ -125,7 +125,9 @@ public class UpdateDialogFragment extends DialogFragment {
                     }
                 }
                 if (!isAnyActiveDay) {
-                    displayDayViewAsActive(dayViews[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]);
+                    int tomorrowIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+                    activeDays[tomorrowIndex] = true;
+                    displayDayViewAsActive(dayViews[tomorrowIndex]);
                 }
                 updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.calendar, null));
             }
