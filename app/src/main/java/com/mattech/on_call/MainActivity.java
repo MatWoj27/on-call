@@ -73,12 +73,11 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     }
 
     @Override
-    public void editUpdate(int i) {
+    public void editUpdate(Update updateToEdit) {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
-        fragment.setUpdateToEdit(new Update());     // mocked update - to be changed later
+        fragment.setUpdateToEdit(updateToEdit);
         fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
         fragment.show(getSupportFragmentManager(), "edit_update");
-        Toast.makeText(this, "Editing the update: " + i, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -92,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     }
 
     @Override
-    public void onOkClick() {
-        Toast.makeText(this, "Done :)", Toast.LENGTH_SHORT).show();
+    public void updateEdited(Update editedUpdate) {
+        viewModel.updateUpdate(editedUpdate);
     }
 
     public void startForwarding() {

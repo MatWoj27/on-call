@@ -35,7 +35,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public interface UpdateListener {
         void addUpdate();
 
-        void editUpdate(int i);
+        void editUpdate(Update updateToEdit);
 
         void updateEnableStatusChanged(Update update);
     }
@@ -141,7 +141,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 UpdateHolder updateHolder = (UpdateHolder) holder;
                 updateHolder.mainContainer.setOnClickListener(v -> {
                     if (listener != null) {
-                        listener.editUpdate(position - 1);
+                        listener.editUpdate(update);
                     }
                 });
                 updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
@@ -172,6 +172,8 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         updateHolder.date.setTextColor(context.getResources().getColor(R.color.disabledActive, null));
                     }
                 } else {
+                    updateHolder.date.setVisibility(View.GONE);
+                    updateHolder.daysContainer.setVisibility(View.VISIBLE);
                     applyColorsToDayViews(updateHolder, update);
                 }
                 break;
