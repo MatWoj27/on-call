@@ -140,7 +140,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Update update = updates.get(position - 1);
                 UpdateHolder updateHolder = (UpdateHolder) holder;
                 updateHolder.mainContainer.setOnClickListener(v -> {
-                    if (listener != null) {
+                    if (listener != null && updateHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
                         listener.editUpdate(update);
                     }
                 });
@@ -216,6 +216,10 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemCount() {
         return updates.size() + 1;
+    }
+
+    public Update getUpdateAt(int position) {
+        return updates.get(position);
     }
 
     public void setUpdates(List<Update> updates) {
