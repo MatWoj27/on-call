@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         UpdateDialogFragment fragment = new UpdateDialogFragment();
         fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
         fragment.show(getSupportFragmentManager(), "add_update");
-        Toast.makeText(this, "Adding a new update", Toast.LENGTH_SHORT).show();
     }
 
     @Override
