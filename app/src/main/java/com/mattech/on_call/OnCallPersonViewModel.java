@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class OnCallPersonViewModel extends AndroidViewModel {
+public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRepository.OperationOnUpdateListener {
     private LiveData<OnCallPerson> onCallPerson;
     private LiveData<List<Update>> updates;
     private OnCallRepository onCallRepository;
@@ -30,6 +30,7 @@ public class OnCallPersonViewModel extends AndroidViewModel {
         onCallRepository = new OnCallRepository(application);
         onCallPerson = onCallRepository.getOnCallPerson();
         updates = onCallRepository.getUpdates();
+        onCallRepository.setUpdateListener(this);
     }
 
     public LiveData<OnCallPerson> getOnCallPerson() {
@@ -42,7 +43,6 @@ public class OnCallPersonViewModel extends AndroidViewModel {
 
     public void addUpdate(Update update) {
         onCallRepository.addUpdate(update);
-        scheduleUpdate(update);
     }
 
     public void updateUpdate(Update update) {
@@ -53,14 +53,24 @@ public class OnCallPersonViewModel extends AndroidViewModel {
         onCallRepository.deleteUpdate(update);
     }
 
+    public void updateEnableStatusChanged(Update update) {
+        if (update.isEnabled()) {
+            scheduleUpdate(update);
+        } else {
+            cancelScheduledUpdate(update);
+        }
+        onCallRepository.updateUpdate(update);
+    }
+
     public void updateOnCallPerson() {
         onCallRepository.updateOnCallPerson();
     }
 
-    private void scheduleUpdate(Update update) {
+    @Override
+    public void scheduleUpdate(Update update) {
         AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
         if (update.isOneTimeUpdate()) {
             try {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, getUpdateExactTimeInMillis(update), pendingIntent);
@@ -71,6 +81,13 @@ public class OnCallPersonViewModel extends AndroidViewModel {
         } else {
             // handle repeating updates
         }
+    }
+
+    private void cancelScheduledUpdate(Update update) {
+        AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
+        alarmManager.cancel(pendingIntent);
     }
 
     private long getUpdateExactTimeInMillis(Update update) throws ParseException {

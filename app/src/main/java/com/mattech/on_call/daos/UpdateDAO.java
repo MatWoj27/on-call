@@ -17,7 +17,7 @@ public interface UpdateDAO {
     void delete(Update update);
 
     @Insert
-    void insert(Update... updates);
+    long insert(Update update);
 
     @Query("SELECT * FROM updates")
     LiveData<List<Update>> getUpdates();

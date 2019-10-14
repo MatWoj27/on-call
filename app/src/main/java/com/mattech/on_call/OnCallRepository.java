@@ -28,6 +28,11 @@ public class OnCallRepository {
     private UpdateDAO updateDAO;
     private LiveData<OnCallPerson> onCallPerson;
     private LiveData<List<Update>> updates;
+    private OperationOnUpdateListener updateListener;
+
+    public interface OperationOnUpdateListener {
+        void scheduleUpdate(Update update);
+    }
 
     public OnCallRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
@@ -57,7 +62,7 @@ public class OnCallRepository {
     }
 
     public void addUpdate(Update update) {
-        InsertUpdateTask task = new InsertUpdateTask(updateDAO);
+        InsertUpdateTask task = new InsertUpdateTask(updateDAO, updateListener);
         task.execute(update);
     }
 
@@ -126,17 +131,27 @@ public class OnCallRepository {
         }
     }
 
-    private static class InsertUpdateTask extends AsyncTask<Update, Void, Void> {
+    private static class InsertUpdateTask extends AsyncTask<Update, Void, Update> {
         private UpdateDAO dao;
+        private OperationOnUpdateListener listener;
 
-        public InsertUpdateTask(UpdateDAO dao) {
+        public InsertUpdateTask(UpdateDAO dao, OperationOnUpdateListener listener) {
             this.dao = dao;
+            this.listener = listener;
         }
 
         @Override
-        protected Void doInBackground(Update... updates) {
-            dao.insert(updates[0]);
-            return null;
+        protected Update doInBackground(Update... updates) {
+            Long id = dao.insert(updates[0]);
+            updates[0].setId(id.intValue());
+            return updates[0];
+        }
+
+        @Override
+        protected void onPostExecute(Update update) {
+            if (listener != null) {
+                listener.scheduleUpdate(update);
+            }
         }
     }
 
@@ -166,5 +181,9 @@ public class OnCallRepository {
             dao.delete(updates[0]);
             return null;
         }
+    }
+
+    public void setUpdateListener(OperationOnUpdateListener updateListener) {
+        this.updateListener = updateListener;
     }
 }

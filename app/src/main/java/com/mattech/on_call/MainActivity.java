@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
 
     @Override
     public void updateEnableStatusChanged(Update update) {
-        viewModel.updateUpdate(update);
+        viewModel.updateEnableStatusChanged(update);
     }
 
     @Override
