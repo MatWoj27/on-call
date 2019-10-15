@@ -50,6 +50,9 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
     }
 
     public void deleteUpdate(Update update) {
+        if (update.isEnabled()) {
+            cancelScheduledUpdate(update);
+        }
         onCallRepository.deleteUpdate(update);
     }
 
