@@ -104,4 +104,3 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
         return calendar.getTimeInMillis();
     }
 }
-
