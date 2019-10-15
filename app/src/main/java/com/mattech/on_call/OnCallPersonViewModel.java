@@ -46,6 +46,9 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
     }
 
     public void updateUpdate(Update update) {
+        if (update.isEnabled()) {
+            scheduleUpdate(update);
+        }
         onCallRepository.updateUpdate(update);
     }
 
