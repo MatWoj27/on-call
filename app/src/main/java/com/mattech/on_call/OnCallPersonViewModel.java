@@ -76,8 +76,9 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
     public void scheduleUpdate(Update update) {
         AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
+        PendingIntent pendingIntent;
         if (update.isOneTimeUpdate()) {
+            pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
             try {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, getUpdateExactTimeInMillis(update), pendingIntent);
             } catch (ParseException e) {
@@ -85,7 +86,14 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
                 // remove update and display message that update failed to be scheduled
             }
         } else {
-            // handle repeating updates
+            intent.putExtra(SetForwardingRequestReceiver.REPETITION_DAYS_TAG, update.getRepetitionDays());
+            pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
+            try {
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getNextUpdateTimeInMillis(update), 24 * 60 * 60 * 1000, pendingIntent);
+            } catch (ParseException e) {
+                Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + update.getTime());
+                // remove update from database? and display message that update failed to be scheduled
+            }
         }
     }
 
@@ -94,6 +102,24 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
         alarmManager.cancel(pendingIntent);
+    }
+
+    private long getNextUpdateTimeInMillis(Update update) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        long currentTimeInMillis = calendar.getTimeInMillis();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        Date date = timeFormat.parse(update.getTime());
+        Calendar tmpCalendar = Calendar.getInstance();
+        tmpCalendar.setTime(date);
+        calendar.set(Calendar.HOUR, tmpCalendar.get(Calendar.HOUR));
+        calendar.set(Calendar.MINUTE, tmpCalendar.get(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long todayUpdateTimeInMillis = calendar.getTimeInMillis();
+        if (todayUpdateTimeInMillis < currentTimeInMillis) {
+            todayUpdateTimeInMillis += 24 * 60 * 60 * 1000;
+        }
+        return todayUpdateTimeInMillis;
     }
 
     private long getUpdateExactTimeInMillis(Update update) throws ParseException {
