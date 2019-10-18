@@ -31,7 +31,7 @@ public class OnCallRepository {
     private OperationOnUpdateListener updateListener;
 
     public interface OperationOnUpdateListener {
-        void scheduleUpdate(Update update);
+        void updateAdded(Update update);
     }
 
     public OnCallRepository(Application application) {
@@ -150,7 +150,7 @@ public class OnCallRepository {
         @Override
         protected void onPostExecute(Update update) {
             if (listener != null) {
-                listener.scheduleUpdate(update);
+                listener.updateAdded(update);
             }
         }
     }
@@ -178,7 +178,7 @@ public class OnCallRepository {
 
         @Override
         protected Void doInBackground(Update... updates) {
-            dao.delete(updates[0]);
+            dao.deleteById(updates[0].getId());
             return null;
         }
     }

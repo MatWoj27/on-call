@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.mattech.on_call.exceptions.UpdateNotScheduledException;
 import com.mattech.on_call.models.OnCallPerson;
 import com.mattech.on_call.models.Update;
 
@@ -47,7 +49,11 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
 
     public void updateUpdate(Update update) {
         if (update.isEnabled()) {
-            scheduleUpdate(update);
+            try {
+                scheduleUpdate(update);
+            } catch (UpdateNotScheduledException e) {
+                handleNotScheduledUpdate(update, e);
+            }
         }
         onCallRepository.updateUpdate(update);
     }
@@ -61,7 +67,11 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
 
     public void updateEnableStatusChanged(Update update) {
         if (update.isEnabled()) {
-            scheduleUpdate(update);
+            try {
+                scheduleUpdate(update);
+            } catch (UpdateNotScheduledException e) {
+                handleNotScheduledUpdate(update, e);
+            }
         } else {
             cancelScheduledUpdate(update);
         }
@@ -73,7 +83,15 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
     }
 
     @Override
-    public void scheduleUpdate(Update update) {
+    public void updateAdded(Update update) {
+        try {
+            scheduleUpdate(update);
+        } catch (UpdateNotScheduledException e) {
+            handleNotScheduledUpdate(update, e);
+        }
+    }
+
+    private void scheduleUpdate(Update update) throws UpdateNotScheduledException {
         AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
         PendingIntent pendingIntent;
@@ -82,8 +100,7 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
             try {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, getUpdateExactTimeInMillis(update), pendingIntent);
             } catch (ParseException e) {
-                Log.e(getClass().getSimpleName(), "Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime());
-                // remove update and display message that update failed to be scheduled
+                throw new UpdateNotScheduledException("Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime(), e);
             }
         } else {
             intent.putExtra(SetForwardingRequestReceiver.REPETITION_DAYS_TAG, update.getRepetitionDays());
@@ -91,8 +108,7 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
             try {
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getNextUpdateTimeInMillis(update), 24 * 60 * 60 * 1000, pendingIntent);
             } catch (ParseException e) {
-                Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + update.getTime());
-                // remove update from database? and display message that update failed to be scheduled
+                throw new UpdateNotScheduledException("Time string retrieved from Update object has wrong format: " + update.getTime(), e);
             }
         }
     }
@@ -128,5 +144,11 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(exactDate);
         return calendar.getTimeInMillis();
+    }
+
+    private void handleNotScheduledUpdate(Update update, UpdateNotScheduledException e) {
+        Log.e(getClass().getSimpleName(), e.getMessage(), e);
+        deleteUpdate(update);
+        Toast.makeText(getApplication(), "The update could not be scheduled so it has been deleted", Toast.LENGTH_SHORT).show();
     }
 }
