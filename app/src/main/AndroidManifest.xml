@@ -22,6 +22,10 @@
         <receiver
             android:name=".SetForwardingRequestReceiver"
             android:directBootAware="true" />
+
+        <activity
+            android:name=".ForwardingActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

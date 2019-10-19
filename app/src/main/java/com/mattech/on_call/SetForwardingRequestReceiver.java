@@ -3,7 +3,6 @@ package com.mattech.on_call;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -21,6 +20,7 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
                 return;
             }
         }
-        Toast.makeText(context, "Updating!", Toast.LENGTH_SHORT).show();
+        Intent forwardIntent = new Intent(context, ForwardingActivity.class);
+        context.startActivity(forwardIntent);
     }
 }
