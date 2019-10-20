@@ -2,8 +2,6 @@ package com.mattech.on_call;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +18,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener, UpdateDialogFragment.OnFragmentInteractionListener {
-    public static final int REQUEST_CALL_PERMISSION_CODE = 1;
     private OnCallPersonViewModel viewModel;
 
     @BindView(R.id.on_call_person_name)
@@ -67,17 +64,6 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CALL_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startForwarding();
-            } else {
-                Toast.makeText(this, "Setting forwarding is not possible without call permission", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
     public void addUpdate() {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
         fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
@@ -105,21 +91,6 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     @Override
     public void updateEdited(Update editedUpdate) {
         viewModel.updateUpdate(editedUpdate);
-    }
-
-    public void startForwarding() {
-//        if (onCallPerson != null) {
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//                String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
-//                requestPermissions(permissions, REQUEST_CALL_PERMISSION_CODE);
-//            } else {
-//                Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
-//                String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
-//                Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
-//                callForwardingIntent.setData(gsmCode);
-//                startActivity(callForwardingIntent);
-//            }
-//        }
     }
 
     private void updateUI(OnCallPerson onCallPerson) {
