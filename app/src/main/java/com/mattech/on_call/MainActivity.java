@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mattech.on_call.adapters.UpdatesAdapter;
 import com.mattech.on_call.models.OnCallPerson;
