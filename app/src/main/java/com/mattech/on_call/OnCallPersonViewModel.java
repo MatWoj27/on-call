@@ -79,7 +79,7 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
     }
 
     public void updateOnCallPerson() {
-        onCallRepository.updateOnCallPerson();
+        onCallRepository.updateOnCallPerson(new OnCallPerson()); // mocked onCallPerson to be changed later
     }
 
     @Override
