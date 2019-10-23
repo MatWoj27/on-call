@@ -25,7 +25,8 @@
 
         <activity
             android:name=".ForwardingActivity"
-            android:theme="@style/AppTheme" />
+            android:launchMode="singleInstance"
+            android:theme="@style/TransparentTheme" />
     </application>
 
 </manifest>
