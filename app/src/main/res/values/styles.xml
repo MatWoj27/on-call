@@ -16,7 +16,6 @@
     </style>
 
     <style name="ButtonStyle" parent="AppTheme">
-        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textAllCaps">true</item>
     </style>
