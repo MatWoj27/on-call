@@ -28,6 +28,11 @@ public class OnCallRepository {
     private UpdateDAO updateDAO;
     private LiveData<OnCallPerson> onCallPerson;
     private LiveData<List<Update>> updates;
+    private OperationOnUpdateListener updateListener;
+
+    public interface OperationOnUpdateListener {
+        void updateAdded(Update update);
+    }
 
     public OnCallRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
@@ -42,8 +47,8 @@ public class OnCallRepository {
         return onCallPerson;
     }
 
-    public void updateOnCallPerson() {
-        UpdateOnCallPersonTask updateTask = new UpdateOnCallPersonTask(onCallPersonDAO);
+    public void updateOnCallPerson(OnCallPerson currentOnCallPerson) {
+        UpdateOnCallPersonTask updateTask = new UpdateOnCallPersonTask(onCallPersonDAO, currentOnCallPerson);
         updateTask.execute();
     }
 
@@ -57,7 +62,7 @@ public class OnCallRepository {
     }
 
     public void addUpdate(Update update) {
-        InsertUpdateTask task = new InsertUpdateTask(updateDAO);
+        InsertUpdateTask task = new InsertUpdateTask(updateDAO, updateListener);
         task.execute(update);
     }
 
@@ -74,9 +79,11 @@ public class OnCallRepository {
     private static class UpdateOnCallPersonTask extends AsyncTask<Void, Void, Void> {
         private final String ERROR_TAG = UpdateOnCallPersonTask.class.getSimpleName();
         private OnCallPersonDAO asyncDao;
+        private OnCallPerson currentOnCallPerson;
 
-        UpdateOnCallPersonTask(OnCallPersonDAO asyncDao) {
+        UpdateOnCallPersonTask(OnCallPersonDAO asyncDao, OnCallPerson currentOnCallPerson) {
             this.asyncDao = asyncDao;
+            this.currentOnCallPerson = currentOnCallPerson;
         }
 
         @Override
@@ -102,9 +109,8 @@ public class OnCallRepository {
             result = new OnCallPerson();
             result.setName("Artur Machowicz");
             result.setMail("artur.machowicz@atos.net");
-            result.setPhoneNumber("876456789");
-            OnCallPerson currentOnCallPerson = asyncDao.getOnCallPerson().getValue();
-            if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
+            result.setPhoneNumber("876456779");
+            if (result != null && (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber()))) {
                 asyncDao.insert(result);
             }
             return null;
@@ -126,17 +132,27 @@ public class OnCallRepository {
         }
     }
 
-    private static class InsertUpdateTask extends AsyncTask<Update, Void, Void> {
+    private static class InsertUpdateTask extends AsyncTask<Update, Void, Update> {
         private UpdateDAO dao;
+        private OperationOnUpdateListener listener;
 
-        public InsertUpdateTask(UpdateDAO dao) {
+        public InsertUpdateTask(UpdateDAO dao, OperationOnUpdateListener listener) {
             this.dao = dao;
+            this.listener = listener;
         }
 
         @Override
-        protected Void doInBackground(Update... updates) {
-            dao.insert(updates[0]);
-            return null;
+        protected Update doInBackground(Update... updates) {
+            Long id = dao.insert(updates[0]);
+            updates[0].setId(id.intValue());
+            return updates[0];
+        }
+
+        @Override
+        protected void onPostExecute(Update update) {
+            if (listener != null) {
+                listener.updateAdded(update);
+            }
         }
     }
 
@@ -163,8 +179,12 @@ public class OnCallRepository {
 
         @Override
         protected Void doInBackground(Update... updates) {
-            dao.delete(updates[0]);
+            dao.deleteById(updates[0].getId());
             return null;
         }
+    }
+
+    public void setUpdateListener(OperationOnUpdateListener updateListener) {
+        this.updateListener = updateListener;
     }
 }

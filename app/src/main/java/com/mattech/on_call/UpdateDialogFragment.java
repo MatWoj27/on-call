@@ -113,7 +113,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 calendar.setTime(date);
                 presetTimePickers(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             } catch (ParseException e) {
-                Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format" + updateToEdit.getTime());
+                Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + updateToEdit.getTime());
                 presetTimePickers(12, 0);
             }
         } else {

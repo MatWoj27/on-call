@@ -13,11 +13,11 @@ import java.util.List;
 @Dao
 public interface UpdateDAO {
 
-    @Delete
-    void delete(Update update);
+    @Query("DELETE FROM updates WHERE id = :id")
+    void deleteById(int id);
 
     @Insert
-    void insert(Update... updates);
+    long insert(Update update);
 
     @Query("SELECT * FROM updates")
     LiveData<List<Update>> getUpdates();
