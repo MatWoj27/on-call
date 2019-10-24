@@ -62,7 +62,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    public void startForwarding(OnCallPerson onCallPerson) {
+    private void startForwarding(OnCallPerson onCallPerson) {
         if (onCallPerson != null && onCallPerson.getPhoneNumber() != null) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
