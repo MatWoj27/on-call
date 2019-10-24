@@ -16,7 +16,6 @@
     </style>
 
     <style name="ButtonStyle" parent="AppTheme">
-        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textAllCaps">true</item>
     </style>
@@ -46,6 +45,11 @@
         <item name="android:backgroundTint">@android:color/white</item>
         <!--color for the thin horizontal stripe between years list and buttons in year picker-->
         <item name="android:colorForeground">@android:color/white</item>
+    </style>
+
+    <style name="TransparentTheme" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
 </resources>
