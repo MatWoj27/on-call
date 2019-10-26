@@ -14,6 +14,7 @@ import com.mattech.on_call.models.OnCallPerson;
 
 public class ForwardingActivity extends AppCompatActivity {
     public static final int REQUEST_CALL_PERMISSION_CODE = 1;
+    public static final int SET_FORWARDING_REQUEST = 1;
     private OnCallRepository repository;
     private boolean isCurrentPhoneNumberSet;
     private String currentPhoneNumber;
@@ -62,6 +63,11 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        finish();
+    }
+
     private void startForwarding(OnCallPerson onCallPerson) {
         if (onCallPerson != null && onCallPerson.getPhoneNumber() != null) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -72,7 +78,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
                 Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
                 callForwardingIntent.setData(gsmCode);
-                startActivity(callForwardingIntent);
+                startActivityForResult(callForwardingIntent, SET_FORWARDING_REQUEST);
             }
         }
     }
