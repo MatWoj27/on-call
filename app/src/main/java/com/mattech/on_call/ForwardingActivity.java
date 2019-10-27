@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.utils.DrawableUtil;
 
 public class ForwardingActivity extends AppCompatActivity {
     public static final int REQUEST_CALL_PERMISSION_CODE = 1;
@@ -114,6 +115,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
                 .setContentText(description)
+                .setLargeIcon(DrawableUtil.vectorToBitmap(getResources().getDrawable(state.iconId, null)))
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
