@@ -85,8 +85,10 @@ public class ForwardingActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        showNotification(ForwardingResultState.FORWARDING_SUCCESS);
-        finish();
+        repository.getOnCallPerson().observe(this, onCallPerson -> {
+            showNotification(ForwardingResultState.FORWARDING_SUCCESS, onCallPerson);
+            finish();
+        });
     }
 
     private void startForwarding(OnCallPerson onCallPerson) {
@@ -102,19 +104,20 @@ public class ForwardingActivity extends AppCompatActivity {
                 startActivityForResult(callForwardingIntent, SET_FORWARDING_REQUEST);
             }
         } else {
-            showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR);
+            showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, onCallPerson);
         }
     }
 
-    private void showNotification(ForwardingResultState state) {
-        String description = getResources().getString(state.textId);
+    private void showNotification(ForwardingResultState state, OnCallPerson onCallPerson) {
+        String longDescription = getResources().getString(state.textId);
         if (state == ForwardingResultState.FORWARDING_SUCCESS) {
-            description = description + currentPhoneNumber;
+            longDescription = String.format(longDescription + "\n%s\n%s\n%s", onCallPerson.getName(), onCallPerson.getPhoneNumber(), onCallPerson.getMail());
         }
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
-                .setContentText(description)
+                .setContentText(getResources().getString(state.textId))
+                .setStyle(new Notification.BigTextStyle().bigText(longDescription))
                 .setLargeIcon(DrawableUtil.vectorToBitmap(getResources().getDrawable(state.iconId, null)))
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

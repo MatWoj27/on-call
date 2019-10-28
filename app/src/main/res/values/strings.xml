@@ -16,7 +16,7 @@
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>
     <string name="forwarding_success_title">Forwarding has been set successfully!</string>
-    <string name="forwarding_success_text">All calls will be forwarded to: </string>
+    <string name="forwarding_success_text">All incoming calls will be forwarded to:</string>
     <string name="forwarding_failure_title">Forwarding has not been set!</string>
     <string name="forwarding_no_reactor_text">The reactor is not set so there is no one to redirect the calls to.</string>
 </resources>
