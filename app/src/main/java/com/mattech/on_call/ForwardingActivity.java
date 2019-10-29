@@ -18,8 +18,8 @@ import com.mattech.on_call.models.OnCallPerson;
 import com.mattech.on_call.utils.DrawableUtil;
 
 public class ForwardingActivity extends AppCompatActivity {
-    public static final int REQUEST_CALL_PERMISSION_CODE = 1;
-    public static final int SET_FORWARDING_REQUEST = 1;
+    public static final int START_FORWARDING_REQUEST_CODE = 1;
+    public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     private OnCallRepository repository;
     private boolean isCurrentPhoneNumberSet;
     private String currentPhoneNumber;
@@ -66,12 +66,17 @@ public class ForwardingActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CALL_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startForwarding(repository.getOnCallPerson().getValue());
-            } else {
-                Toast.makeText(this, "Setting forwarding is not possible without call permission", Toast.LENGTH_SHORT).show();
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case START_FORWARDING_REQUEST_CODE:
+                    startForwarding(repository.getOnCallPerson().getValue());
+                    break;
+                case STOP_FORWARDING_REQUEST_CODE:
+                    stopForwarding();
+                    break;
             }
+        } else {
+            Toast.makeText(this, "Application cannot provide its basic functionality without call permission", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -86,33 +91,49 @@ public class ForwardingActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        repository.getOnCallPerson().observe(this, onCallPerson -> {
-            showNotification(ForwardingResultState.FORWARDING_SUCCESS, onCallPerson);
-            finish();
-        });
+        switch (requestCode) {
+            case START_FORWARDING_REQUEST_CODE:
+                repository.getOnCallPerson().observe(this, onCallPerson -> {
+                    showNotification(ForwardingResultState.FORWARDING_SUCCESS, onCallPerson);
+                    finish();
+                });
+                break;
+            case STOP_FORWARDING_REQUEST_CODE:
+                Toast.makeText(this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        finish();
     }
 
     private void startForwarding(OnCallPerson onCallPerson) {
         if (onCallPerson != null && onCallPerson.getPhoneNumber() != null) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
-                requestPermissions(permissions, REQUEST_CALL_PERMISSION_CODE);
-            } else {
-                Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
-                String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
-                Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
-                callForwardingIntent.setData(gsmCode);
-                startActivityForResult(callForwardingIntent, SET_FORWARDING_REQUEST);
-            }
+            String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
+            makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE);
         } else {
             showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, onCallPerson);
         }
     }
 
+    private void stopForwarding() {
+        makeCall("##21#", STOP_FORWARDING_REQUEST_CODE);
+    }
+
+    private void makeCall(String callForwardingString, int requestCode) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
+            requestPermissions(permissions, requestCode);
+        } else {
+            Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
+            Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
+            callForwardingIntent.setData(gsmCode);
+            startActivityForResult(callForwardingIntent, requestCode);
+        }
+    }
+
     private void showNotification(ForwardingResultState state, OnCallPerson onCallPerson) {
+        String longDescription = getResources().getString(state.textId);
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        String longDescription = getResources().getString(state.textId);
         if (state == ForwardingResultState.FORWARDING_SUCCESS) {
             longDescription = String.format(longDescription + "\n%s\n%s\n%s", onCallPerson.getName(), onCallPerson.getPhoneNumber(), onCallPerson.getMail());
         }
