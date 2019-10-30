@@ -21,6 +21,7 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
             }
         }
         Intent forwardIntent = new Intent(context, ForwardingActivity.class);
+        forwardIntent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.START_FORWARDING_REQUEST_CODE);
         context.startActivity(forwardIntent);
     }
 }

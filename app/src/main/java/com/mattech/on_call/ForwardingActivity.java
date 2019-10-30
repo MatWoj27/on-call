@@ -18,6 +18,7 @@ import com.mattech.on_call.models.OnCallPerson;
 import com.mattech.on_call.utils.DrawableUtil;
 
 public class ForwardingActivity extends AppCompatActivity {
+    public static final String ACTION_TAG = "action";
     public static final int START_FORWARDING_REQUEST_CODE = 1;
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     private OnCallRepository repository;
@@ -27,17 +28,21 @@ public class ForwardingActivity extends AppCompatActivity {
     private final String IS_CURRENT_PHONE_NUMBER_SET_TAG = "isPhoneNumSet";
 
     private enum ForwardingResultState {
-        FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon),
-        FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon);
+        FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon),
+        FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon);
 
         int titleId;
         int textId;
         int iconId;
+        int buttonTextId;
+        int buttonIconId;
 
-        ForwardingResultState(int titleId, int textId, int iconId) {
+        ForwardingResultState(int titleId, int textId, int iconId, int buttonTextId, int buttonIconId) {
             this.titleId = titleId;
             this.textId = textId;
             this.iconId = iconId;
+            this.buttonTextId = buttonTextId;
+            this.buttonIconId = buttonIconId;
         }
     }
 
@@ -45,23 +50,33 @@ public class ForwardingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forwarding);
-        repository = new OnCallRepository(getApplication());
-        if (savedInstanceState != null) {
-            currentPhoneNumber = savedInstanceState.getString(CURRENT_PHONE_NUMBER_TAG);
-            isCurrentPhoneNumberSet = savedInstanceState.getBoolean(IS_CURRENT_PHONE_NUMBER_SET_TAG);
-        }
-        repository.getOnCallPerson().observe(this, onCallPerson -> {
-            if (isCurrentPhoneNumberSet) {
-                currentPhoneNumber = onCallPerson.getPhoneNumber();
-                startForwarding(onCallPerson);
-            } else {
-                if (onCallPerson != null) {
-                    currentPhoneNumber = onCallPerson.getPhoneNumber();
+        Intent intent = getIntent();
+        switch (intent.getIntExtra(ACTION_TAG, 0)) {
+            case START_FORWARDING_REQUEST_CODE:
+                repository = new OnCallRepository(getApplication());
+                if (savedInstanceState != null) {
+                    currentPhoneNumber = savedInstanceState.getString(CURRENT_PHONE_NUMBER_TAG);
+                    isCurrentPhoneNumberSet = savedInstanceState.getBoolean(IS_CURRENT_PHONE_NUMBER_SET_TAG);
                 }
-                isCurrentPhoneNumberSet = true;
-                repository.updateOnCallPerson(onCallPerson);
-            }
-        });
+                repository.getOnCallPerson().observe(this, onCallPerson -> {
+                    if (isCurrentPhoneNumberSet) {
+                        currentPhoneNumber = onCallPerson.getPhoneNumber();
+                        startForwarding(onCallPerson);
+                    } else {
+                        if (onCallPerson != null) {
+                            currentPhoneNumber = onCallPerson.getPhoneNumber();
+                        }
+                        isCurrentPhoneNumberSet = true;
+                        repository.updateOnCallPerson(onCallPerson);
+                    }
+                });
+                break;
+            case STOP_FORWARDING_REQUEST_CODE:
+                stopForwarding();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -132,18 +147,21 @@ public class ForwardingActivity extends AppCompatActivity {
 
     private void showNotification(ForwardingResultState state, OnCallPerson onCallPerson) {
         String longDescription = getResources().getString(state.textId);
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+        Intent actionIntent = new Intent(this, ForwardingActivity.class);
         if (state == ForwardingResultState.FORWARDING_SUCCESS) {
+            actionIntent.putExtra(ACTION_TAG, STOP_FORWARDING_REQUEST_CODE);
             longDescription = String.format(longDescription + "\n%s\n%s\n%s", onCallPerson.getName(), onCallPerson.getPhoneNumber(), onCallPerson.getMail());
         }
+        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, 1, actionIntent, 0);
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
                 .setContentText(getResources().getString(state.textId))
                 .setStyle(new Notification.BigTextStyle().bigText(longDescription))
                 .setLargeIcon(DrawableUtil.vectorToBitmap(getResources().getDrawable(state.iconId, null)))
-                .setContentIntent(pendingIntent)
+                .setContentIntent(contentTapPendingIntent)
+                .addAction(state.buttonIconId, getResources().getString(state.buttonTextId), buttonPendingIntent)
                 .setAutoCancel(true)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
