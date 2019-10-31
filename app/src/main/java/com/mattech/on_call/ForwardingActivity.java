@@ -116,9 +116,9 @@ public class ForwardingActivity extends AppCompatActivity {
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 Toast.makeText(this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
+                finish();
                 break;
         }
-        finish();
     }
 
     private void startForwarding(OnCallPerson onCallPerson) {
