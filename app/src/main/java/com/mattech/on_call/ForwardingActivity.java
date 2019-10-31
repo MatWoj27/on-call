@@ -150,9 +150,15 @@ public class ForwardingActivity extends AppCompatActivity {
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Intent actionIntent = new Intent(this, ForwardingActivity.class);
-        if (state == ForwardingResultState.FORWARDING_SUCCESS) {
-            actionIntent.putExtra(ACTION_TAG, STOP_FORWARDING_REQUEST_CODE);
-            longDescription = String.format(longDescription + "\n%s\n%s\n%s", onCallPerson.getName(), onCallPerson.getPhoneNumber(), onCallPerson.getMail());
+        switch (state) {
+            case FORWARDING_SUCCESS:
+                actionIntent.putExtra(ACTION_TAG, STOP_FORWARDING_REQUEST_CODE);
+                longDescription = String.format(longDescription + "\n%s\n%s\n%s", onCallPerson.getName(), onCallPerson.getPhoneNumber(), onCallPerson.getMail());
+                break;
+            case FORWARDING_CALL_FAILURE:
+            case FORWARDING_FAILURE_NO_REACTOR:
+                actionIntent.putExtra(ACTION_TAG, START_FORWARDING_REQUEST_CODE);
+                break;
         }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, 1, actionIntent, 0);
         Notification notification = new Notification.Builder(this)
