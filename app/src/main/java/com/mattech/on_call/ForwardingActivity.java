@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.mattech.on_call.models.OnCallPerson;
@@ -105,22 +107,6 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case START_FORWARDING_REQUEST_CODE:
-                repository.getOnCallPerson().observe(this, onCallPerson -> {
-                    showNotification(ForwardingResultState.FORWARDING_SUCCESS, onCallPerson);
-                    finish();
-                });
-                break;
-            case STOP_FORWARDING_REQUEST_CODE:
-                Toast.makeText(this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-        }
-    }
-
     private void startForwarding(OnCallPerson onCallPerson) {
         if (onCallPerson != null && onCallPerson.getPhoneNumber() != null) {
             String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
@@ -139,10 +125,33 @@ public class ForwardingActivity extends AppCompatActivity {
             String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
             requestPermissions(permissions, requestCode);
         } else {
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            telephonyManager.listen(new PhoneStateListener() {
+                @Override
+                public void onCallForwardingIndicatorChanged(boolean cfi) {
+                    super.onCallForwardingIndicatorChanged(cfi);
+                    if (cfi) {
+                        switch (requestCode) {
+                            case START_FORWARDING_REQUEST_CODE:
+                                repository.getOnCallPerson().observe(ForwardingActivity.this, onCallPerson -> {
+                                    showNotification(ForwardingResultState.FORWARDING_SUCCESS, onCallPerson);
+                                    finish();
+                                });
+                                break;
+                            case STOP_FORWARDING_REQUEST_CODE:
+                                Toast.makeText(ForwardingActivity.this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
+                                finish();
+                                break;
+                        }
+                    } else {
+                        showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
+                    }
+                }
+            }, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
             Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
             Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
             callForwardingIntent.setData(gsmCode);
-            startActivityForResult(callForwardingIntent, requestCode);
+            startActivity(callForwardingIntent);
         }
     }
 
