@@ -19,6 +19,9 @@ import android.widget.Toast;
 import com.mattech.on_call.models.OnCallPerson;
 import com.mattech.on_call.utils.DrawableUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForwardingActivity extends AppCompatActivity {
     public static final String ACTION_TAG = "action";
     public static final int START_FORWARDING_REQUEST_CODE = 1;
@@ -84,17 +87,19 @@ public class ForwardingActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            switch (requestCode) {
-                case START_FORWARDING_REQUEST_CODE:
-                    startForwarding(repository.getOnCallPerson().getValue());
-                    break;
-                case STOP_FORWARDING_REQUEST_CODE:
-                    stopForwarding();
-                    break;
+        for (int resultCode : grantResults) {
+            if (resultCode != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Application cannot provide its basic functionality without requested permissions", Toast.LENGTH_SHORT).show();
+                return;
             }
-        } else {
-            Toast.makeText(this, "Application cannot provide its basic functionality without call permission", Toast.LENGTH_SHORT).show();
+        }
+        switch (requestCode) {
+            case START_FORWARDING_REQUEST_CODE:
+                startForwarding(repository.getOnCallPerson().getValue());
+                break;
+            case STOP_FORWARDING_REQUEST_CODE:
+                stopForwarding();
+                break;
         }
     }
 
@@ -121,9 +126,15 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void makeCall(String callForwardingString, int requestCode) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            String[] permissions = new String[]{Manifest.permission.CALL_PHONE};
-            requestPermissions(permissions, requestCode);
+        String permissions[] = {Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
+        List<String> missingPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (missingPermissions.size() > 0) {
+            requestPermissions(missingPermissions.toArray(new String[missingPermissions.size()]), requestCode);
         } else {
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
             telephonyManager.listen(new PhoneStateListener() {
