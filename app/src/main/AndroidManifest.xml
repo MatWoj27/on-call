@@ -20,6 +20,15 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".ForwardingAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/forwarding_appwidget_info" />
+        </receiver>
+
         <receiver
             android:name=".SetForwardingRequestReceiver"
             android:directBootAware="true" />
