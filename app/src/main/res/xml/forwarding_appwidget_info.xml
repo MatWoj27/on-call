@@ -3,6 +3,4 @@
     android:initialLayout="@layout/forwarding_widget"
     android:minHeight="60dp"
     android:minWidth="110dp"
-    android:resizeMode="horizontal">
-
-</appwidget-provider>
+    android:resizeMode="horizontal" />
