@@ -2,47 +2,67 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/widget_rounded_background"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="10">
 
     <TextView
         android:id="@+id/reactor_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="4dp"
+        android:layout_weight="3"
+        android:gravity="center"
         android:text="@string/fetching_data" />
 
     <TextView
         android:id="@+id/reactor_phone_number"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
+        android:layout_weight="3"
+        android:gravity="center"
         android:text="@string/fetching_data" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorSecondary"
-        android:weightSum="2">
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@drawable/bottom_rounded_background">
 
         <Button
             android:id="@+id/update_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/separator"
+            android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
-            android:text="@string/update" />
+            android:text="@string/update"
+            android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/separator"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/vertical_separator" />
 
         <Button
             android:id="@+id/forward_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/separator"
+            android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
-            android:text="@string/stop_forwarding" />
+            android:text="@string/stop_forwarding"
+            android:textColor="@android:color/white" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
