@@ -2,8 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/forwarding_widget"
     android:minHeight="60dp"
-    android:minResizeWidth="80dp"
-    android:minWidth="120dp"
+    android:minWidth="110dp"
     android:resizeMode="horizontal">
 
 </appwidget-provider>
