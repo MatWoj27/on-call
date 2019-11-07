@@ -13,7 +13,9 @@
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_weight="3"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxLines="1"
         android:text="@string/fetching_data" />
 
     <TextView
@@ -23,7 +25,9 @@
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         android:layout_weight="3"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxLines="1"
         android:text="@string/fetching_data" />
 
     <RelativeLayout
