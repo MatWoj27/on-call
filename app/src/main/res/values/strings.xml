@@ -24,4 +24,5 @@
     <string name="stop_forwarding">Stop</string>
     <string name="set_forwarding">Set</string>
     <string name="retry">Retry</string>
+    <string name="tap_to_set_reactor">Tap to set reactor</string>
 </resources>
