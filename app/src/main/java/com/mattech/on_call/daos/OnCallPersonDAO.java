@@ -19,4 +19,9 @@ public interface OnCallPersonDAO {
 
     @Query("SELECT * FROM onCallPeople LIMIT 1")
     LiveData<OnCallPerson> getOnCallPerson();
+
+    @Query("UPDATE onCallPeople SET phoneNumber=:newOnCallPersonPhoneNumber, name=:newOnCallPersonName, mail=:newOnCallPersonMail" +
+            " WHERE phoneNumber LIKE :currentOnCallPersonPhoneNumber")
+    void updateOnCallPerson(String currentOnCallPersonPhoneNumber, String newOnCallPersonPhoneNumber,
+                            String newOnCallPersonName, String newOnCallPersonMail);
 }

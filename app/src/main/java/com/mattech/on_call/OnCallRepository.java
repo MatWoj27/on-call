@@ -110,8 +110,12 @@ public class OnCallRepository {
             result.setName("Artur Machowicz");
             result.setMail("artur.machowicz@atos.net");
             result.setPhoneNumber("876456779");
-            if (result != null && (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber()))) {
-                asyncDao.insert(result);
+            if (result != null) {
+                if (currentOnCallPerson == null) {
+                    asyncDao.insert(result);
+                } else if (!currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
+                    asyncDao.updateOnCallPerson(currentOnCallPerson.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
+                }
             }
             return null;
         }
