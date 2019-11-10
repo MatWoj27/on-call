@@ -156,6 +156,7 @@ public class ForwardingActivity extends AppCompatActivity {
                         }
                     } else {
                         showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
+                        finish();
                     }
                 }
             }, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
