@@ -3,30 +3,20 @@ package com.mattech.on_call;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.util.Log;
 
-import com.mattech.on_call.daos.OnCallPersonDAO;
+import com.mattech.on_call.daos.ReactorDAO;
 import com.mattech.on_call.daos.UpdateDAO;
 import com.mattech.on_call.databases.UpdateDatabase;
-import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class OnCallRepository {
+public class ReactorRepository {
     private static final String webApiUrl = "http://10.84.136.193/api/v1/onCall/Sky/L2";
-    private OnCallPersonDAO onCallPersonDAO;
+    private ReactorDAO reactorDAO;
     private UpdateDAO updateDAO;
-    private LiveData<OnCallPerson> onCallPerson;
+    private LiveData<Reactor> reactor;
     private LiveData<List<Update>> updates;
     private OperationOnUpdateListener updateListener;
 
@@ -34,27 +24,27 @@ public class OnCallRepository {
         void updateAdded(Update update);
     }
 
-    public OnCallRepository(Application application) {
+    public ReactorRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
-        onCallPersonDAO = database.getOnCallPersonDAO();
+        reactorDAO = database.getReactorDAO();
         UpdateDatabase updateDatabase = UpdateDatabase.getInstance(application);
         updateDAO = updateDatabase.getUpdateDAO();
-        onCallPerson = onCallPersonDAO.getOnCallPerson();
+        reactor = reactorDAO.getReactor();
         updates = updateDAO.getUpdates();
     }
 
-    public LiveData<OnCallPerson> getOnCallPerson() {
-        return onCallPerson;
+    public LiveData<Reactor> getReactor() {
+        return reactor;
     }
 
-    public void updateOnCallPerson(OnCallPerson currentOnCallPerson) {
-        UpdateOnCallPersonTask updateTask = new UpdateOnCallPersonTask(onCallPersonDAO, currentOnCallPerson);
+    public void updateReactor(Reactor currentReactor) {
+        UpdateReactorTask updateTask = new UpdateReactorTask(reactorDAO, currentReactor);
         updateTask.execute();
     }
 
-    public void setCustomOnCallPerson(OnCallPerson customOnCallPerson) {
-        InsertOnCallPersonTask insertTask = new InsertOnCallPersonTask(onCallPersonDAO);
-        insertTask.execute(customOnCallPerson);
+    public void setCustomReactor(Reactor customReactor) {
+        InsertReactorTask insertTask = new InsertReactorTask(reactorDAO);
+        insertTask.execute(customReactor);
     }
 
     public LiveData<List<Update>> getUpdates() {
@@ -76,19 +66,19 @@ public class OnCallRepository {
         task.execute(update);
     }
 
-    private static class UpdateOnCallPersonTask extends AsyncTask<Void, Void, Void> {
-        private final String ERROR_TAG = UpdateOnCallPersonTask.class.getSimpleName();
-        private OnCallPersonDAO asyncDao;
-        private OnCallPerson currentOnCallPerson;
+    private static class UpdateReactorTask extends AsyncTask<Void, Void, Void> {
+        private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
+        private ReactorDAO asyncDao;
+        private Reactor currentReactor;
 
-        UpdateOnCallPersonTask(OnCallPersonDAO asyncDao, OnCallPerson currentOnCallPerson) {
+        UpdateReactorTask(ReactorDAO asyncDao, Reactor currentReactor) {
             this.asyncDao = asyncDao;
-            this.currentOnCallPerson = currentOnCallPerson;
+            this.currentReactor = currentReactor;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            OnCallPerson result = null;
+            Reactor result = null;
 //            OkHttpClient client = new OkHttpClient();
 //            Request request = new Request.Builder()
 //                    .get()
@@ -99,39 +89,39 @@ public class OnCallRepository {
 //                String body = response.body().string();
 //                result = OnCallPerson.fromJson(new JSONObject(body));
 //                if (result == null) {
-//                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentOnCallPerson, asyncDao).execute(), 30 * 1000);
-//                } else if (currentOnCallPerson == null || !currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
+//                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentReactor, asyncDao).execute(), 30 * 1000);
+//                } else if (currentReactor == null || !currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
 //                    asyncDao.insert(result);
 //                }
 //            } catch (IOException | JSONException e) {
 //                Log.e(ERROR_TAG, "error", e);
 //            }
-            result = new OnCallPerson();
+            result = new Reactor();
             result.setName("Artur Machowicz");
             result.setMail("artur.machowicz@atos.net");
             result.setPhoneNumber("876456779");
             if (result != null) {
-                if (currentOnCallPerson == null) {
+                if (currentReactor == null) {
                     asyncDao.insert(result);
-                } else if (!currentOnCallPerson.getPhoneNumber().equals(result.getPhoneNumber())) {
-                    asyncDao.updateOnCallPerson(currentOnCallPerson.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
+                } else if (!currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
+                    asyncDao.updateReactor(currentReactor.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
                 }
             }
             return null;
         }
     }
 
-    private static class InsertOnCallPersonTask extends AsyncTask<OnCallPerson, Void, Void> {
-        private OnCallPersonDAO asyncDao;
+    private static class InsertReactorTask extends AsyncTask<Reactor, Void, Void> {
+        private ReactorDAO asyncDao;
 
-        InsertOnCallPersonTask(OnCallPersonDAO asyncDao) {
+        InsertReactorTask(ReactorDAO asyncDao) {
             this.asyncDao = asyncDao;
         }
 
         @Override
-        protected Void doInBackground(OnCallPerson... onCallPeople) {
+        protected Void doInBackground(Reactor... reactors) {
             asyncDao.deleteAll();
-            asyncDao.insert(onCallPeople[0]);
+            asyncDao.insert(reactors[0]);
             return null;
         }
     }
