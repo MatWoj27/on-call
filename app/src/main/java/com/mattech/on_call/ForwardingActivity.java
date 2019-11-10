@@ -16,7 +16,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
-import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.utils.DrawableUtil;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final String ACTION_TAG = "action";
     public static final int START_FORWARDING_REQUEST_CODE = 1;
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
-    private OnCallRepository repository;
+    private ReactorRepository repository;
     private boolean isCurrentPhoneNumberSet;
     private String currentPhoneNumber;
     private final String CURRENT_PHONE_NUMBER_TAG = "phoneNum";
@@ -59,21 +59,21 @@ public class ForwardingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case START_FORWARDING_REQUEST_CODE:
-                repository = new OnCallRepository(getApplication());
+                repository = new ReactorRepository(getApplication());
                 if (savedInstanceState != null) {
                     currentPhoneNumber = savedInstanceState.getString(CURRENT_PHONE_NUMBER_TAG);
                     isCurrentPhoneNumberSet = savedInstanceState.getBoolean(IS_CURRENT_PHONE_NUMBER_SET_TAG);
                 }
-                repository.getOnCallPerson().observe(this, onCallPerson -> {
+                repository.getReactor().observe(this, reactor -> {
                     if (isCurrentPhoneNumberSet) {
-                        currentPhoneNumber = onCallPerson.getPhoneNumber();
-                        startForwarding(onCallPerson);
+                        currentPhoneNumber = reactor.getPhoneNumber();
+                        startForwarding(reactor);
                     } else {
-                        if (onCallPerson != null) {
-                            currentPhoneNumber = onCallPerson.getPhoneNumber();
+                        if (reactor != null) {
+                            currentPhoneNumber = reactor.getPhoneNumber();
                         }
                         isCurrentPhoneNumberSet = true;
-                        repository.updateOnCallPerson(onCallPerson);
+                        repository.updateReactor(reactor);
                     }
                 });
                 break;
@@ -95,7 +95,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
         switch (requestCode) {
             case START_FORWARDING_REQUEST_CODE:
-                startForwarding(repository.getOnCallPerson().getValue());
+                startForwarding(repository.getReactor().getValue());
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 stopForwarding();
@@ -112,12 +112,12 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    private void startForwarding(OnCallPerson onCallPerson) {
-        if (onCallPerson != null && onCallPerson.getPhoneNumber() != null) {
-            String callForwardingString = String.format("*21*%s#", String.valueOf(onCallPerson.getPhoneNumber()));
+    private void startForwarding(Reactor reactor) {
+        if (reactor != null && reactor.getPhoneNumber() != null) {
+            String callForwardingString = String.format("*21*%s#", String.valueOf(reactor.getPhoneNumber()));
             makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE);
         } else {
-            showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, onCallPerson);
+            showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, reactor);
         }
     }
 
@@ -144,8 +144,8 @@ public class ForwardingActivity extends AppCompatActivity {
                     if (cfi) {
                         switch (requestCode) {
                             case START_FORWARDING_REQUEST_CODE:
-                                repository.getOnCallPerson().observe(ForwardingActivity.this, onCallPerson -> {
-                                    showNotification(ForwardingResultState.FORWARDING_SUCCESS, onCallPerson);
+                                repository.getReactor().observe(ForwardingActivity.this, reactor -> {
+                                    showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
                                     finish();
                                 });
                                 break;
@@ -166,14 +166,14 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    private void showNotification(ForwardingResultState state, OnCallPerson onCallPerson) {
+    private void showNotification(ForwardingResultState state, Reactor reactor) {
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Intent actionIntent = new Intent(this, ForwardingActivity.class);
         switch (state) {
             case FORWARDING_SUCCESS:
                 actionIntent.putExtra(ACTION_TAG, STOP_FORWARDING_REQUEST_CODE);
-                longDescription = String.format(longDescription + "\n%s\n%s\n%s", onCallPerson.getName(), onCallPerson.getPhoneNumber(), onCallPerson.getMail());
+                longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
                 break;
             case FORWARDING_CALL_FAILURE:
             case FORWARDING_FAILURE_NO_REACTOR:

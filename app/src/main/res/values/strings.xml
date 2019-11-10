@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">OnCall</string>
+    <string name="app_name">Reactor</string>
     <string name="start">Start</string>
-    <string name="who_is_on_call">On call person:</string>
+    <string name="reactor">Reactor:</string>
     <string name="fetching_data">Fetching data</string>
     <string name="settings">Settings</string>
     <string name="back">Back</string>

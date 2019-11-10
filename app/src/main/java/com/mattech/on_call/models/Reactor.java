@@ -3,8 +3,6 @@ package com.mattech.on_call.models;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -15,10 +13,10 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 
-@Entity(tableName = "onCallPeople")
-public class OnCallPerson {
+@Entity(tableName = "reactors")
+public class Reactor {
     @Ignore
-    private static final String ERROR_TAG = OnCallPerson.class.getSimpleName();
+    private static final String ERROR_TAG = Reactor.class.getSimpleName();
 
     @JSONAttr
     private String name;
@@ -31,12 +29,12 @@ public class OnCallPerson {
     @NonNull
     private String phoneNumber;
 
-    public OnCallPerson() {
+    public Reactor() {
     }
 
-    public static OnCallPerson fromJson(JSONObject json) throws JSONException {
-        OnCallPerson onCallPerson = new OnCallPerson();
-        for (Field field : OnCallPerson.class.getDeclaredFields()) {
+    public static Reactor fromJson(JSONObject json) throws JSONException {
+        Reactor reactor = new Reactor();
+        for (Field field : Reactor.class.getDeclaredFields()) {
             JSONAttr attr = field.getAnnotation(JSONAttr.class);
             if (attr != null) {
                 String jsonFieldName = attr.name().equals("") ? field.getName() : attr.name();
@@ -48,14 +46,14 @@ public class OnCallPerson {
                     value = json.opt(jsonFieldName);
                 }
                 try {
-                    field.set(onCallPerson, value);
+                    field.set(reactor, value);
                 } catch (IllegalAccessException e) {
                     Log.e(ERROR_TAG, "error", e);
                     return null;
                 }
             }
         }
-        return onCallPerson;
+        return reactor;
     }
 
     public String getName() {

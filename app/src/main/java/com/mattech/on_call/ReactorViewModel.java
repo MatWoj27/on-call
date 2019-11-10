@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mattech.on_call.exceptions.UpdateNotScheduledException;
-import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
 
 import java.text.ParseException;
@@ -22,21 +22,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRepository.OperationOnUpdateListener {
-    private LiveData<OnCallPerson> onCallPerson;
+public class ReactorViewModel extends AndroidViewModel implements ReactorRepository.OperationOnUpdateListener {
+    private LiveData<Reactor> reactor;
     private LiveData<List<Update>> updates;
-    private OnCallRepository onCallRepository;
+    private ReactorRepository reactorRepository;
 
-    public OnCallPersonViewModel(@NonNull Application application) {
+    public ReactorViewModel(@NonNull Application application) {
         super(application);
-        onCallRepository = new OnCallRepository(application);
-        onCallPerson = onCallRepository.getOnCallPerson();
-        updates = onCallRepository.getUpdates();
-        onCallRepository.setUpdateListener(this);
+        reactorRepository = new ReactorRepository(application);
+        reactor = reactorRepository.getReactor();
+        updates = reactorRepository.getUpdates();
+        reactorRepository.setUpdateListener(this);
     }
 
-    public LiveData<OnCallPerson> getOnCallPerson() {
-        return onCallPerson;
+    public LiveData<Reactor> getReactor() {
+        return reactor;
     }
 
     public LiveData<List<Update>> getUpdates() {
@@ -44,7 +44,7 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
     }
 
     public void addUpdate(Update update) {
-        onCallRepository.addUpdate(update);
+        reactorRepository.addUpdate(update);
     }
 
     public void updateUpdate(Update update) {
@@ -55,14 +55,14 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
                 handleNotScheduledUpdate(update, e);
             }
         }
-        onCallRepository.updateUpdate(update);
+        reactorRepository.updateUpdate(update);
     }
 
     public void deleteUpdate(Update update) {
         if (update.isEnabled()) {
             cancelScheduledUpdate(update);
         }
-        onCallRepository.deleteUpdate(update);
+        reactorRepository.deleteUpdate(update);
     }
 
     public void updateEnableStatusChanged(Update update) {
@@ -75,11 +75,11 @@ public class OnCallPersonViewModel extends AndroidViewModel implements OnCallRep
         } else {
             cancelScheduledUpdate(update);
         }
-        onCallRepository.updateUpdate(update);
+        reactorRepository.updateUpdate(update);
     }
 
-    public void updateOnCallPerson() {
-        onCallRepository.updateOnCallPerson(new OnCallPerson()); // mocked onCallPerson to be changed later
+    public void updateReactor() {
+        reactorRepository.updateReactor(new Reactor()); // mocked reactor to be changed later
     }
 
     @Override

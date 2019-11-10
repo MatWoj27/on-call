@@ -10,23 +10,23 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.widget.TextView;
 
 import com.mattech.on_call.adapters.UpdatesAdapter;
-import com.mattech.on_call.models.OnCallPerson;
+import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener, UpdateDialogFragment.OnFragmentInteractionListener {
-    private OnCallPersonViewModel viewModel;
+    private ReactorViewModel viewModel;
 
-    @BindView(R.id.on_call_person_name)
-    TextView onCallPersonName;
+    @BindView(R.id.reactor_name)
+    TextView reactorName;
 
-    @BindView(R.id.on_call_person_phone_num)
-    TextView onCallPersonPhoneNumber;
+    @BindView(R.id.reactor_phone_num)
+    TextView reactorPhoneNumber;
 
-    @BindView(R.id.on_call_person_mail)
-    TextView onCallPersonMail;
+    @BindView(R.id.reactor_mail)
+    TextView reactorMail;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        viewModel = ViewModelProviders.of(this).get(OnCallPersonViewModel.class);
-        viewModel.getOnCallPerson().observe(this, this::updateUI);
+        viewModel = ViewModelProviders.of(this).get(ReactorViewModel.class);
+        viewModel.getReactor().observe(this, this::updateUI);
         UpdatesAdapter adapter = new UpdatesAdapter(this);
         viewModel.getUpdates().observe(this, adapter::setUpdates);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         viewModel.updateUpdate(editedUpdate);
     }
 
-    private void updateUI(OnCallPerson onCallPerson) {
-        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && onCallPerson != null) {
-            onCallPersonName.setText(onCallPerson.getName());
-            onCallPersonPhoneNumber.setText(onCallPerson.getPhoneNumber());
-            onCallPersonMail.setText(onCallPerson.getMail());
+    private void updateUI(Reactor reactor) {
+        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && reactor != null) {
+            reactorName.setText(reactor.getName());
+            reactorPhoneNumber.setText(reactor.getPhoneNumber());
+            reactorMail.setText(reactor.getMail());
         }
     }
 }
