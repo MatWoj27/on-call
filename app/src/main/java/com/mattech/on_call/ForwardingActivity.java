@@ -181,7 +181,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 actionIntent.putExtra(ACTION_TAG, START_FORWARDING_REQUEST_CODE);
                 break;
         }
-        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, 1, actionIntent, 0);
+        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, 1, actionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
