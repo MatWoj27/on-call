@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -182,6 +183,8 @@ public class ForwardingActivity extends AppCompatActivity {
                 break;
         }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, 1, actionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
+                getResources().getString(state.buttonTextId), buttonPendingIntent).build();
         Notification notification = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
@@ -189,7 +192,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 .setStyle(new Notification.BigTextStyle().bigText(longDescription))
                 .setLargeIcon(DrawableUtil.vectorToBitmap(getResources().getDrawable(state.iconId, null)))
                 .setContentIntent(contentTapPendingIntent)
-                .addAction(state.buttonIconId, getResources().getString(state.buttonTextId), buttonPendingIntent)
+                .addAction(action)
                 .setAutoCancel(true)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
