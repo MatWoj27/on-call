@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface JSONAttr {
-    public String name() default "";
-    public boolean required() default true;
+    String name() default "";
+    boolean required() default true;
 }
