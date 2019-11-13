@@ -209,11 +209,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-    }
-
-    @Override
     public int getItemCount() {
         return updates.size() + 1;
     }
