@@ -102,6 +102,8 @@ public class UpdateDialogFragment extends DialogFragment {
             presetTimePickers(savedInstanceState.getInt(HOUR_TAG), savedInstanceState.getInt(MINUTE_TAG));
             activeDays = savedInstanceState.getBooleanArray(ACTIVE_DAYS_TAG);
             exactDate = savedInstanceState.getString(EXACT_DATE_TAG);
+            isEdit = savedInstanceState.getBoolean(IS_EDIT_TAG);
+            editUpdateId = savedInstanceState.getInt(EDIT_UPDATE_ID_TAG);
         } else if (updateToEdit != null) {
             displayDays = !updateToEdit.isOneTimeUpdate();
             activeDays = updateToEdit.getRepetitionDays();
