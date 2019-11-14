@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 public class ForwardingAppWidgetProvider extends AppWidgetProvider {
 
     private enum Action {
-        SET_REACTOR(0, MainActivity.class), UPDATE_REACTOR(1, ForwardingActivity.class), STOP_FORWARDING(2, ForwardingActivity.class);
+        SET_REACTOR(0, MainActivity.class), UPDATE_REACTOR(-1, ForwardingActivity.class), STOP_FORWARDING(-2, ForwardingActivity.class);
 
         int requestCode;
         Class cls;

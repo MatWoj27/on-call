@@ -34,22 +34,24 @@ public class ForwardingActivity extends AppCompatActivity {
     private final String IS_CURRENT_PHONE_NUMBER_SET_TAG = "isPhoneNumSet";
 
     private enum ForwardingResultState {
-        FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon),
-        FORWARDING_CALL_FAILURE(R.string.forwarding_failure_title, R.string.forwarding_call_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon),
-        FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon);
+        FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2),
+        FORWARDING_CALL_FAILURE(R.string.forwarding_failure_title, R.string.forwarding_call_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1),
+        FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1);
 
         int titleId;
         int textId;
         int iconId;
         int buttonTextId;
         int buttonIconId;
+        int buttonActionRequestCode;
 
-        ForwardingResultState(int titleId, int textId, int iconId, int buttonTextId, int buttonIconId) {
+        ForwardingResultState(int titleId, int textId, int iconId, int buttonTextId, int buttonIconId, int buttonActionRequestCode) {
             this.titleId = titleId;
             this.textId = textId;
             this.iconId = iconId;
             this.buttonTextId = buttonTextId;
             this.buttonIconId = buttonIconId;
+            this.buttonActionRequestCode = buttonActionRequestCode;
         }
     }
 
@@ -182,7 +184,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 actionIntent.putExtra(ACTION_TAG, START_FORWARDING_REQUEST_CODE);
                 break;
         }
-        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, 1, actionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.buttonActionRequestCode, actionIntent, 0);
         Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
                 getResources().getString(state.buttonTextId), buttonPendingIntent).build();
         Notification notification = new Notification.Builder(this)
