@@ -116,8 +116,10 @@ public class ReactorViewModel extends AndroidViewModel implements ReactorReposit
     private void cancelScheduledUpdate(Update update) {
         AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
-        alarmManager.cancel(pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, PendingIntent.FLAG_NO_CREATE);
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     private long getNextUpdateTimeInMillis(Update update) throws ParseException {
