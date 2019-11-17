@@ -69,6 +69,10 @@ public class ForwardingActivity extends AppCompatActivity {
                 }
                 repository.getReactor().observe(this, reactor -> {
                     if (isCurrentPhoneNumberSet) {
+                        Intent reactorChangedIntent = new Intent(ForwardingAppWidgetProvider.REACTOR_CHANGED);
+                        reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, reactor.getName());
+                        reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, reactor.getPhoneNumber());
+                        sendBroadcast(reactorChangedIntent);
                         currentPhoneNumber = reactor.getPhoneNumber();
                         startForwarding(reactor);
                     } else {

@@ -3,11 +3,16 @@ package com.mattech.on_call;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.RemoteViews;
 
 public class ForwardingAppWidgetProvider extends AppWidgetProvider {
+    public static final String REACTOR_CHANGED = "REACTOR_CHANGED";
+    public static final String REACTOR_NAME_TAG = "name";
+    public static final String REACTOR_PHONE_NUMBER_TAG = "phoneNumber";
 
     private enum Action {
         SET_REACTOR(0, MainActivity.class), UPDATE_REACTOR(-1, ForwardingActivity.class), STOP_FORWARDING(-2, ForwardingActivity.class);
@@ -30,6 +35,25 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.forward_btn, getPendingIntentForAction(context, Action.STOP_FORWARDING));
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction() != null && intent.getAction().equals(REACTOR_CHANGED)) {
+            displayReactor(context, intent.getStringExtra(REACTOR_NAME_TAG), intent.getStringExtra(REACTOR_PHONE_NUMBER_TAG));
+        } else {
+            super.onReceive(context, intent);
+        }
+    }
+
+    private void displayReactor(Context context, String name, String phoneNumber) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.forwarding_widget);
+        views.setInt(R.id.set_reactor, "setVisibility", View.GONE);
+        views.setInt(R.id.reactor_info, "setVisibility", View.VISIBLE);
+        views.setTextViewText(R.id.reactor_name, name);
+        views.setTextViewText(R.id.reactor_phone_number, phoneNumber);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        appWidgetManager.updateAppWidget(new ComponentName(context.getPackageName(), ForwardingAppWidgetProvider.class.getName()), views);
     }
 
     private PendingIntent getPendingIntentForAction(Context context, Action action) {
