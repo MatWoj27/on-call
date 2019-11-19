@@ -60,7 +60,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, action.cls);
         switch (action) {
             case UPDATE_REACTOR:
-                intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.START_FORWARDING_REQUEST_CODE);
+                intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
                 break;
             case STOP_FORWARDING:
                 intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.STOP_FORWARDING_REQUEST_CODE);

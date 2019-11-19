@@ -25,8 +25,9 @@ import java.util.List;
 
 public class ForwardingActivity extends AppCompatActivity {
     public static final String ACTION_TAG = "action";
-    public static final int START_FORWARDING_REQUEST_CODE = 1;
+    public static final int UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE = 1;
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
+    public static final int START_FORWARDING_REQUEST_CODE = 3;
     private ReactorRepository repository;
     private boolean isCurrentPhoneNumberSet;
     private String currentPhoneNumber;
@@ -60,9 +61,9 @@ public class ForwardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forwarding);
         Intent intent = getIntent();
+        repository = new ReactorRepository(getApplication());
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
-            case START_FORWARDING_REQUEST_CODE:
-                repository = new ReactorRepository(getApplication());
+            case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 if (savedInstanceState != null) {
                     currentPhoneNumber = savedInstanceState.getString(CURRENT_PHONE_NUMBER_TAG);
                     isCurrentPhoneNumberSet = savedInstanceState.getBoolean(IS_CURRENT_PHONE_NUMBER_SET_TAG);
@@ -86,6 +87,9 @@ public class ForwardingActivity extends AppCompatActivity {
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 stopForwarding();
+                break;
+            case START_FORWARDING_REQUEST_CODE:
+                repository.getReactor().observe(this, this::startForwarding);
                 break;
             default:
                 break;
@@ -184,8 +188,10 @@ public class ForwardingActivity extends AppCompatActivity {
                 longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
                 break;
             case FORWARDING_CALL_FAILURE:
-            case FORWARDING_FAILURE_NO_REACTOR:
                 actionIntent.putExtra(ACTION_TAG, START_FORWARDING_REQUEST_CODE);
+                break;
+            case FORWARDING_FAILURE_NO_REACTOR:
+                actionIntent.putExtra(ACTION_TAG, UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
                 break;
         }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.buttonActionRequestCode, actionIntent, 0);
