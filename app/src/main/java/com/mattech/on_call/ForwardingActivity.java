@@ -157,11 +157,13 @@ public class ForwardingActivity extends AppCompatActivity {
                             case START_FORWARDING_REQUEST_CODE:
                                 repository.getReactor().observe(ForwardingActivity.this, reactor -> {
                                     showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
+                                    sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
                                     finish();
                                 });
                                 break;
                             case STOP_FORWARDING_REQUEST_CODE:
                                 Toast.makeText(ForwardingActivity.this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
+                                sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
                                 finish();
                                 break;
                         }

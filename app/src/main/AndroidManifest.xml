@@ -26,6 +26,8 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="REACTOR_CHANGED" />
+                <action android:name="FORWARDING_STARTED" />
+                <action android:name="FORWARDING_STOPPED" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

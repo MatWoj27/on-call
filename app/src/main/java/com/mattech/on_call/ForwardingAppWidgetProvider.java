@@ -15,7 +15,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
     public static final String REACTOR_PHONE_NUMBER_TAG = "phoneNumber";
 
     private enum Action {
-        SET_REACTOR(0, MainActivity.class), UPDATE_REACTOR(-1, ForwardingActivity.class), STOP_FORWARDING(-2, ForwardingActivity.class);
+        SET_REACTOR(0, MainActivity.class), UPDATE_REACTOR(-1, ForwardingActivity.class), STOP_FORWARDING(-2, ForwardingActivity.class), START_FORWARDING(-3, ForwardingActivity.class);
 
         int requestCode;
         Class cls;
@@ -39,8 +39,21 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction() != null && intent.getAction().equals(REACTOR_CHANGED)) {
-            displayReactor(context, intent.getStringExtra(REACTOR_NAME_TAG), intent.getStringExtra(REACTOR_PHONE_NUMBER_TAG));
+        if (intent.getAction() != null) {
+            switch (intent.getAction()) {
+                case REACTOR_CHANGED:
+                    displayReactor(context, intent.getStringExtra(REACTOR_NAME_TAG), intent.getStringExtra(REACTOR_PHONE_NUMBER_TAG));
+                    break;
+                case ForwardingEvent.FORWARDING_STARTED:
+                    setForwardingButtonFunctionality(context, R.string.stop_forwarding, Action.STOP_FORWARDING);
+                    break;
+                case ForwardingEvent.FORWARDING_STOPPED:
+                    setForwardingButtonFunctionality(context, R.string.start_forwarding, Action.START_FORWARDING);
+                    break;
+                default:
+                    super.onReceive(context, intent);
+                    break;
+            }
         } else {
             super.onReceive(context, intent);
         }
@@ -56,6 +69,14 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(new ComponentName(context.getPackageName(), ForwardingAppWidgetProvider.class.getName()), views);
     }
 
+    private void setForwardingButtonFunctionality(Context context, int buttonTextId, Action buttonAction) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.forwarding_widget);
+        views.setTextViewText(R.id.forward_btn, context.getResources().getString(buttonTextId));
+        views.setOnClickPendingIntent(R.id.forward_btn, getPendingIntentForAction(context, buttonAction));
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        appWidgetManager.updateAppWidget(new ComponentName(context.getPackageName(), ForwardingAppWidgetProvider.class.getName()), views);
+    }
+
     private PendingIntent getPendingIntentForAction(Context context, Action action) {
         Intent intent = new Intent(context, action.cls);
         switch (action) {
@@ -64,6 +85,9 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
                 break;
             case STOP_FORWARDING:
                 intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.STOP_FORWARDING_REQUEST_CODE);
+                break;
+            case START_FORWARDING:
+                intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.START_FORWARDING_REQUEST_CODE);
                 break;
             default:
                 break;

@@ -21,6 +21,7 @@
     <string name="forwarding_failure_title">Forwarding has not been set!</string>
     <string name="forwarding_no_reactor_text">The reactor is not set so there is no one to redirect the calls to.</string>
     <string name="forwarding_call_failure_text">The application failed to make a call so the forwarding has not been set.</string>
+    <string name="start_forwarding">Start</string>
     <string name="stop_forwarding">Stop</string>
     <string name="set_forwarding">Set</string>
     <string name="retry">Retry</string>
