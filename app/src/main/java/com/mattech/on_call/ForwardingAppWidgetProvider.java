@@ -15,7 +15,10 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
     public static final String REACTOR_PHONE_NUMBER_TAG = "phoneNumber";
 
     private enum Action {
-        SET_REACTOR(0, MainActivity.class), UPDATE_REACTOR(-1, ForwardingActivity.class), STOP_FORWARDING(-2, ForwardingActivity.class), START_FORWARDING(-3, ForwardingActivity.class);
+        SET_REACTOR(0, MainActivity.class),
+        UPDATE_REACTOR(-1, ForwardingActivity.class),
+        STOP_FORWARDING(-2, ForwardingActivity.class),
+        START_FORWARDING(-3, ForwardingActivity.class);
 
         int requestCode;
         Class cls;
