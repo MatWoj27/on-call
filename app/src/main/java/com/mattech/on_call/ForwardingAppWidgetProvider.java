@@ -68,14 +68,17 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
         views.setInt(R.id.reactor_info, "setVisibility", View.VISIBLE);
         views.setTextViewText(R.id.reactor_name, name);
         views.setTextViewText(R.id.reactor_phone_number, phoneNumber);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        appWidgetManager.updateAppWidget(new ComponentName(context.getPackageName(), ForwardingAppWidgetProvider.class.getName()), views);
+        updateRemoteViews(context, views);
     }
 
     private void setForwardingButtonFunctionality(Context context, int buttonTextId, Action buttonAction) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.forwarding_widget);
         views.setTextViewText(R.id.forward_btn, context.getResources().getString(buttonTextId));
         views.setOnClickPendingIntent(R.id.forward_btn, getPendingIntentForAction(context, buttonAction));
+        updateRemoteViews(context, views);
+    }
+
+    private void updateRemoteViews(Context context, RemoteViews views) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         appWidgetManager.updateAppWidget(new ComponentName(context.getPackageName(), ForwardingAppWidgetProvider.class.getName()), views);
     }
