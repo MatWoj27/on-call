@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 public class ForwardingAppWidgetProvider extends AppWidgetProvider {
-    public static final String REACTOR_CHANGED = "REACTOR_CHANGED";
     public static final String REACTOR_NAME_TAG = "name";
     public static final String REACTOR_PHONE_NUMBER_TAG = "phoneNumber";
 
@@ -44,7 +43,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction() != null) {
             switch (intent.getAction()) {
-                case REACTOR_CHANGED:
+                case ReactorRepository.REACTOR_CHANGED:
                     displayReactor(context, intent.getStringExtra(REACTOR_NAME_TAG), intent.getStringExtra(REACTOR_PHONE_NUMBER_TAG));
                     break;
                 case ForwardingEvent.FORWARDING_STARTED:

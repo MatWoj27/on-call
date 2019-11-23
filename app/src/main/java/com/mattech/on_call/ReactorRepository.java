@@ -13,6 +13,7 @@ import com.mattech.on_call.models.Update;
 import java.util.List;
 
 public class ReactorRepository {
+    public static final String REACTOR_CHANGED = "REACTOR_CHANGED";
     private static final String webApiUrl = "http://10.84.136.193/api/v1/onCall/Sky/L2";
     private ReactorDAO reactorDAO;
     private UpdateDAO updateDAO;
