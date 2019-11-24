@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE = 1;
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
+    private final int NOTIFICATION_ID = 1;
     private ReactorRepository repository;
     private boolean isCurrentPhoneNumberSet;
     private String currentPhoneNumber;
@@ -62,6 +64,7 @@ public class ForwardingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forwarding);
         Intent intent = getIntent();
         repository = new ReactorRepository(getApplication());
+        cancelNotificationIfActive();
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 if (savedInstanceState != null) {
@@ -210,6 +213,15 @@ public class ForwardingActivity extends AppCompatActivity {
                 .setAutoCancel(true)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    private void cancelNotificationIfActive() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
+            if (notification.getId() == NOTIFICATION_ID) {
+                notificationManager.cancel(NOTIFICATION_ID);
+            }
+        }
     }
 }
