@@ -37,23 +37,25 @@ public class ForwardingActivity extends AppCompatActivity {
     private final String IS_CURRENT_PHONE_NUMBER_SET_TAG = "isPhoneNumSet";
 
     private enum ForwardingResultState {
-        FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2),
-        FORWARDING_CALL_FAILURE(R.string.forwarding_failure_title, R.string.forwarding_call_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1),
-        FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1);
+        FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2, STOP_FORWARDING_REQUEST_CODE),
+        FORWARDING_CALL_FAILURE(R.string.forwarding_failure_title, R.string.forwarding_call_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1, START_FORWARDING_REQUEST_CODE),
+        FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1, UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
 
         int titleId;
         int textId;
         int iconId;
         int buttonTextId;
         int buttonIconId;
+        int pendingIntentRequestCode;
         int buttonActionRequestCode;
 
-        ForwardingResultState(int titleId, int textId, int iconId, int buttonTextId, int buttonIconId, int buttonActionRequestCode) {
+        ForwardingResultState(int titleId, int textId, int iconId, int buttonTextId, int buttonIconId, int pendingIntentRequestCode, int buttonActionRequestCode) {
             this.titleId = titleId;
             this.textId = textId;
             this.iconId = iconId;
             this.buttonTextId = buttonTextId;
             this.buttonIconId = buttonIconId;
+            this.pendingIntentRequestCode = pendingIntentRequestCode;
             this.buttonActionRequestCode = buttonActionRequestCode;
         }
     }
@@ -187,19 +189,11 @@ public class ForwardingActivity extends AppCompatActivity {
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Intent actionIntent = new Intent(this, ForwardingActivity.class);
-        switch (state) {
-            case FORWARDING_SUCCESS:
-                actionIntent.putExtra(ACTION_TAG, STOP_FORWARDING_REQUEST_CODE);
-                longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
-                break;
-            case FORWARDING_CALL_FAILURE:
-                actionIntent.putExtra(ACTION_TAG, START_FORWARDING_REQUEST_CODE);
-                break;
-            case FORWARDING_FAILURE_NO_REACTOR:
-                actionIntent.putExtra(ACTION_TAG, UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
-                break;
+        actionIntent.putExtra(ACTION_TAG, state.buttonActionRequestCode);
+        if (state == ForwardingResultState.FORWARDING_SUCCESS) {
+            longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
         }
-        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.buttonActionRequestCode, actionIntent, 0);
+        PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);
         Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
                 getResources().getString(state.buttonTextId), buttonPendingIntent).build();
         Notification notification = new Notification.Builder(this)
