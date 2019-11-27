@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/colorSecondary" />
+        android:background="@color/colorPrimary" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -29,13 +29,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@color/colorSecondary" />
+                android:background="@color/colorPrimary" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@color/lightGray" />
+                android:background="@color/lightPinkGray" />
 
         </LinearLayout>
 
@@ -53,7 +53,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="5"
-        android:background="@color/lightGray"
+        android:background="@color/lightPinkGray"
         android:scrollbars="vertical" />
 
 </LinearLayout>
