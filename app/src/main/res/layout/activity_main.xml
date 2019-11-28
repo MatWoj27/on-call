@@ -8,11 +8,16 @@
     android:weightSum="8"
     tools:context="com.mattech.on_call.MainActivity">
 
-    <View
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorPrimary"
+        android:gravity="bottom"
+        android:paddingLeft="20dp"
+        android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -41,8 +46,10 @@
 
         <include
             layout="@layout/reactor_info"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_gravity="center" />
 
     </FrameLayout>
