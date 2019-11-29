@@ -47,6 +47,11 @@
         <item name="android:colorForeground">@android:color/white</item>
     </style>
 
+    <style name="DaysListStyle" parent="AppTheme">
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textColor">@color/disabledInactive</item>
+    </style>
+
     <style name="TransparentTheme" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
