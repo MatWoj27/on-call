@@ -52,6 +52,16 @@
         <item name="android:textColor">@color/disabledInactive</item>
     </style>
 
+    <!-- Style for the list of the toggle-like days in update dialog window -->
+    <style name="ToggleDaysListStyle" parent="DaysListStyle">
+        <item name="android:textViewStyle">@style/RoundedDayListElementStyle</item>
+    </style>
+
+    <style name="RoundedDayListElementStyle" parent="DaysListStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/round_day_toggle_disabled_inactive</item>
+    </style>
+
     <style name="TransparentTheme" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
