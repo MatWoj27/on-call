@@ -9,6 +9,7 @@
         <item name="android:datePickerDialogTheme">@style/DatePickerStyle</item>
     </style>
 
+    <!-- Style for update dialog window -->
     <style name="CardViewTheme" parent="AppTheme">
         <item name="android:buttonStyle">@style/ButtonStyle</item>
         <item name="colorAccent">@color/colorSecondary</item>
@@ -20,6 +21,7 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <!-- Style for number pickers (hour and minute) in update dialog window -->
     <style name="NumberPickerStyle" parent="AppTheme">
         <item name="android:editTextColor">@color/colorSecondary</item>
         <item name="android:colorAccent">@color/disabledInactive</item>
@@ -28,6 +30,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <!-- Style for date picker in update dialog window -->
     <style name="DatePickerStyle" parent="Theme.AppCompat.Dialog">
         <!--color for buttons, current day number and selected day highlight-->
         <item name="colorAccent">@color/colorSecondary</item>
@@ -47,12 +50,13 @@
         <item name="android:colorForeground">@android:color/white</item>
     </style>
 
+    <!-- Style for the list of the weekdays in update element -->
     <style name="DaysListStyle" parent="AppTheme">
         <item name="android:layout_margin">2dp</item>
         <item name="android:textColor">@color/disabledInactive</item>
     </style>
 
-    <!-- Style for the list of the toggle-like days in update dialog window -->
+    <!-- Style for the list of the toggle-like weekdays in update dialog window -->
     <style name="ToggleDaysListStyle" parent="DaysListStyle">
         <item name="android:textViewStyle">@style/RoundedDayListElementStyle</item>
     </style>
@@ -62,6 +66,7 @@
         <item name="android:background">@drawable/round_day_toggle_disabled_inactive</item>
     </style>
 
+    <!-- Style for transparent activities -->
     <style name="TransparentTheme" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
