@@ -30,7 +30,7 @@ public class ReactorViewModel extends AndroidViewModel implements ReactorReposit
     public ReactorViewModel(@NonNull Application application) {
         super(application);
         reactorRepository = new ReactorRepository(application);
-        reactor = reactorRepository.getReactor();
+        reactor = reactorRepository.getReactorLiveData();
         updates = reactorRepository.getUpdates();
         reactorRepository.setUpdateListener(this);
     }
@@ -79,7 +79,9 @@ public class ReactorViewModel extends AndroidViewModel implements ReactorReposit
     }
 
     public void updateReactor() {
-        reactorRepository.updateReactor(new Reactor()); // mocked reactor to be changed later
+        Intent intent = new Intent(getApplication().getApplicationContext(), ForwardingActivity.class);
+        intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
+        getApplication().getApplicationContext().startActivity(intent);
     }
 
     @Override

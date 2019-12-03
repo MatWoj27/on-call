@@ -31,10 +31,6 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int START_FORWARDING_REQUEST_CODE = 3;
     private final int NOTIFICATION_ID = 1;
     private ReactorRepository repository;
-    private boolean isCurrentPhoneNumberSet;
-    private String currentPhoneNumber;
-    private final String CURRENT_PHONE_NUMBER_TAG = "phoneNum";
-    private final String IS_CURRENT_PHONE_NUMBER_SET_TAG = "isPhoneNumSet";
 
     private enum ForwardingResultState {
         FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2, STOP_FORWARDING_REQUEST_CODE),
@@ -69,32 +65,35 @@ public class ForwardingActivity extends AppCompatActivity {
         cancelNotificationIfActive();
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
-                if (savedInstanceState != null) {
-                    currentPhoneNumber = savedInstanceState.getString(CURRENT_PHONE_NUMBER_TAG);
-                    isCurrentPhoneNumberSet = savedInstanceState.getBoolean(IS_CURRENT_PHONE_NUMBER_SET_TAG);
-                }
-                repository.getReactor().observe(this, reactor -> {
-                    if (isCurrentPhoneNumberSet) {
-                        Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
-                        reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, reactor.getName());
-                        reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, reactor.getPhoneNumber());
-                        sendBroadcast(reactorChangedIntent);
-                        currentPhoneNumber = reactor.getPhoneNumber();
-                        startForwarding(reactor);
-                    } else {
-                        if (reactor != null) {
-                            currentPhoneNumber = reactor.getPhoneNumber();
+                repository.getReactor(currentReactor -> {
+                    repository.updateReactor(currentReactor, new ReactorRepository.ReactorUpdateListener() {
+                        @Override
+                        public void reactorUpdated(Reactor newReactor) {
+                            Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
+                            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, newReactor.getName());
+                            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, newReactor.getPhoneNumber());
+                            sendBroadcast(reactorChangedIntent);
+                            startForwarding(newReactor);
                         }
-                        isCurrentPhoneNumberSet = true;
-                        repository.updateReactor(reactor);
-                    }
+
+                        @Override
+                        public void reactorNotChanged() {
+                            // to be implemented
+                            finish();
+                        }
+
+                        @Override
+                        public void updateFailed() {
+                            // to be implemented
+                        }
+                    });
                 });
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 stopForwarding();
                 break;
             case START_FORWARDING_REQUEST_CODE:
-                repository.getReactor().observe(this, this::startForwarding);
+                repository.getReactor(this::startForwarding);
                 break;
             default:
                 break;
@@ -111,20 +110,11 @@ public class ForwardingActivity extends AppCompatActivity {
         }
         switch (requestCode) {
             case START_FORWARDING_REQUEST_CODE:
-                startForwarding(repository.getReactor().getValue());
+                startForwarding(repository.getReactorLiveData().getValue());
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 stopForwarding();
                 break;
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (isCurrentPhoneNumberSet) {
-            outState.putString(CURRENT_PHONE_NUMBER_TAG, currentPhoneNumber);
-            outState.putBoolean(IS_CURRENT_PHONE_NUMBER_SET_TAG, isCurrentPhoneNumberSet);
         }
     }
 
@@ -160,7 +150,7 @@ public class ForwardingActivity extends AppCompatActivity {
                     if (cfi) {
                         switch (requestCode) {
                             case START_FORWARDING_REQUEST_CODE:
-                                repository.getReactor().observe(ForwardingActivity.this, reactor -> {
+                                repository.getReactorLiveData().observe(ForwardingActivity.this, reactor -> {
                                     showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
                                     sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
                                     finish();
