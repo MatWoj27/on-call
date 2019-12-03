@@ -2,6 +2,8 @@ package com.mattech.on_call;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.mattech.on_call.daos.ReactorDAO;
@@ -17,7 +19,7 @@ public class ReactorRepository {
     private static final String webApiUrl = "http://10.84.136.193/api/v1/onCall/Sky/L2";
     private ReactorDAO reactorDAO;
     private UpdateDAO updateDAO;
-    private LiveData<Reactor> reactor;
+    private LiveData<Reactor> reactorLiveData;
     private LiveData<List<Update>> updates;
     private OperationOnUpdateListener updateListener;
 
@@ -25,21 +27,52 @@ public class ReactorRepository {
         void updateAdded(Update update);
     }
 
+    public interface ReactorUpdateListener {
+        void reactorUpdated(Reactor newReactor);
+
+        void reactorNotChanged();
+
+        void updateFailed();
+    }
+
+    public interface ReactorRetrieveListener {
+        void reactorRetrieved(Reactor currentReactor);
+    }
+
     public ReactorRepository(Application application) {
         AppDatabase database = AppDatabase.getInstance(application);
         reactorDAO = database.getReactorDAO();
         UpdateDatabase updateDatabase = UpdateDatabase.getInstance(application);
         updateDAO = updateDatabase.getUpdateDAO();
-        reactor = reactorDAO.getReactor();
+        reactorLiveData = reactorDAO.getReactorLiveData();
         updates = updateDAO.getUpdates();
     }
 
-    public LiveData<Reactor> getReactor() {
-        return reactor;
+    public LiveData<Reactor> getReactorLiveData() {
+        return reactorLiveData;
     }
 
-    public void updateReactor(Reactor currentReactor) {
-        UpdateReactorTask updateTask = new UpdateReactorTask(reactorDAO, currentReactor);
+    public void getReactor(ReactorRetrieveListener listener) {
+        GetReactorTask getTask = new GetReactorTask(reactorDAO, currentReactor -> {
+            if (listener != null) {
+                listener.reactorRetrieved(currentReactor);
+            }
+        });
+        getTask.execute();
+    }
+
+    public void updateReactor(Reactor currentReactor, ReactorUpdateListener listener) {
+        UpdateReactorTask updateTask = new UpdateReactorTask(reactorDAO, currentReactor, newReactor -> {
+            if (listener != null) {
+                if (newReactor == null) {
+                    listener.updateFailed();
+                } else if (!currentReactor.getPhoneNumber().equals(newReactor.getPhoneNumber())) {
+                    listener.reactorUpdated(newReactor);
+                } else {
+                    listener.reactorNotChanged();
+                }
+            }
+        });
         updateTask.execute();
     }
 
@@ -67,18 +100,50 @@ public class ReactorRepository {
         task.execute(update);
     }
 
-    private static class UpdateReactorTask extends AsyncTask<Void, Void, Void> {
-        private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
+    private static class GetReactorTask extends AsyncTask<Void, Void, Reactor> {
         private ReactorDAO asyncDao;
-        private Reactor currentReactor;
+        private Listener listener;
 
-        UpdateReactorTask(ReactorDAO asyncDao, Reactor currentReactor) {
+        interface Listener {
+            void reactorRetrieved(Reactor currentReactor);
+        }
+
+        GetReactorTask(ReactorDAO asyncDao, Listener listener) {
             this.asyncDao = asyncDao;
-            this.currentReactor = currentReactor;
+            this.listener = listener;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Reactor doInBackground(Void... voids) {
+            return asyncDao.getReactor();
+        }
+
+        @Override
+        protected void onPostExecute(Reactor reactor) {
+            if (listener != null) {
+                listener.reactorRetrieved(reactor);
+            }
+        }
+    }
+
+    private static class UpdateReactorTask extends AsyncTask<Void, Void, Reactor> {
+        private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
+        private ReactorDAO asyncDao;
+        private Reactor currentReactor;
+        Listener listener;
+
+        interface Listener {
+            void reactorUpdated(Reactor newReactor);
+        }
+
+        UpdateReactorTask(ReactorDAO asyncDao, Reactor currentReactor, Listener listener) {
+            this.asyncDao = asyncDao;
+            this.currentReactor = currentReactor;
+            this.listener = listener;
+        }
+
+        @Override
+        protected Reactor doInBackground(Void... voids) {
             Reactor result = null;
 //            OkHttpClient client = new OkHttpClient();
 //            Request request = new Request.Builder()
@@ -108,7 +173,14 @@ public class ReactorRepository {
                     asyncDao.updateReactor(currentReactor.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
                 }
             }
-            return null;
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Reactor reactor) {
+            if (listener != null) {
+                listener.reactorUpdated(reactor);
+            }
         }
     }
 

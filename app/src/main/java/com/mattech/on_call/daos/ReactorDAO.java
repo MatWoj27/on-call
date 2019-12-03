@@ -17,7 +17,10 @@ public interface ReactorDAO {
     void deleteAll();
 
     @Query("SELECT * FROM reactors LIMIT 1")
-    LiveData<Reactor> getReactor();
+    LiveData<Reactor> getReactorLiveData();
+
+    @Query("SELECT * FROM reactors LIMIT 1")
+    Reactor getReactor();
 
     @Query("UPDATE reactors SET phoneNumber=:newReactorPhoneNumber, name=:newReactorName, mail=:newReactorMail" +
             " WHERE phoneNumber LIKE :currentReactorPhoneNumber")
