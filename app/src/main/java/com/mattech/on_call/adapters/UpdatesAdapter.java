@@ -209,12 +209,14 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private int getRemovedItemIndex(List<Update> original, List<Update> changed) {
+        int removedItemIndex = original.size() == changed.size() ? -1 : original.size() - 1;
         for (int i = 0; i < original.size() && i < changed.size(); i++) {
             if (original.get(i).getId() != changed.get(i).getId()) {
-                return i;
+                removedItemIndex = i;
+                break;
             }
         }
-        return -1;
+        return removedItemIndex;
     }
 
     @Override
@@ -231,7 +233,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             int removedItemIndex = getRemovedItemIndex(this.updates, updates);
             if (removedItemIndex != -1) {
                 this.updates.remove(removedItemIndex);
-                notifyItemRemoved(removedItemIndex);
+                notifyItemRemoved(removedItemIndex + 1);
             }
         } else {
             this.updates = updates;
