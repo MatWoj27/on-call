@@ -240,7 +240,10 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setUpdates(List<Update> updates) {
-        if (updates.size() < this.updates.size()) {
+        if (this.updates.size() == 0) {
+            this.updates = updates;
+            notifyDataSetChanged();
+        } else if (updates.size() < this.updates.size()) {
             int removedItemIndex = getRemovedItemIndex(this.updates, updates);
             if (removedItemIndex != -1) {
                 this.updates.remove(removedItemIndex);
@@ -253,6 +256,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 notifyItemInserted(insertedItemIndex + 1);
             }
         } else {
+            // one element changed so notifyItemChanged should be used later
             this.updates = updates;
             notifyDataSetChanged();
         }
