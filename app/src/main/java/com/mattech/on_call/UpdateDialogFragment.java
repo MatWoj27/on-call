@@ -88,6 +88,8 @@ public class UpdateDialogFragment extends DialogFragment {
         void updateCreated(Update update);
 
         void updateEdited(Update update);
+
+        void windowDisappeared();
     }
 
     @NonNull
@@ -184,7 +186,10 @@ public class UpdateDialogFragment extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
+        if (listener != null) {
+            listener.windowDisappeared();
+            listener = null;
+        }
     }
 
     @Override

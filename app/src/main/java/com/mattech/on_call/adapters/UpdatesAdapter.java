@@ -31,6 +31,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context context;
     private List<Update> updates = new ArrayList<>();
     private UpdateListener listener;
+    private volatile boolean clickEnabled = true;
 
     public interface UpdateListener {
         void addUpdate();
@@ -80,6 +81,9 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public UpdateHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mainContainer.setOnClickListener(v -> {
+                itemClicked(getAdapterPosition());
+            });
         }
 
         TextView[] getDayViewsArray() {
@@ -96,6 +100,9 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public AddHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            addBtn.setOnClickListener(v -> {
+                itemClicked(getAdapterPosition());
+            });
         }
     }
 
@@ -127,56 +134,54 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (holder.getItemViewType()) {
-            case 0:
-                AddHolder addHolder = (AddHolder) holder;
-                addHolder.addBtn.setOnClickListener(v -> {
+        if (holder.getItemViewType() != 0) {
+            Update update = updates.get(position - 1);
+            UpdateHolder updateHolder = (UpdateHolder) holder;
+            updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
+                if (v.isChecked() != update.isEnabled()) {
+                    update.setEnabled(v.isChecked());
                     if (listener != null) {
-                        listener.addUpdate();
+                        listener.updateEnableStatusChanged(update);
                     }
-                });
-                break;
-            default:
-                Update update = updates.get(position - 1);
-                UpdateHolder updateHolder = (UpdateHolder) holder;
-                updateHolder.mainContainer.setOnClickListener(v -> {
-                    if (listener != null && updateHolder.getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        listener.editUpdate(update);
-                    }
-                });
-                updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
-                    if (v.isChecked() != update.isEnabled()) {
-                        update.setEnabled(v.isChecked());
-                        if (listener != null) {
-                            listener.updateEnableStatusChanged(update);
-                        }
-                    }
-                    if (update.isOneTimeUpdate()) {
-                        updateHolder.date.setTextColor(context.getResources().getColor(update.isEnabled() ? R.color.disabledActive :
-                                R.color.disabledInactive, null));
-                    } else {
-                        applyColorsToDayViews(updateHolder, update);
-                    }
-                    updateHolder.time.setTextColor(update.isEnabled() ? Color.BLACK : context.getColor(R.color.disabledActive));
-                });
-                updateHolder.time.setText(formatTime(update.getTime()));
-                if (update.isEnabled()) {
-                    updateHolder.enabled.setChecked(true);
-                    updateHolder.time.setTextColor(Color.BLACK);
                 }
                 if (update.isOneTimeUpdate()) {
-                    updateHolder.daysContainer.setVisibility(View.GONE);
-                    updateHolder.date.setVisibility(View.VISIBLE);
-                    updateHolder.date.setText(update.getExactDate());
-                    if (update.isEnabled()) {
-                        updateHolder.date.setTextColor(context.getResources().getColor(R.color.disabledActive, null));
-                    }
+                    updateHolder.date.setTextColor(context.getResources().getColor(update.isEnabled() ? R.color.disabledActive :
+                            R.color.disabledInactive, null));
                 } else {
-                    updateHolder.date.setVisibility(View.GONE);
-                    updateHolder.daysContainer.setVisibility(View.VISIBLE);
                     applyColorsToDayViews(updateHolder, update);
                 }
-                break;
+                updateHolder.time.setTextColor(update.isEnabled() ? Color.BLACK : context.getColor(R.color.disabledActive));
+            });
+            updateHolder.time.setText(formatTime(update.getTime()));
+            if (update.isEnabled()) {
+                updateHolder.enabled.setChecked(true);
+                updateHolder.time.setTextColor(Color.BLACK);
+            }
+            if (update.isOneTimeUpdate()) {
+                updateHolder.daysContainer.setVisibility(View.GONE);
+                updateHolder.date.setVisibility(View.VISIBLE);
+                updateHolder.date.setText(update.getExactDate());
+                if (update.isEnabled()) {
+                    updateHolder.date.setTextColor(context.getResources().getColor(R.color.disabledActive, null));
+                }
+            } else {
+                updateHolder.date.setVisibility(View.GONE);
+                updateHolder.daysContainer.setVisibility(View.VISIBLE);
+                applyColorsToDayViews(updateHolder, update);
+            }
+        }
+    }
+
+    private synchronized void itemClicked(int position) {
+        if (clickEnabled) {
+            if (listener != null) {
+                if (position == 0) {
+                    listener.addUpdate();
+                } else if (position != RecyclerView.NO_POSITION) {
+                    listener.editUpdate(updates.get(position - 1));
+                }
+            }
+            clickEnabled = false;
         }
     }
 
@@ -264,5 +269,9 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setListener(UpdateListener listener) {
         this.listener = listener;
+    }
+
+    public void setClickEnabled(boolean clickEnabled) {
+        this.clickEnabled = clickEnabled;
     }
 }

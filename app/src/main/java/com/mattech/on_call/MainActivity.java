@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener, UpdateDialogFragment.OnFragmentInteractionListener {
     private ReactorViewModel viewModel;
+    private UpdatesAdapter adapter;
 
     @BindView(R.id.reactor_name)
     TextView reactorName;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         ButterKnife.bind(this);
         viewModel = ViewModelProviders.of(this).get(ReactorViewModel.class);
         viewModel.getReactor().observe(this, this::updateUI);
-        UpdatesAdapter adapter = new UpdatesAdapter(this);
+        adapter = new UpdatesAdapter(this);
         viewModel.getUpdates().observe(this, adapter::setUpdates);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -90,6 +91,11 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     @Override
     public void updateEdited(Update editedUpdate) {
         viewModel.updateUpdate(editedUpdate);
+    }
+
+    @Override
+    public void windowDisappeared() {
+        adapter.setClickEnabled(true);
     }
 
     private void updateUI(Reactor reactor) {
