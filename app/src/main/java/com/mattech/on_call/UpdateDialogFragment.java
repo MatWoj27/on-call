@@ -19,6 +19,7 @@ import com.mattech.on_call.models.Update;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -108,7 +109,7 @@ public class UpdateDialogFragment extends DialogFragment {
             editUpdateId = savedInstanceState.getInt(EDIT_UPDATE_ID_TAG);
         } else if (updateToEdit != null) {
             displayDays = !updateToEdit.isOneTimeUpdate();
-            activeDays = updateToEdit.getRepetitionDays();
+            activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
             exactDate = updateToEdit.getExactDate();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
             try {

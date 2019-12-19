@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 
 import com.mattech.on_call.UpdateTypeConverters;
 
+import java.util.Arrays;
+
 @Entity(tableName = "updates")
 public class Update {
     @PrimaryKey(autoGenerate = true)
@@ -30,6 +32,23 @@ public class Update {
         this.repetitionDays = repetitionDays;
         this.exactDate = exactDate;
         this.time = time;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof Update)) {
+            return false;
+        } else {
+            Update update = (Update) obj;
+            return this.id == update.getId()
+                    && this.enabled == update.enabled
+                    && this.oneTimeUpdate == update.oneTimeUpdate
+                    && Arrays.equals(this.repetitionDays, update.repetitionDays)
+                    && this.exactDate.equals(update.exactDate)
+                    && this.time.equals(update.time);
+        }
     }
 
     public int getId() {

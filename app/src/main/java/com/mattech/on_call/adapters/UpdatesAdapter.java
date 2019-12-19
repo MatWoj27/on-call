@@ -235,6 +235,17 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return insertedItemIndex;
     }
 
+    private int getEditedItemIndex(List<Update> original, List<Update> changed) {
+        int changedItemIndex = -1;
+        for (int i = 0; i < original.size() && i < changed.size(); i++) {
+            if (!original.get(i).equals(changed.get(i))) {
+                changedItemIndex = i;
+                break;
+            }
+        }
+        return changedItemIndex;
+    }
+
     @Override
     public int getItemCount() {
         return updates.size() + 1;
@@ -261,9 +272,11 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 notifyItemInserted(insertedItemIndex + 1);
             }
         } else {
-            // one element changed so notifyItemChanged should be used later
-            this.updates = updates;
-            notifyDataSetChanged();
+            int changedItemIndex = getEditedItemIndex(this.updates, updates);
+            if (changedItemIndex != -1) {
+                this.updates.set(changedItemIndex, updates.get(changedItemIndex));
+                notifyItemChanged(changedItemIndex + 1);
+            }
         }
     }
 
