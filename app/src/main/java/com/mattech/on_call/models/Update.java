@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.mattech.on_call.UpdateTypeConverters;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Entity(tableName = "updates")
 public class Update {
@@ -97,5 +98,38 @@ public class Update {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public static int getRemovedItemIndex(List<Update> original, List<Update> changed) {
+        int removedItemIndex = original.size() == changed.size() ? -1 : original.size() - 1;
+        for (int i = 0; i < original.size() && i < changed.size(); i++) {
+            if (original.get(i).getId() != changed.get(i).getId()) {
+                removedItemIndex = i;
+                break;
+            }
+        }
+        return removedItemIndex;
+    }
+
+    public static int getInsertedItemIndex(List<Update> original, List<Update> changed) {
+        int insertedItemIndex = original.size() == changed.size() ? -1 : original.size();
+        for (int i = 0; i < original.size() && i < changed.size(); i++) {
+            if (original.get(i).getId() != changed.get(i).getId()) {
+                insertedItemIndex = i;
+                break;
+            }
+        }
+        return insertedItemIndex;
+    }
+
+    public static int getEditedItemIndex(List<Update> original, List<Update> changed) {
+        int changedItemIndex = -1;
+        for (int i = 0; i < original.size() && i < changed.size(); i++) {
+            if (!original.get(i).equals(changed.get(i))) {
+                changedItemIndex = i;
+                break;
+            }
+        }
+        return changedItemIndex;
     }
 }

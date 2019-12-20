@@ -213,39 +213,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private int getRemovedItemIndex(List<Update> original, List<Update> changed) {
-        int removedItemIndex = original.size() == changed.size() ? -1 : original.size() - 1;
-        for (int i = 0; i < original.size() && i < changed.size(); i++) {
-            if (original.get(i).getId() != changed.get(i).getId()) {
-                removedItemIndex = i;
-                break;
-            }
-        }
-        return removedItemIndex;
-    }
-
-    private int getInsertedItemIndex(List<Update> original, List<Update> changed) {
-        int insertedItemIndex = original.size() == changed.size() ? -1 : original.size();
-        for (int i = 0; i < original.size() && i < changed.size(); i++) {
-            if (original.get(i).getId() != changed.get(i).getId()) {
-                insertedItemIndex = i;
-                break;
-            }
-        }
-        return insertedItemIndex;
-    }
-
-    private int getEditedItemIndex(List<Update> original, List<Update> changed) {
-        int changedItemIndex = -1;
-        for (int i = 0; i < original.size() && i < changed.size(); i++) {
-            if (!original.get(i).equals(changed.get(i))) {
-                changedItemIndex = i;
-                break;
-            }
-        }
-        return changedItemIndex;
-    }
-
     @Override
     public int getItemCount() {
         return updates.size() + 1;
@@ -260,19 +227,19 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.updates = updates;
             notifyDataSetChanged();
         } else if (updates.size() < this.updates.size()) {
-            int removedItemIndex = getRemovedItemIndex(this.updates, updates);
+            int removedItemIndex = Update.getRemovedItemIndex(this.updates, updates);
             if (removedItemIndex != -1) {
                 this.updates.remove(removedItemIndex);
                 notifyItemRemoved(removedItemIndex + 1);
             }
         } else if (updates.size() > this.updates.size()) {
-            int insertedItemIndex = getInsertedItemIndex(this.updates, updates);
+            int insertedItemIndex = Update.getInsertedItemIndex(this.updates, updates);
             if (insertedItemIndex != -1) {
                 this.updates.add(updates.get(insertedItemIndex));
                 notifyItemInserted(insertedItemIndex + 1);
             }
         } else {
-            int changedItemIndex = getEditedItemIndex(this.updates, updates);
+            int changedItemIndex = Update.getEditedItemIndex(this.updates, updates);
             if (changedItemIndex != -1) {
                 this.updates.set(changedItemIndex, updates.get(changedItemIndex));
                 notifyItemChanged(changedItemIndex + 1);
