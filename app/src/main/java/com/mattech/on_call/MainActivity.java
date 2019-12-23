@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mattech.on_call.adapters.UpdatesAdapter;
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
 
     @BindView(R.id.reactor_mail)
     TextView reactorMail;
+
+    @BindView(R.id.update_now_btn)
+    ImageButton updateNowBtn;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
                 return viewHolder.getAdapterPosition() == 0 ? 0 : super.getSwipeDirs(recyclerView, viewHolder);
             }
         }).attachToRecyclerView(recyclerView);
+        updateNowBtn.setOnClickListener(v -> viewModel.updateReactor());
     }
 
     @Override
