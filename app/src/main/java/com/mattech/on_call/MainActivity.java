@@ -1,17 +1,13 @@
 package com.mattech.on_call;
 
-import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.mattech.on_call.adapters.UpdatesAdapter;
-import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
 
 import butterknife.BindView;
@@ -20,18 +16,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements UpdatesAdapter.UpdateListener, UpdateDialogFragment.OnFragmentInteractionListener {
     private ReactorViewModel viewModel;
     private UpdatesAdapter adapter;
-
-    @BindView(R.id.reactor_name)
-    TextView reactorName;
-
-    @BindView(R.id.reactor_phone_num)
-    TextView reactorPhoneNumber;
-
-    @BindView(R.id.reactor_mail)
-    TextView reactorMail;
-
-    @BindView(R.id.update_now_btn)
-    ImageButton updateNowBtn;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -42,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         viewModel = ViewModelProviders.of(this).get(ReactorViewModel.class);
-        viewModel.getReactor().observe(this, this::updateUI);
         adapter = new UpdatesAdapter(this);
         viewModel.getUpdates().observe(this, adapter::setUpdates);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -65,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
                 return viewHolder.getAdapterPosition() == 0 ? 0 : super.getSwipeDirs(recyclerView, viewHolder);
             }
         }).attachToRecyclerView(recyclerView);
-        updateNowBtn.setOnClickListener(v -> viewModel.updateReactor());
     }
 
     @Override
@@ -101,13 +83,5 @@ public class MainActivity extends AppCompatActivity implements UpdatesAdapter.Up
     @Override
     public void windowDisappeared() {
         adapter.setClickEnabled(true);
-    }
-
-    private void updateUI(Reactor reactor) {
-        if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && reactor != null) {
-            reactorName.setText(reactor.getName());
-            reactorPhoneNumber.setText(reactor.getPhoneNumber());
-            reactorMail.setText(reactor.getMail());
-        }
     }
 }
