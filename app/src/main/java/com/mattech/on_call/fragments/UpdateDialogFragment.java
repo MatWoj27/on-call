@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.mattech.on_call.R;
 import com.mattech.on_call.models.Update;
 
 import java.text.ParseException;

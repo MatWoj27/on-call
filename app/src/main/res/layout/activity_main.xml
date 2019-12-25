@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="8"
-    tools:context="com.mattech.on_call.MainActivity">
+    tools:context="com.mattech.on_call.activities.MainActivity">
 
     <TextView
         android:layout_width="match_parent"

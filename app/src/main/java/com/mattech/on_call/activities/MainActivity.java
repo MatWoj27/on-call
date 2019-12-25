@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -7,7 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import com.mattech.on_call.R;
+import com.mattech.on_call.view_models.ReactorViewModel;
 import com.mattech.on_call.adapters.UpdatesAdapter;
+import com.mattech.on_call.fragments.UpdateDialogFragment;
 import com.mattech.on_call.models.Update;
 
 import butterknife.BindView;

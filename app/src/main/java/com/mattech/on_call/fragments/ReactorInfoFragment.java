@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mattech.on_call.R;
-import com.mattech.on_call.ReactorViewModel;
+import com.mattech.on_call.view_models.ReactorViewModel;
 import com.mattech.on_call.models.Reactor;
 
 import butterknife.BindView;

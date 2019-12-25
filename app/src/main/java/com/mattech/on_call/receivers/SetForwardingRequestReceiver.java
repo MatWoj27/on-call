@@ -1,8 +1,10 @@
-package com.mattech.on_call;
+package com.mattech.on_call.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.mattech.on_call.activities.ForwardingActivity;
 
 import java.util.Calendar;
 

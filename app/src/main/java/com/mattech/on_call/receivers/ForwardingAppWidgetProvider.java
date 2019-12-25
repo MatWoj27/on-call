@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.receivers;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -8,6 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import com.mattech.on_call.events.ForwardingEvent;
+import com.mattech.on_call.R;
+import com.mattech.on_call.repositories.ReactorRepository;
+import com.mattech.on_call.activities.ForwardingActivity;
+import com.mattech.on_call.activities.MainActivity;
 
 public class ForwardingAppWidgetProvider extends AppWidgetProvider {
     public static final String REACTOR_NAME_TAG = "name";

@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.events;
 
 public class ForwardingEvent {
     public static final String FORWARDING_STARTED = "FORWARDING_STARTED";

@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

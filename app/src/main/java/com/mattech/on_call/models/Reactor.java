@@ -6,7 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.mattech.on_call.JSONAttr;
+import com.mattech.on_call.annotations.JSONAttr;
 
 import org.json.JSONException;
 import org.json.JSONObject;

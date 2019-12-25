@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.type_converters;
 
 import android.arch.persistence.room.TypeConverter;
 

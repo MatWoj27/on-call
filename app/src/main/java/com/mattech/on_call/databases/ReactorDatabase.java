@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.databases;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -9,16 +9,16 @@ import com.mattech.on_call.daos.ReactorDAO;
 import com.mattech.on_call.models.Reactor;
 
 @Database(entities = Reactor.class, version = 1)
-public abstract class AppDatabase extends RoomDatabase {
+public abstract class ReactorDatabase extends RoomDatabase {
     public abstract ReactorDAO getReactorDAO();
 
-    private static volatile AppDatabase instance;
+    private static volatile ReactorDatabase instance;
 
-    public static AppDatabase getInstance(final Context context) {
+    public static ReactorDatabase getInstance(final Context context) {
         if (instance == null) {
-            synchronized (AppDatabase.class) {
+            synchronized (ReactorDatabase.class) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "appDatabase").build();
+                    instance = Room.databaseBuilder(context.getApplicationContext(), ReactorDatabase.class, "appDatabase").build();
                 }
             }
         }

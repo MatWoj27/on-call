@@ -1,13 +1,12 @@
-package com.mattech.on_call;
+package com.mattech.on_call.repositories;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.mattech.on_call.daos.ReactorDAO;
 import com.mattech.on_call.daos.UpdateDAO;
+import com.mattech.on_call.databases.ReactorDatabase;
 import com.mattech.on_call.databases.UpdateDatabase;
 import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
@@ -40,7 +39,7 @@ public class ReactorRepository {
     }
 
     public ReactorRepository(Application application) {
-        AppDatabase database = AppDatabase.getInstance(application);
+        ReactorDatabase database = ReactorDatabase.getInstance(application);
         reactorDAO = database.getReactorDAO();
         UpdateDatabase updateDatabase = UpdateDatabase.getInstance(application);
         updateDAO = updateDatabase.getUpdateDAO();

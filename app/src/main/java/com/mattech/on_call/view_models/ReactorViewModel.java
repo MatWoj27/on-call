@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.view_models;
 
 import android.app.AlarmManager;
 import android.app.Application;
@@ -11,9 +11,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mattech.on_call.repositories.ReactorRepository;
+import com.mattech.on_call.activities.ForwardingActivity;
 import com.mattech.on_call.exceptions.UpdateNotScheduledException;
 import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
+import com.mattech.on_call.receivers.SetForwardingRequestReceiver;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

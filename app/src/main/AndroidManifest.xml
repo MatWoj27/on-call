@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".ForwardingAppWidgetProvider">
+        <receiver android:name=".receivers.ForwardingAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="REACTOR_CHANGED" />
@@ -35,11 +35,11 @@
         </receiver>
 
         <receiver
-            android:name=".SetForwardingRequestReceiver"
+            android:name=".receivers.SetForwardingRequestReceiver"
             android:directBootAware="true" />
 
         <activity
-            android:name=".ForwardingActivity"
+            android:name=".activities.ForwardingActivity"
             android:launchMode="singleInstance"
             android:theme="@style/TransparentTheme" />
     </application>

@@ -5,7 +5,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
-import com.mattech.on_call.UpdateTypeConverters;
+import com.mattech.on_call.type_converters.UpdateTypeConverters;
 
 import java.util.Arrays;
 import java.util.List;

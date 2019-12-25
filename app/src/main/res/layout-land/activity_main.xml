@@ -6,4 +6,4 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
     android:scrollbars="vertical"
-    tools:context="com.mattech.on_call.MainActivity" />
+    tools:context="com.mattech.on_call.activities.MainActivity" />

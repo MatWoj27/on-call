@@ -1,4 +1,4 @@
-package com.mattech.on_call;
+package com.mattech.on_call.activities;
 
 import android.Manifest;
 import android.app.Notification;
@@ -18,6 +18,10 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.mattech.on_call.receivers.ForwardingAppWidgetProvider;
+import com.mattech.on_call.events.ForwardingEvent;
+import com.mattech.on_call.R;
+import com.mattech.on_call.repositories.ReactorRepository;
 import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.utils.DrawableUtil;
 
