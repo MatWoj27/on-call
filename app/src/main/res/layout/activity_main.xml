@@ -64,13 +64,11 @@
 
     </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recycler_view"
+    <fragment
+        android:id="@+id/update_list"
+        android:name="com.mattech.on_call.fragments.UpdateListFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="5"
-        android:background="@color/lightPinkGray"
-        android:scrollbars="vertical" />
+        android:layout_weight="5" />
 
 </LinearLayout>
