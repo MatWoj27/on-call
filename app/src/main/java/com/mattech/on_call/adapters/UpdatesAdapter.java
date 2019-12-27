@@ -231,6 +231,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (removedItemIndex != -1) {
                 this.updates.remove(removedItemIndex);
                 notifyItemRemoved(removedItemIndex + 1);
+                notifyItemRangeChanged(removedItemIndex + 1, updates.size() - removedItemIndex);
             }
         } else if (updates.size() > this.updates.size()) {
             int insertedItemIndex = Update.getInsertedItemIndex(this.updates, updates);
