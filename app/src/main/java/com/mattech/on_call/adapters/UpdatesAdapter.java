@@ -32,6 +32,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private List<Update> updates = new ArrayList<>();
     private UpdateListener listener;
     private volatile boolean clickEnabled = true;
+    public static final long ADD_ITEM_ID = -2;
 
     public interface UpdateListener {
         void addUpdate();
@@ -211,6 +212,11 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             dayViews[i].setTextColor(context.getResources().getColor(colorId, null));
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position == 0 ? ADD_ITEM_ID : updates.get(position - 1).getId();
     }
 
     @Override

@@ -31,6 +31,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
         super.onCreate(savedInstanceState);
         adapter = new UpdatesAdapter(getActivity());
         adapter.setListener(this);
+        adapter.setHasStableIds(true);
     }
 
     @Override
