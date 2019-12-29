@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
@@ -151,24 +152,32 @@ public class ForwardingActivity extends AppCompatActivity {
                 @Override
                 public void onCallForwardingIndicatorChanged(boolean cfi) {
                     super.onCallForwardingIndicatorChanged(cfi);
-                    if (cfi) {
-                        switch (requestCode) {
-                            case START_FORWARDING_REQUEST_CODE:
+                    SharedPreferences preferences = getSharedPreferences("call-forwarding-info", MODE_PRIVATE);
+                    boolean callForwardingActive = preferences.getBoolean("CALL_FORWARDING_ACTIVE", false);
+                    switch (requestCode) {
+                        case START_FORWARDING_REQUEST_CODE:
+                            if (cfi || !callForwardingActive) {
+                                preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", true).apply();
                                 repository.getReactorLiveData().observe(ForwardingActivity.this, reactor -> {
                                     showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
                                     sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
                                     finish();
                                 });
-                                break;
-                            case STOP_FORWARDING_REQUEST_CODE:
+                            } else {
+                                showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
+                                finish();
+                            }
+                            break;
+                        case STOP_FORWARDING_REQUEST_CODE:
+                            if (cfi) {
                                 Toast.makeText(ForwardingActivity.this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
                                 sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
-                                finish();
-                                break;
-                        }
-                    } else {
-                        showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
-                        finish();
+                                preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", false).apply();
+                            } else if (callForwardingActive) {
+                                Toast.makeText(ForwardingActivity.this, "Failed to cancel forwarding", Toast.LENGTH_SHORT).show();
+                            }
+                            finish();
+                            break;
                     }
                 }
             }, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
