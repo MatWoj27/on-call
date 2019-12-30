@@ -12,6 +12,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -126,17 +127,17 @@ public class ForwardingActivity extends AppCompatActivity {
     private void startForwarding(Reactor reactor) {
         if (reactor != null && reactor.getPhoneNumber() != null) {
             String callForwardingString = String.format("*21*%s#", String.valueOf(reactor.getPhoneNumber()));
-            makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE);
+            makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE, reactor);
         } else {
             showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, reactor);
         }
     }
 
     private void stopForwarding() {
-        makeCall("##21#", STOP_FORWARDING_REQUEST_CODE);
+        makeCall("##21#", STOP_FORWARDING_REQUEST_CODE, null);
     }
 
-    private void makeCall(String callForwardingString, int requestCode) {
+    private void makeCall(String callForwardingString, int requestCode, @Nullable Reactor reactor) {
         String permissions[] = {Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
         List<String> missingPermissions = new ArrayList<>();
         for (String permission : permissions) {
@@ -158,14 +159,10 @@ public class ForwardingActivity extends AppCompatActivity {
                         case START_FORWARDING_REQUEST_CODE:
                             if (cfi || !callForwardingActive) {
                                 preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", true).apply();
-                                repository.getReactorLiveData().observe(ForwardingActivity.this, reactor -> {
-                                    showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
-                                    sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
-                                    finish();
-                                });
+                                showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
+                                sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
                             } else {
                                 showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
-                                finish();
                             }
                             break;
                         case STOP_FORWARDING_REQUEST_CODE:
@@ -176,9 +173,9 @@ public class ForwardingActivity extends AppCompatActivity {
                             } else if (callForwardingActive) {
                                 Toast.makeText(ForwardingActivity.this, "Failed to cancel forwarding", Toast.LENGTH_SHORT).show();
                             }
-                            finish();
                             break;
                     }
+                    finish();
                 }
             }, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
             Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
