@@ -162,9 +162,15 @@ public class ReactorRepository {
 //                Log.e(ERROR_TAG, "error", e);
 //            }
             result = new Reactor();
-            result.setName("Artur Machowicz");
-            result.setMail("artur.machowicz@atos.net");
-            result.setPhoneNumber("876456779");
+            if (currentReactor.getPhoneNumber().equals("876456779")) {
+                result.setName("Adam Nowak");
+                result.setMail("adam.nowak@mail.com");
+                result.setPhoneNumber("767456986");
+            } else {
+                result.setName("Jan Kowalski");
+                result.setMail("jan.kowalski@mail.com");
+                result.setPhoneNumber("876456779");
+            }
             if (result != null) {
                 if (currentReactor == null) {
                     asyncDao.insert(result);
