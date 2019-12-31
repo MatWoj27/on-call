@@ -45,8 +45,8 @@ public class ReactorInfoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(getActivity()).get(ReactorViewModel.class);
-        viewModel.getReactor().observe(getActivity(), this::updateUI);
+        viewModel = ViewModelProviders.of(this).get(ReactorViewModel.class);
+        viewModel.getReactor().observe(this, this::updateUI);
     }
 
     private void updateUI(Reactor reactor) {

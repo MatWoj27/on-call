@@ -14,13 +14,13 @@ import android.view.ViewGroup;
 import com.mattech.on_call.R;
 import com.mattech.on_call.adapters.UpdatesAdapter;
 import com.mattech.on_call.models.Update;
-import com.mattech.on_call.view_models.ReactorViewModel;
+import com.mattech.on_call.view_models.UpdateViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UpdateListFragment extends Fragment implements UpdatesAdapter.UpdateListener, UpdateDialogFragment.OnFragmentInteractionListener {
-    private ReactorViewModel viewModel;
+    private UpdateViewModel viewModel;
     private UpdatesAdapter adapter;
 
     @BindView(R.id.recycler_view)
@@ -64,9 +64,8 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(getActivity()).get(ReactorViewModel.class);
-        viewModel.getUpdates().observe(getActivity(), adapter::setUpdates);
-
+        viewModel = ViewModelProviders.of(this).get(UpdateViewModel.class);
+        viewModel.getUpdates().observe(this, adapter::setUpdates);
     }
 
     @Override
