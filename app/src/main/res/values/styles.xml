@@ -14,11 +14,13 @@
         <item name="android:buttonStyle">@style/ButtonStyle</item>
         <item name="colorAccent">@color/colorSecondary</item>
         <item name="android:background">@android:color/white</item>
+        <item name="android:colorControlHighlight">@color/lightGray</item>
     </style>
 
     <style name="ButtonStyle" parent="AppTheme">
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
     <!-- Style for number pickers (hour and minute) in update dialog window -->
