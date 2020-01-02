@@ -2,6 +2,7 @@ package com.mattech.on_call.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -72,7 +73,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     public void addUpdate() {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
         fragment.setListener(this);
-        fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
+        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CardViewTheme);
         fragment.show(getActivity().getSupportFragmentManager(), "add_update");
     }
 
@@ -81,7 +82,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
         UpdateDialogFragment fragment = new UpdateDialogFragment();
         fragment.setListener(this);
         fragment.setUpdateToEdit(updateToEdit);
-        fragment.setStyle(R.style.CardViewTheme, R.style.CardViewTheme);
+        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CardViewTheme);
         fragment.show(getActivity().getSupportFragmentManager(), "edit_update");
     }
 
