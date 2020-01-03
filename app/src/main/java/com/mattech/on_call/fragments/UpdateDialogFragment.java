@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mattech.on_call.R;
 import com.mattech.on_call.models.Update;
@@ -251,6 +252,14 @@ public class UpdateDialogFragment extends DialogFragment {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
             calendar.set(Calendar.DAY_OF_MONTH, day);
+            calendar.set(Calendar.HOUR_OF_DAY, hourPicker.getValue());
+            calendar.set(Calendar.MINUTE, minutePicker.getValue());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            if (calendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
+            }
             exactDateView.setText(dateFormat.format(calendar.getTime()));
         };
         exactDateView.setOnClickListener(v -> {
