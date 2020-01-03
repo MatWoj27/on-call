@@ -111,7 +111,7 @@ public class UpdateDialogFragment extends DialogFragment {
             displayDays = !updateToEdit.isOneTimeUpdate();
             activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
             exactDate = updateToEdit.getExactDate();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
             try {
                 Date date = simpleDateFormat.parse(updateToEdit.getTime());
                 Calendar calendar = Calendar.getInstance();
@@ -246,7 +246,7 @@ public class UpdateDialogFragment extends DialogFragment {
 
     private void presetDatePicker() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.US);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);

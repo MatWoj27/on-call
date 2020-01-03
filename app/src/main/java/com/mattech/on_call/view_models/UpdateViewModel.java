@@ -116,7 +116,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     private long getNextUpdateTimeInMillis(Update update) throws ParseException {
         Calendar calendar = Calendar.getInstance();
         long currentTimeInMillis = calendar.getTimeInMillis();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.US);
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         Date date = timeFormat.parse(update.getTime());
         Calendar tmpCalendar = Calendar.getInstance();
         tmpCalendar.setTime(date);
@@ -132,7 +132,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     }
 
     private long getUpdateExactTimeInMillis(Update update) throws ParseException {
-        SimpleDateFormat updateExactDateTimeFormat = new SimpleDateFormat("HH:mm EEE, d MMM yyyy", Locale.US);
+        SimpleDateFormat updateExactDateTimeFormat = new SimpleDateFormat("HH:mm EEE, d MMM yyyy", Locale.getDefault());
         Date exactDate = updateExactDateTimeFormat.parse(update.getTime() + " " + update.getExactDate());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(exactDate);
