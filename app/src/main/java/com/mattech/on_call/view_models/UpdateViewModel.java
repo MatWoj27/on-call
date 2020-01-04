@@ -120,7 +120,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         Date date = timeFormat.parse(update.getTime());
         Calendar tmpCalendar = Calendar.getInstance();
         tmpCalendar.setTime(date);
-        calendar.set(Calendar.HOUR, tmpCalendar.get(Calendar.HOUR));
+        calendar.set(Calendar.HOUR_OF_DAY, tmpCalendar.get(Calendar.HOUR_OF_DAY));
         calendar.set(Calendar.MINUTE, tmpCalendar.get(Calendar.MINUTE));
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
