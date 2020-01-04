@@ -248,6 +248,16 @@ public class UpdateDialogFragment extends DialogFragment {
     private void presetDatePicker() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+        if (exactDate != null) {
+            exactDateView.setText(exactDate);
+        } else {
+            if ((calendar.get(Calendar.HOUR_OF_DAY) > hourPicker.getValue())
+                    || ((calendar.get(Calendar.HOUR_OF_DAY) == hourPicker.getValue()
+                    && calendar.get(Calendar.MINUTE) >= minutePicker.getValue()))) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+            }
+            exactDateView.setText(dateFormat.format(calendar.getTime()));
+        }
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, month);
@@ -268,11 +278,6 @@ public class UpdateDialogFragment extends DialogFragment {
             dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
             dialog.show();
         });
-        if (exactDate != null) {
-            exactDateView.setText(exactDate);
-        } else {
-            exactDateView.setText(dateFormat.format(calendar.getTime()));
-        }
     }
 
     private void displayDayViewAsActive(TextView dayTextView) {
