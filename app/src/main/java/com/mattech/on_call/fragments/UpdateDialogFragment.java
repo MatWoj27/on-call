@@ -36,6 +36,8 @@ public class UpdateDialogFragment extends DialogFragment {
     private int editUpdateId;
     private boolean[] activeDays = new boolean[7];
     private String exactDate;
+    private boolean initiallyDateSetToToday = true;
+    private boolean currentlyDateSetToToday = true;
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
@@ -43,6 +45,8 @@ public class UpdateDialogFragment extends DialogFragment {
     private final String EXACT_DATE_TAG = "exactDate";
     private final String IS_EDIT_TAG = "isEdit";
     private final String EDIT_UPDATE_ID_TAG = "editUpdateID";
+    private final String INIT_DATE_SET_TO_TODAY_TAG = "initiallyDateSetToToday";
+    private final String CURR_DATE_SET_TO_TODAY_TAG = "currentlyDateSetToToday";
 
     @BindView(R.id.hour_picker)
     NumberPicker hourPicker;
@@ -108,6 +112,8 @@ public class UpdateDialogFragment extends DialogFragment {
             exactDate = savedInstanceState.getString(EXACT_DATE_TAG);
             isEdit = savedInstanceState.getBoolean(IS_EDIT_TAG);
             editUpdateId = savedInstanceState.getInt(EDIT_UPDATE_ID_TAG);
+            initiallyDateSetToToday = savedInstanceState.getBoolean(INIT_DATE_SET_TO_TODAY_TAG);
+            currentlyDateSetToToday = savedInstanceState.getBoolean(CURR_DATE_SET_TO_TODAY_TAG);
         } else if (updateToEdit != null) {
             displayDays = !updateToEdit.isOneTimeUpdate();
             activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
@@ -193,6 +199,8 @@ public class UpdateDialogFragment extends DialogFragment {
         outState.putInt(MINUTE_TAG, minutePicker.getValue());
         outState.putBooleanArray(ACTIVE_DAYS_TAG, activeDays);
         outState.putString(EXACT_DATE_TAG, exactDateView.getText().toString());
+        outState.putBoolean(INIT_DATE_SET_TO_TODAY_TAG, initiallyDateSetToToday);
+        outState.putBoolean(CURR_DATE_SET_TO_TODAY_TAG, currentlyDateSetToToday);
     }
 
     private Update createUpdateFromInput() {
@@ -243,6 +251,53 @@ public class UpdateDialogFragment extends DialogFragment {
         NumberPicker.Formatter formatter = i -> String.format("%02d", i);
         hourPicker.setFormatter(formatter);
         minutePicker.setFormatter(formatter);
+        hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            if (initiallyDateSetToToday) {
+                int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                int amountOfDays = 0;
+                if (currentlyDateSetToToday && newVal < currentHour) {
+                    currentlyDateSetToToday = false;
+                    amountOfDays = 1;
+                } else if (newVal == currentHour) {
+                    int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+                    if (currentlyDateSetToToday && minutePicker.getValue() <= currentMinute) {
+                        currentlyDateSetToToday = false;
+                        amountOfDays = 1;
+                    } else if (!currentlyDateSetToToday && minutePicker.getValue() > currentMinute) {
+                        currentlyDateSetToToday = true;
+                        amountOfDays = -1;
+                    }
+                } else if (!currentlyDateSetToToday && newVal > currentHour) {
+                    currentlyDateSetToToday = true;
+                    amountOfDays = -1;
+                }
+                try {
+                    changeExactDateOfDays(amountOfDays);
+                } catch (ParseException e) {
+                    currentlyDateSetToToday = !currentlyDateSetToToday;
+                    e.printStackTrace();
+                }
+            }
+        });
+        minutePicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            if (initiallyDateSetToToday && hourPicker.getValue() == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
+                int amountOfDays = 0;
+                if (currentlyDateSetToToday && newVal <= currentMinute) {
+                    currentlyDateSetToToday = false;
+                    amountOfDays = 1;
+                } else if (!currentlyDateSetToToday && newVal > currentMinute) {
+                    currentlyDateSetToToday = true;
+                    amountOfDays = -1;
+                }
+                try {
+                    changeExactDateOfDays(amountOfDays);
+                } catch (ParseException e) {
+                    currentlyDateSetToToday = !currentlyDateSetToToday;
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void presetDatePicker() {
@@ -255,6 +310,8 @@ public class UpdateDialogFragment extends DialogFragment {
                     || ((calendar.get(Calendar.HOUR_OF_DAY) == hourPicker.getValue()
                     && calendar.get(Calendar.MINUTE) >= minutePicker.getValue()))) {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
+                initiallyDateSetToToday = false;
+                currentlyDateSetToToday = false;
             }
             exactDateView.setText(dateFormat.format(calendar.getTime()));
         }
@@ -266,17 +323,33 @@ public class UpdateDialogFragment extends DialogFragment {
             calendar.set(Calendar.MINUTE, minutePicker.getValue());
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            if (calendar.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
+            Calendar cal = Calendar.getInstance();
+            if (calendar.getTimeInMillis() < cal.getTimeInMillis()) {
+                initiallyDateSetToToday = true;
+                currentlyDateSetToToday = false;
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 Toast.makeText(getContext(), getContext().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
+            } else if (calendar.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR) && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) {
+                initiallyDateSetToToday = true;
+                currentlyDateSetToToday = true;
+            } else {
+                initiallyDateSetToToday = false;
+                currentlyDateSetToToday = false;
             }
             exactDateView.setText(dateFormat.format(calendar.getTime()));
         };
         exactDateView.setOnClickListener(v -> {
-            DatePickerDialog dialog = new DatePickerDialog(getContext(), dateSetListener,
-                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
-            dialog.show();
+            try {
+                Date date = dateFormat.parse(exactDateView.getText().toString());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                DatePickerDialog dialog = new DatePickerDialog(getContext(), dateSetListener,
+                        cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+                dialog.show();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -294,6 +367,17 @@ public class UpdateDialogFragment extends DialogFragment {
         days.setVisibility(View.GONE);
         exactDateView.setVisibility(View.VISIBLE);
         updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
+    }
+
+    private void changeExactDateOfDays(int amountOfDays) throws ParseException {
+        if (amountOfDays != 0) {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+            Date date = dateFormat.parse(exactDateView.getText().toString());
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, amountOfDays);
+            exactDateView.setText(dateFormat.format(calendar.getTime()));
+        }
     }
 
     public void setUpdateToEdit(Update updateToEdit) {
