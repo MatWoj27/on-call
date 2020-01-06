@@ -310,7 +310,6 @@ public class UpdateDialogFragment extends DialogFragment {
                     || ((calendar.get(Calendar.HOUR_OF_DAY) == hourPicker.getValue()
                     && calendar.get(Calendar.MINUTE) >= minutePicker.getValue()))) {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
-                initiallyDateSetToToday = false;
                 currentlyDateSetToToday = false;
             }
             exactDateView.setText(dateFormat.format(calendar.getTime()));
