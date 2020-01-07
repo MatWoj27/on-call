@@ -3,6 +3,10 @@ package com.mattech.on_call.fragments;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -38,6 +42,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private String exactDate;
     private boolean initiallyDateSetToToday = true;
     private boolean currentlyDateSetToToday = true;
+    private final TimeTickListener timeTickListener = new TimeTickListener();
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
@@ -98,6 +103,32 @@ public class UpdateDialogFragment extends DialogFragment {
         void windowDisappeared();
     }
 
+    private class TimeTickListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                Date date = getDateFromUserInput();
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                if (isMomentInPast(date)) {
+                    initiallyDateSetToToday = true;
+                    currentlyDateSetToToday = false;
+                    try {
+                        changeExactDateOfDays(1);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                } else if (hour == 0 && minute == 0 && isMomentToday(date)) {
+                    initiallyDateSetToToday = true;
+                    currentlyDateSetToToday = true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -133,6 +164,7 @@ public class UpdateDialogFragment extends DialogFragment {
             activeDays[tomorrowIndex] = true;
             presetTimePickers(12, 0);
         }
+        presetDatePicker();
         if (!displayDays) {
             displayExactDateLayout();
         }
@@ -146,6 +178,7 @@ public class UpdateDialogFragment extends DialogFragment {
             if (displayDays) {
                 displayExactDateLayout();
             } else {
+                getContext().unregisterReceiver(timeTickListener);
                 boolean isAnyActiveDay = false;
                 exactDateView.setVisibility(View.GONE);
                 days.setVisibility(View.VISIBLE);
@@ -164,7 +197,6 @@ public class UpdateDialogFragment extends DialogFragment {
             }
             displayDays = !displayDays;
         });
-        presetDatePicker();
         okBtn.setOnClickListener(v -> {
             if (listener != null) {
                 if (isEdit) {
@@ -186,6 +218,9 @@ public class UpdateDialogFragment extends DialogFragment {
         if (listener != null) {
             listener.windowDisappeared();
             listener = null;
+        }
+        if (!displayDays) {
+            getContext().unregisterReceiver(timeTickListener);
         }
     }
 
@@ -363,9 +398,49 @@ public class UpdateDialogFragment extends DialogFragment {
     }
 
     private void displayExactDateLayout() {
+        try {
+            Date date = getDateFromUserInput();
+            if (isMomentInPast(date)) {
+                initiallyDateSetToToday = true;
+                changeExactDateOfDays(1);
+                currentlyDateSetToToday = false;
+            } else if (!currentlyDateSetToToday && isMomentToday(date)) {
+                initiallyDateSetToToday = true;
+                currentlyDateSetToToday = true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        getContext().registerReceiver(timeTickListener, new IntentFilter(Intent.ACTION_TIME_TICK));
         days.setVisibility(View.GONE);
         exactDateView.setVisibility(View.VISIBLE);
         updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
+    }
+
+    private boolean isMomentInPast(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long now = calendar.getTimeInMillis();
+        calendar.setTime(date);
+        long momentToCheck = calendar.getTimeInMillis();
+        return momentToCheck <= now;
+    }
+
+    private boolean isMomentToday(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentDay = calendar.get(Calendar.DAY_OF_YEAR);
+        calendar.setTime(date);
+        int momentYear = calendar.get(Calendar.YEAR);
+        int momentDay = calendar.get(Calendar.DAY_OF_YEAR);
+        return currentDay == momentDay && currentYear == momentYear;
+    }
+
+    private Date getDateFromUserInput() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH mm EEE, d MMM yyyy", Locale.getDefault());
+        String userInput = String.format("%d %d %s", hourPicker.getValue(), minutePicker.getValue(), exactDateView.getText());
+        return dateFormat.parse(userInput);
     }
 
     private void changeExactDateOfDays(int amountOfDays) throws ParseException {
