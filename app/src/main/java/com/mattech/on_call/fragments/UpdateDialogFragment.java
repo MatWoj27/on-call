@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.mattech.on_call.R;
 import com.mattech.on_call.models.Update;
+import com.mattech.on_call.utils.DateTimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,7 +112,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
-                if (isMomentInPast(date)) {
+                if (DateTimeUtil.isMomentInPast(date)) {
                     initiallyDateSetToToday = true;
                     currentlyDateSetToToday = false;
                     try {
@@ -119,7 +120,7 @@ public class UpdateDialogFragment extends DialogFragment {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                } else if (hour == 0 && minute == 0 && isMomentToday(date)) {
+                } else if (hour == 0 && minute == 0 && DateTimeUtil.isMomentToday(date)) {
                     initiallyDateSetToToday = true;
                     currentlyDateSetToToday = true;
                 }
@@ -400,11 +401,11 @@ public class UpdateDialogFragment extends DialogFragment {
     private void displayExactDateLayout() {
         try {
             Date date = getDateFromUserInput();
-            if (isMomentInPast(date)) {
+            if (DateTimeUtil.isMomentInPast(date)) {
                 initiallyDateSetToToday = true;
                 changeExactDateOfDays(1);
                 currentlyDateSetToToday = false;
-            } else if (!currentlyDateSetToToday && isMomentToday(date)) {
+            } else if (!currentlyDateSetToToday && DateTimeUtil.isMomentToday(date)) {
                 initiallyDateSetToToday = true;
                 currentlyDateSetToToday = true;
             }
@@ -415,26 +416,6 @@ public class UpdateDialogFragment extends DialogFragment {
         days.setVisibility(View.GONE);
         exactDateView.setVisibility(View.VISIBLE);
         updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
-    }
-
-    private boolean isMomentInPast(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long now = calendar.getTimeInMillis();
-        calendar.setTime(date);
-        long momentToCheck = calendar.getTimeInMillis();
-        return momentToCheck <= now;
-    }
-
-    private boolean isMomentToday(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentDay = calendar.get(Calendar.DAY_OF_YEAR);
-        calendar.setTime(date);
-        int momentYear = calendar.get(Calendar.YEAR);
-        int momentDay = calendar.get(Calendar.DAY_OF_YEAR);
-        return currentDay == momentDay && currentYear == momentYear;
     }
 
     private Date getDateFromUserInput() throws ParseException {
