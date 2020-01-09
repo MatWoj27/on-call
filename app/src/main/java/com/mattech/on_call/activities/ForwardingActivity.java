@@ -85,7 +85,7 @@ public class ForwardingActivity extends AppCompatActivity {
                         @Override
                         public void reactorNotChanged() {
                             // to be implemented
-                            finishAndRemoveTask();
+                            finish();
                         }
 
                         @Override
@@ -175,7 +175,7 @@ public class ForwardingActivity extends AppCompatActivity {
                             }
                             break;
                     }
-                    finishAndRemoveTask();
+                    finish();
                 }
             }, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
             Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
