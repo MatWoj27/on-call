@@ -34,9 +34,7 @@
                 android:resource="@xml/forwarding_appwidget_info" />
         </receiver>
 
-        <receiver
-            android:name=".receivers.SetForwardingRequestReceiver"
-            android:directBootAware="true" />
+        <receiver android:name=".receivers.SetForwardingRequestReceiver" />
 
         <activity
             android:name=".activities.ForwardingActivity"
