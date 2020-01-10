@@ -9,12 +9,11 @@ import com.mattech.on_call.activities.ForwardingActivity;
 import java.util.Calendar;
 
 public class SetForwardingRequestReceiver extends BroadcastReceiver {
-    private static final String TAG = "ForwardingReceiver";
     public static final String REPETITION_DAYS_TAG = "repetitionDays";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        boolean repetitionDays[] = intent.getBooleanArrayExtra(TAG);
+        boolean repetitionDays[] = intent.getBooleanArrayExtra(REPETITION_DAYS_TAG);
         if (repetitionDays != null) {
             Calendar calendar = Calendar.getInstance();
             int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2 == -1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 2;
