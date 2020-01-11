@@ -68,7 +68,7 @@ public class ForwardingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forwarding);
         Intent intent = getIntent();
         repository = new ReactorRepository(getApplication());
-        cancelNotificationIfActive();
+        cancelActiveForwardingResultNotification();
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
@@ -129,6 +129,7 @@ public class ForwardingActivity extends AppCompatActivity {
             String callForwardingString = String.format("*21*%s#", String.valueOf(reactor.getPhoneNumber()));
             makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE, reactor);
         } else {
+            cancelActiveForwardingResultNotification();
             showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, reactor);
         }
     }
@@ -157,6 +158,7 @@ public class ForwardingActivity extends AppCompatActivity {
                     boolean callForwardingActive = preferences.getBoolean("CALL_FORWARDING_ACTIVE", false);
                     switch (requestCode) {
                         case START_FORWARDING_REQUEST_CODE:
+                            cancelActiveForwardingResultNotification();
                             if (cfi || !callForwardingActive) {
                                 preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", true).apply();
                                 showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
@@ -167,6 +169,7 @@ public class ForwardingActivity extends AppCompatActivity {
                             break;
                         case STOP_FORWARDING_REQUEST_CODE:
                             if (cfi) {
+                                cancelActiveForwardingResultNotification();
                                 Toast.makeText(ForwardingActivity.this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
                                 sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
                                 preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", false).apply();
@@ -210,7 +213,7 @@ public class ForwardingActivity extends AppCompatActivity {
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
-    private void cancelNotificationIfActive() {
+    private void cancelActiveForwardingResultNotification() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
             if (notification.getId() == NOTIFICATION_ID) {
