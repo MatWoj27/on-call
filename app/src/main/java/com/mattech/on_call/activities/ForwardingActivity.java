@@ -36,6 +36,8 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
     private final int NOTIFICATION_ID = 1;
+    private final String CALL_FORWARDING_PREFERENCES_NAME = "call-forwarding-info";
+    private final String CALL_FORWARDING_ACTIVE_PREFERENCE_KEY = "CALL_FORWARDING_ACTIVE";
     private ReactorRepository repository;
 
     private enum ForwardingResultState {
@@ -154,13 +156,13 @@ public class ForwardingActivity extends AppCompatActivity {
                 @Override
                 public void onCallForwardingIndicatorChanged(boolean cfi) {
                     super.onCallForwardingIndicatorChanged(cfi);
-                    SharedPreferences preferences = getSharedPreferences("call-forwarding-info", MODE_PRIVATE);
-                    boolean callForwardingActive = preferences.getBoolean("CALL_FORWARDING_ACTIVE", false);
+                    SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
+                    boolean callForwardingActive = preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false);
                     switch (requestCode) {
                         case START_FORWARDING_REQUEST_CODE:
                             cancelActiveForwardingResultNotification();
                             if (cfi || !callForwardingActive) {
-                                preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", true).apply();
+                                preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, true).apply();
                                 showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
                                 sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
                             } else {
@@ -172,7 +174,7 @@ public class ForwardingActivity extends AppCompatActivity {
                                 cancelActiveForwardingResultNotification();
                                 Toast.makeText(ForwardingActivity.this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
                                 sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
-                                preferences.edit().putBoolean("CALL_FORWARDING_ACTIVE", false).apply();
+                                preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false).apply();
                             } else if (callForwardingActive) {
                                 Toast.makeText(ForwardingActivity.this, "Failed to cancel forwarding", Toast.LENGTH_SHORT).show();
                             }
