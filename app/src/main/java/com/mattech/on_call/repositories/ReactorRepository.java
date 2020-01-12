@@ -3,6 +3,7 @@ package com.mattech.on_call.repositories;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import com.mattech.on_call.daos.ReactorDAO;
 import com.mattech.on_call.daos.UpdateDAO;
@@ -60,12 +61,12 @@ public class ReactorRepository {
         getTask.execute();
     }
 
-    public void updateReactor(Reactor currentReactor, ReactorUpdateListener listener) {
+    public void updateReactor(@Nullable Reactor currentReactor, ReactorUpdateListener listener) {
         UpdateReactorTask updateTask = new UpdateReactorTask(reactorDAO, currentReactor, newReactor -> {
             if (listener != null) {
                 if (newReactor == null) {
                     listener.updateFailed();
-                } else if (!currentReactor.getPhoneNumber().equals(newReactor.getPhoneNumber())) {
+                } else if (currentReactor == null || !currentReactor.getPhoneNumber().equals(newReactor.getPhoneNumber())) {
                     listener.reactorUpdated(newReactor);
                 } else {
                     listener.reactorNotChanged();
@@ -162,7 +163,7 @@ public class ReactorRepository {
 //                Log.e(ERROR_TAG, "error", e);
 //            }
             result = new Reactor();
-            if (currentReactor.getPhoneNumber().equals("876456779")) {
+            if (currentReactor == null || currentReactor.getPhoneNumber().equals("876456779")) {
                 result.setName("Adam Nowak");
                 result.setMail("adam.nowak@mail.com");
                 result.setPhoneNumber("767456986");

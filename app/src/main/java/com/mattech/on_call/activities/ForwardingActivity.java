@@ -116,7 +116,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
         switch (requestCode) {
             case START_FORWARDING_REQUEST_CODE:
-                startForwarding(repository.getReactorLiveData().getValue());
+                repository.getReactor(this::startForwarding);
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 stopForwarding();
