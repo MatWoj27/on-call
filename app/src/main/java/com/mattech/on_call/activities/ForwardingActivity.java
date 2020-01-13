@@ -112,7 +112,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int resultCode : grantResults) {
             if (resultCode != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Application cannot provide its basic functionality without requested permissions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.missing_permissions_info), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -172,11 +172,11 @@ public class ForwardingActivity extends AppCompatActivity {
                         case STOP_FORWARDING_REQUEST_CODE:
                             if (cfi) {
                                 cancelActiveForwardingResultNotification();
-                                Toast.makeText(ForwardingActivity.this, "Call forwarding canceled", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_canceled_info), Toast.LENGTH_SHORT).show();
                                 sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
                                 preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false).apply();
                             } else if (callForwardingActive) {
-                                Toast.makeText(ForwardingActivity.this, "Failed to cancel forwarding", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_cancellation_failure_info), Toast.LENGTH_SHORT).show();
                             }
                             break;
                     }
