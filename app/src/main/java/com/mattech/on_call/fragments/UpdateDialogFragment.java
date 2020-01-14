@@ -138,32 +138,11 @@ public class UpdateDialogFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         if (savedInstanceState != null) {
-            displayDays = savedInstanceState.getBoolean(DISPLAY_DAYS_TAG);
-            presetTimePickers(savedInstanceState.getInt(HOUR_TAG), savedInstanceState.getInt(MINUTE_TAG));
-            activeDays = savedInstanceState.getBooleanArray(ACTIVE_DAYS_TAG);
-            exactDate = savedInstanceState.getString(EXACT_DATE_TAG);
-            isEdit = savedInstanceState.getBoolean(IS_EDIT_TAG);
-            editUpdateId = savedInstanceState.getInt(EDIT_UPDATE_ID_TAG);
-            initiallyDateSetToToday = savedInstanceState.getBoolean(INIT_DATE_SET_TO_TODAY_TAG);
-            currentlyDateSetToToday = savedInstanceState.getBoolean(CURR_DATE_SET_TO_TODAY_TAG);
+            readStateFromBundle(savedInstanceState);
         } else if (updateToEdit != null) {
-            displayDays = !updateToEdit.isOneTimeUpdate();
-            activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
-            exactDate = updateToEdit.getExactDate();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            try {
-                Date date = simpleDateFormat.parse(updateToEdit.getTime());
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                presetTimePickers(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-            } catch (ParseException e) {
-                Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + updateToEdit.getTime());
-                presetTimePickers(12, 0);
-            }
+            presetEditUpdateDialog();
         } else {
-            int tomorrowIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1; // In Calendar API Sunday is the first day and days are indexed from 1 to 7
-            activeDays[tomorrowIndex] = true;
-            presetTimePickers(12, 0);
+            presetCreateUpdateDialog();
         }
         presetDatePicker();
         if (!displayDays) {
@@ -433,6 +412,39 @@ public class UpdateDialogFragment extends DialogFragment {
             calendar.add(Calendar.DAY_OF_MONTH, amountOfDays);
             exactDateView.setText(dateFormat.format(calendar.getTime()));
         }
+    }
+
+    private void readStateFromBundle(@NonNull Bundle bundle) {
+        displayDays = bundle.getBoolean(DISPLAY_DAYS_TAG);
+        presetTimePickers(bundle.getInt(HOUR_TAG), bundle.getInt(MINUTE_TAG));
+        activeDays = bundle.getBooleanArray(ACTIVE_DAYS_TAG);
+        exactDate = bundle.getString(EXACT_DATE_TAG);
+        isEdit = bundle.getBoolean(IS_EDIT_TAG);
+        editUpdateId = bundle.getInt(EDIT_UPDATE_ID_TAG);
+        initiallyDateSetToToday = bundle.getBoolean(INIT_DATE_SET_TO_TODAY_TAG);
+        currentlyDateSetToToday = bundle.getBoolean(CURR_DATE_SET_TO_TODAY_TAG);
+    }
+
+    private void presetEditUpdateDialog() {
+        displayDays = !updateToEdit.isOneTimeUpdate();
+        activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
+        exactDate = updateToEdit.getExactDate();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        try {
+            Date date = simpleDateFormat.parse(updateToEdit.getTime());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            presetTimePickers(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        } catch (ParseException e) {
+            Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + updateToEdit.getTime());
+            presetTimePickers(12, 0);
+        }
+    }
+
+    private void presetCreateUpdateDialog() {
+        int tomorrowIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1; // In Calendar API Sunday is the first day and days are indexed from 1 to 7
+        activeDays[tomorrowIndex] = true;
+        presetTimePickers(12, 0);
     }
 
     public void setUpdateToEdit(Update updateToEdit) {
