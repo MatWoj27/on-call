@@ -115,11 +115,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 if (DateTimeUtil.isMomentInPast(date)) {
                     initiallyDateSetToToday = true;
                     currentlyDateSetToToday = false;
-                    try {
-                        changeExactDateOfDays(1);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    changeExactDate(Day.TOMORROW);
                 } else if (hour == 0 && minute == 0 && DateTimeUtil.isMomentToday(date)) {
                     initiallyDateSetToToday = true;
                     currentlyDateSetToToday = true;
@@ -127,6 +123,17 @@ public class UpdateDialogFragment extends DialogFragment {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private enum Day {
+        TODAY(0),
+        TOMORROW(1);
+
+        int shift;
+
+        Day(int shift) {
+            this.shift = shift;
         }
     }
 
@@ -269,47 +276,33 @@ public class UpdateDialogFragment extends DialogFragment {
         hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (initiallyDateSetToToday) {
                 int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-                int amountOfDays = 0;
                 if (currentlyDateSetToToday && newVal < currentHour) {
                     currentlyDateSetToToday = false;
-                    amountOfDays = 1;
+                    changeExactDate(Day.TOMORROW);
                 } else if (newVal == currentHour) {
                     int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
                     if (currentlyDateSetToToday && minutePicker.getValue() <= currentMinute) {
                         currentlyDateSetToToday = false;
-                        amountOfDays = 1;
+                        changeExactDate(Day.TOMORROW);
                     } else if (!currentlyDateSetToToday && minutePicker.getValue() > currentMinute) {
                         currentlyDateSetToToday = true;
-                        amountOfDays = -1;
+                        changeExactDate(Day.TODAY);
                     }
                 } else if (!currentlyDateSetToToday && newVal > currentHour) {
                     currentlyDateSetToToday = true;
-                    amountOfDays = -1;
-                }
-                try {
-                    changeExactDateOfDays(amountOfDays);
-                } catch (ParseException e) {
-                    currentlyDateSetToToday = !currentlyDateSetToToday;
-                    e.printStackTrace();
+                    changeExactDate(Day.TODAY);
                 }
             }
         });
         minutePicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (initiallyDateSetToToday && hourPicker.getValue() == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
                 int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
-                int amountOfDays = 0;
                 if (currentlyDateSetToToday && newVal <= currentMinute) {
                     currentlyDateSetToToday = false;
-                    amountOfDays = 1;
+                    changeExactDate(Day.TOMORROW);
                 } else if (!currentlyDateSetToToday && newVal > currentMinute) {
                     currentlyDateSetToToday = true;
-                    amountOfDays = -1;
-                }
-                try {
-                    changeExactDateOfDays(amountOfDays);
-                } catch (ParseException e) {
-                    currentlyDateSetToToday = !currentlyDateSetToToday;
-                    e.printStackTrace();
+                    changeExactDate(Day.TODAY);
                 }
             }
         });
@@ -382,7 +375,7 @@ public class UpdateDialogFragment extends DialogFragment {
             Date date = getDateFromUserInput();
             if (DateTimeUtil.isMomentInPast(date)) {
                 initiallyDateSetToToday = true;
-                changeExactDateOfDays(1);
+                changeExactDate(Day.TOMORROW);
                 currentlyDateSetToToday = false;
             } else if (!currentlyDateSetToToday && DateTimeUtil.isMomentToday(date)) {
                 initiallyDateSetToToday = true;
@@ -403,15 +396,11 @@ public class UpdateDialogFragment extends DialogFragment {
         return dateFormat.parse(userInput);
     }
 
-    private void changeExactDateOfDays(int amountOfDays) throws ParseException {
-        if (amountOfDays != 0) {
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
-            Date date = dateFormat.parse(exactDateView.getText().toString());
-            calendar.setTime(date);
-            calendar.add(Calendar.DAY_OF_MONTH, amountOfDays);
-            exactDateView.setText(dateFormat.format(calendar.getTime()));
-        }
+    private void changeExactDate(@NonNull Day dayToSet) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+        calendar.add(Calendar.DAY_OF_MONTH, dayToSet.shift);
+        exactDateView.setText(dateFormat.format(calendar.getTime()));
     }
 
     private void readStateFromBundle(@NonNull Bundle bundle) {
