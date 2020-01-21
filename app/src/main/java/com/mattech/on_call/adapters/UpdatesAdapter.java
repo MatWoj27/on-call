@@ -82,9 +82,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public UpdateHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            mainContainer.setOnClickListener(v -> {
-                itemClicked(getAdapterPosition());
-            });
+            mainContainer.setOnClickListener(v -> itemClicked(getAdapterPosition()));
         }
 
         TextView[] getDayViewsArray() {
@@ -101,9 +99,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public AddHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            addBtn.setOnClickListener(v -> {
-                itemClicked(getAdapterPosition());
-            });
+            addBtn.setOnClickListener(v -> itemClicked(getAdapterPosition()));
         }
     }
 
