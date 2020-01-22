@@ -70,7 +70,6 @@ public class ForwardingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forwarding);
         Intent intent = getIntent();
         repository = new ReactorRepository(getApplication());
-        cancelActiveForwardingResultNotification();
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
