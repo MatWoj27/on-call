@@ -89,7 +89,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         if (update.isOneTimeUpdate()) {
             pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
             try {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, getUpdateExactTimeInMillis(update), pendingIntent);
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getUpdateExactTimeInMillis(update), pendingIntent);
             } catch (ParseException e) {
                 throw new UpdateNotScheduledException("Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime(), e);
             }
