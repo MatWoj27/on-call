@@ -79,7 +79,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @BindView(R.id.enable_switch)
         Switch enabled;
 
-        public UpdateHolder(View itemView) {
+        UpdateHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mainContainer.setOnClickListener(v -> itemClicked(getAdapterPosition()));
@@ -96,7 +96,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @BindView(R.id.add_update_btn)
         ImageButton addBtn;
 
-        public AddHolder(View itemView) {
+        AddHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             addBtn.setOnClickListener(v -> itemClicked(getAdapterPosition()));
