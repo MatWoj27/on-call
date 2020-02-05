@@ -83,25 +83,28 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     }
 
     private void scheduleUpdate(Update update) throws UpdateNotScheduledException {
-        AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
         PendingIntent pendingIntent;
+        long updateTime;
         if (update.isOneTimeUpdate()) {
-            pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
             try {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getUpdateExactTimeInMillis(update), pendingIntent);
+                updateTime = getUpdateExactTimeInMillis(update);
             } catch (ParseException e) {
                 throw new UpdateNotScheduledException("Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime(), e);
             }
         } else {
-            intent.putExtra(SetForwardingRequestReceiver.REPETITION_DAYS_TAG, update.getRepetitionDays());
-            pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
             try {
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getNextUpdateTimeInMillis(update), 24 * 60 * 60 * 1000, pendingIntent);
+                updateTime = getNextUpdateTimeInMillis(update);
+                intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_REPEATING_UPDATE, true);
+                intent.putExtra(SetForwardingRequestReceiver.EXTRA_REPETITION_DAYS_TAG, update.getRepetitionDays());
+                intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
             } catch (ParseException e) {
                 throw new UpdateNotScheduledException("Time string retrieved from Update object has wrong format: " + update.getTime(), e);
             }
         }
+        pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime, pendingIntent);
     }
 
     private void cancelScheduledUpdate(Update update) {
@@ -116,19 +119,13 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     private long getNextUpdateTimeInMillis(Update update) throws ParseException {
         Calendar calendar = Calendar.getInstance();
         long currentTimeInMillis = calendar.getTimeInMillis();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        Date date = timeFormat.parse(update.getTime());
-        Calendar tmpCalendar = Calendar.getInstance();
-        tmpCalendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, tmpCalendar.get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, tmpCalendar.get(Calendar.MINUTE));
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long todayUpdateTimeInMillis = calendar.getTimeInMillis();
-        if (todayUpdateTimeInMillis < currentTimeInMillis) {
-            todayUpdateTimeInMillis += 24 * 60 * 60 * 1000;
+        long todayUpdateTimeInMillis = update.getTodayUpdateTimeInMillis();
+        int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2 == -1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        if (update.getRepetitionDays()[todayIndex] && todayUpdateTimeInMillis > currentTimeInMillis) {
+            return todayUpdateTimeInMillis;
+        } else {
+            return Update.getNextRepetitionInMillis(todayUpdateTimeInMillis, update.getRepetitionDays());
         }
-        return todayUpdateTimeInMillis;
     }
 
     private long getUpdateExactTimeInMillis(Update update) throws ParseException {

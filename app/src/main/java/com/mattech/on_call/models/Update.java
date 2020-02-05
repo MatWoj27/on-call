@@ -7,8 +7,13 @@ import android.support.annotation.NonNull;
 
 import com.mattech.on_call.type_converters.UpdateTypeConverters;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Entity(tableName = "updates")
 public class Update {
@@ -98,6 +103,32 @@ public class Update {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public long getTodayUpdateTimeInMillis() throws ParseException {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        Calendar todayCalendar = Calendar.getInstance();
+        Calendar tmpCalendar = Calendar.getInstance();
+        Date date = timeFormat.parse(time);
+        tmpCalendar.setTime(date);
+        todayCalendar.set(Calendar.HOUR_OF_DAY, tmpCalendar.get(Calendar.HOUR_OF_DAY));
+        todayCalendar.set(Calendar.MINUTE, tmpCalendar.get(Calendar.MINUTE));
+        todayCalendar.set(Calendar.SECOND, 0);
+        todayCalendar.set(Calendar.MILLISECOND, 0);
+        return todayCalendar.getTimeInMillis();
+    }
+
+    public static long getNextRepetitionInMillis(long previousUpdateTimeInMillis, @NonNull boolean repetitionDays[]) {
+        Calendar calendar = Calendar.getInstance();
+        long nextUpdateTargetTime = 0;
+        int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2 == -1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        for (int i = 1; i < 8; i++) {
+            if (repetitionDays[(todayIndex + i) % 7]) {
+                nextUpdateTargetTime = previousUpdateTimeInMillis + i * 24 * 60 * 60 * 1000;
+                break;
+            }
+        }
+        return nextUpdateTargetTime;
     }
 
     public static int getRemovedItemIndex(List<Update> original, List<Update> changed) {
