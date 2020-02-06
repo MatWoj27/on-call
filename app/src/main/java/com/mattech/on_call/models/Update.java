@@ -1,6 +1,7 @@
 package com.mattech.on_call.models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
@@ -28,6 +29,20 @@ public class Update {
 
     @NonNull
     private String time;
+
+    @Ignore
+    public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+    public enum TIME {
+        HOUR(Calendar.HOUR_OF_DAY),
+        MINUTE(Calendar.MINUTE);
+
+        int field;
+
+        TIME(int field) {
+            this.field = field;
+        }
+    }
 
     public Update() {
     }
@@ -105,14 +120,21 @@ public class Update {
         this.time = time;
     }
 
-    public long getTodayUpdateTimeInMillis() throws ParseException {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        Calendar todayCalendar = Calendar.getInstance();
+    public String getFormattedTime() throws ParseException {
+        return (String.format("%02d", get(TIME.HOUR)) + ":" + String.format("%02d", get(TIME.MINUTE)));
+    }
+
+    public int get(TIME timeField) throws ParseException {
         Calendar tmpCalendar = Calendar.getInstance();
-        Date date = timeFormat.parse(time);
+        Date date = TIME_FORMAT.parse(time);
         tmpCalendar.setTime(date);
-        todayCalendar.set(Calendar.HOUR_OF_DAY, tmpCalendar.get(Calendar.HOUR_OF_DAY));
-        todayCalendar.set(Calendar.MINUTE, tmpCalendar.get(Calendar.MINUTE));
+        return tmpCalendar.get(timeField.field);
+    }
+
+    public long getTodayUpdateTimeInMillis() throws ParseException {
+        Calendar todayCalendar = Calendar.getInstance();
+        todayCalendar.set(Calendar.HOUR_OF_DAY, get(TIME.HOUR));
+        todayCalendar.set(Calendar.MINUTE, get(TIME.MINUTE));
         todayCalendar.set(Calendar.SECOND, 0);
         todayCalendar.set(Calendar.MILLISECOND, 0);
         return todayCalendar.getTimeInMillis();

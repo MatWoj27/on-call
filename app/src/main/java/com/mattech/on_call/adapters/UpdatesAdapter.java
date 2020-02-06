@@ -149,7 +149,12 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 updateHolder.time.setTextColor(update.isEnabled() ? Color.BLACK : context.getColor(R.color.disabledActive));
             });
-            updateHolder.time.setText(formatTime(update.getTime()));
+            try {
+                updateHolder.time.setText(update.getFormattedTime());
+            } catch (ParseException e) {
+                Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + update.getTime());
+                updateHolder.time.setText(update.getTime());
+            }
             if (update.isEnabled()) {
                 updateHolder.enabled.setChecked(true);
                 updateHolder.time.setTextColor(Color.BLACK);
@@ -180,19 +185,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             clickEnabled = false;
         }
-    }
-
-    private String formatTime(String time) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.US);
-        try {
-            Date date = simpleDateFormat.parse(time);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return (String.format("%02d", calendar.get(Calendar.HOUR_OF_DAY)) + ":" + String.format("%02d", calendar.get(Calendar.MINUTE)));
-        } catch (ParseException e) {
-            Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format" + time);
-        }
-        return null;
     }
 
     private void applyColorsToDayViews(UpdateHolder holder, Update update) {

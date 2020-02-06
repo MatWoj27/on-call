@@ -418,12 +418,8 @@ public class UpdateDialogFragment extends DialogFragment {
         displayDays = !updateToEdit.isOneTimeUpdate();
         activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
         exactDate = updateToEdit.getExactDate();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         try {
-            Date date = simpleDateFormat.parse(updateToEdit.getTime());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            presetTimePickers(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+            presetTimePickers(updateToEdit.get(Update.TIME.HOUR), updateToEdit.get(Update.TIME.MINUTE));
         } catch (ParseException e) {
             Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + updateToEdit.getTime());
             presetTimePickers(12, 0);
