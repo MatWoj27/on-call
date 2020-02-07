@@ -53,16 +53,16 @@ public class ReactorRepository {
     }
 
     public void getReactor(ReactorRetrieveListener listener) {
-        GetReactorTask getTask = new GetReactorTask(reactorDAO, currentReactor -> {
+        GetReactorTask task = new GetReactorTask(reactorDAO, currentReactor -> {
             if (listener != null) {
                 listener.reactorRetrieved(currentReactor);
             }
         });
-        getTask.execute();
+        task.execute();
     }
 
     public void updateReactor(@Nullable Reactor currentReactor, ReactorUpdateListener listener) {
-        UpdateReactorTask updateTask = new UpdateReactorTask(reactorDAO, currentReactor, newReactor -> {
+        UpdateReactorTask task = new UpdateReactorTask(reactorDAO, currentReactor, newReactor -> {
             if (listener != null) {
                 if (newReactor == null) {
                     listener.updateFailed();
@@ -73,12 +73,12 @@ public class ReactorRepository {
                 }
             }
         });
-        updateTask.execute();
+        task.execute();
     }
 
     public void setCustomReactor(Reactor customReactor) {
-        InsertReactorTask insertTask = new InsertReactorTask(reactorDAO);
-        insertTask.execute(customReactor);
+        InsertReactorTask task = new InsertReactorTask(reactorDAO);
+        task.execute(customReactor);
     }
 
     public LiveData<List<Update>> getUpdates() {
@@ -101,21 +101,21 @@ public class ReactorRepository {
     }
 
     private static class GetReactorTask extends AsyncTask<Void, Void, Reactor> {
-        private ReactorDAO asyncDao;
+        private ReactorDAO dao;
         private Listener listener;
 
         interface Listener {
             void reactorRetrieved(Reactor currentReactor);
         }
 
-        GetReactorTask(ReactorDAO asyncDao, Listener listener) {
-            this.asyncDao = asyncDao;
+        GetReactorTask(ReactorDAO dao, Listener listener) {
+            this.dao = dao;
             this.listener = listener;
         }
 
         @Override
         protected Reactor doInBackground(Void... voids) {
-            return asyncDao.getReactor();
+            return dao.getReactor();
         }
 
         @Override
@@ -128,7 +128,7 @@ public class ReactorRepository {
 
     private static class UpdateReactorTask extends AsyncTask<Void, Void, Reactor> {
         private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
-        private ReactorDAO asyncDao;
+        private ReactorDAO dao;
         private Reactor currentReactor;
         Listener listener;
 
@@ -136,8 +136,8 @@ public class ReactorRepository {
             void reactorUpdated(Reactor newReactor);
         }
 
-        UpdateReactorTask(ReactorDAO asyncDao, Reactor currentReactor, Listener listener) {
-            this.asyncDao = asyncDao;
+        UpdateReactorTask(ReactorDAO dao, Reactor currentReactor, Listener listener) {
+            this.dao = dao;
             this.currentReactor = currentReactor;
             this.listener = listener;
         }
@@ -155,9 +155,9 @@ public class ReactorRepository {
 //                String body = response.body().string();
 //                result = OnCallPerson.fromJson(new JSONObject(body));
 //                if (result == null) {
-//                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentReactor, asyncDao).execute(), 30 * 1000);
+//                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentReactor, dao).execute(), 30 * 1000);
 //                } else if (currentReactor == null || !currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
-//                    asyncDao.insert(result);
+//                    dao.insert(result);
 //                }
 //            } catch (IOException | JSONException e) {
 //                Log.e(ERROR_TAG, "error", e);
@@ -174,9 +174,9 @@ public class ReactorRepository {
             }
             if (result != null) {
                 if (currentReactor == null) {
-                    asyncDao.insert(result);
+                    dao.insert(result);
                 } else if (!currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
-                    asyncDao.updateReactor(currentReactor.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
+                    dao.updateReactor(currentReactor.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
                 }
             }
             return result;
@@ -191,16 +191,16 @@ public class ReactorRepository {
     }
 
     private static class InsertReactorTask extends AsyncTask<Reactor, Void, Void> {
-        private ReactorDAO asyncDao;
+        private ReactorDAO dao;
 
-        InsertReactorTask(ReactorDAO asyncDao) {
-            this.asyncDao = asyncDao;
+        InsertReactorTask(ReactorDAO dao) {
+            this.dao = dao;
         }
 
         @Override
         protected Void doInBackground(Reactor... reactors) {
-            asyncDao.deleteAll();
-            asyncDao.insert(reactors[0]);
+            dao.deleteAll();
+            dao.insert(reactors[0]);
             return null;
         }
     }
