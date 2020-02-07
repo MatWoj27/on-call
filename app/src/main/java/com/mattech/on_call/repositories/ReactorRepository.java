@@ -209,7 +209,7 @@ public class ReactorRepository {
         private UpdateDAO dao;
         private OperationOnUpdateListener listener;
 
-        public InsertUpdateTask(UpdateDAO dao, OperationOnUpdateListener listener) {
+        InsertUpdateTask(UpdateDAO dao, OperationOnUpdateListener listener) {
             this.dao = dao;
             this.listener = listener;
         }
@@ -232,7 +232,7 @@ public class ReactorRepository {
     private static class UpdateUpdateTask extends AsyncTask<Update, Void, Void> {
         UpdateDAO dao;
 
-        public UpdateUpdateTask(UpdateDAO dao) {
+        UpdateUpdateTask(UpdateDAO dao) {
             this.dao = dao;
         }
 
@@ -246,7 +246,7 @@ public class ReactorRepository {
     private static class DeleteUpdateTask extends AsyncTask<Update, Void, Void> {
         UpdateDAO dao;
 
-        public DeleteUpdateTask(UpdateDAO dao) {
+        DeleteUpdateTask(UpdateDAO dao) {
             this.dao = dao;
         }
 
