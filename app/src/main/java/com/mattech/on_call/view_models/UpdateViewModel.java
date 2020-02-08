@@ -79,7 +79,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         } else {
             cancelScheduledUpdate(update);
         }
-        reactorRepository.updateUpdate(update);
+        reactorRepository.changeUpdateEnableState(update.getId(), update.isEnabled());
     }
 
     private void scheduleUpdate(Update update) throws UpdateNotScheduledException {
@@ -95,13 +95,13 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         } else {
             try {
                 updateTime = getNextUpdateTimeInMillis(update);
-                intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_REPEATING_UPDATE, true);
                 intent.putExtra(SetForwardingRequestReceiver.EXTRA_REPETITION_DAYS_TAG, update.getRepetitionDays());
-                intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
             } catch (ParseException e) {
                 throw new UpdateNotScheduledException("Time string retrieved from Update object has wrong format: " + update.getTime(), e);
             }
         }
+        intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_ONE_TIME_UPDATE, update.isOneTimeUpdate());
+        intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
         pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
         AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime, pendingIntent);

@@ -35,6 +35,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE = 1;
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
+    public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
     private final int NOTIFICATION_ID = 1;
     private final String CALL_FORWARDING_PREFERENCES_NAME = "call-forwarding-info";
     private final String CALL_FORWARDING_ACTIVE_PREFERENCE_KEY = "CALL_FORWARDING_ACTIVE";
@@ -70,6 +71,9 @@ public class ForwardingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forwarding);
         Intent intent = getIntent();
         repository = new ReactorRepository(getApplication());
+        if (intent.hasExtra(EXTRA_DISABLE_UPDATE_ID)) {
+            repository.changeUpdateEnableState(intent.getIntExtra(EXTRA_DISABLE_UPDATE_ID, -1), false);
+        }
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
