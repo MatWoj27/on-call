@@ -31,7 +31,10 @@ public class Update {
     private String time;
 
     @Ignore
-    public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    public static final String TIME_FORMAT = "HH:mm";
+
+    @Ignore
+    public static final String DATE_FORMAT = "EEE, d MMM yyyy";
 
     public enum TIME {
         HOUR(Calendar.HOUR_OF_DAY),
@@ -53,6 +56,15 @@ public class Update {
         this.repetitionDays = repetitionDays;
         this.exactDate = exactDate;
         this.time = time;
+    }
+
+    public Update(Update update) {
+        this.id = update.id;
+        this.enabled = update.enabled;
+        this.oneTimeUpdate = update.oneTimeUpdate;
+        this.repetitionDays = update.repetitionDays;
+        this.exactDate = update.exactDate;
+        this.time = update.time;
     }
 
     @Override
@@ -125,8 +137,9 @@ public class Update {
     }
 
     public int get(TIME timeField) throws ParseException {
+        SimpleDateFormat timeFormat = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
         Calendar tmpCalendar = Calendar.getInstance();
-        Date date = TIME_FORMAT.parse(time);
+        Date date = timeFormat.parse(time);
         tmpCalendar.setTime(date);
         return tmpCalendar.get(timeField.field);
     }
@@ -138,6 +151,16 @@ public class Update {
         todayCalendar.set(Calendar.SECOND, 0);
         todayCalendar.set(Calendar.MILLISECOND, 0);
         return todayCalendar.getTimeInMillis();
+    }
+
+    public long getExactDateTimeInMillis() throws ParseException {
+        SimpleDateFormat exactDateTimeFormat = new SimpleDateFormat(TIME_FORMAT + " " + DATE_FORMAT, Locale.getDefault());
+        Date exactDate = exactDateTimeFormat.parse(getTime() + " " + getExactDate());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(exactDate);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
     }
 
     public static long getNextRepetitionInMillis(long previousUpdateTimeInMillis, @NonNull boolean repetitionDays[]) {

@@ -138,7 +138,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 if (v.isChecked() != update.isEnabled()) {
                     update.setEnabled(v.isChecked());
                     if (listener != null) {
-                        listener.updateEnableStatusChanged(update);
+                        listener.updateEnableStatusChanged(new Update(update));
                     }
                 }
                 if (update.isOneTimeUpdate()) {

@@ -11,10 +11,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mattech.on_call.R;
 import com.mattech.on_call.exceptions.UpdateNotScheduledException;
 import com.mattech.on_call.models.Update;
 import com.mattech.on_call.receivers.SetForwardingRequestReceiver;
 import com.mattech.on_call.repositories.ReactorRepository;
+import com.mattech.on_call.utils.DateTimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -79,7 +81,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         } else {
             cancelScheduledUpdate(update);
         }
-        reactorRepository.changeUpdateEnableState(update.getId(), update.isEnabled());
+        reactorRepository.updateUpdate(update);
     }
 
     private void scheduleUpdate(Update update) throws UpdateNotScheduledException {
@@ -88,7 +90,13 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         long updateTime;
         if (update.isOneTimeUpdate()) {
             try {
-                updateTime = getUpdateExactTimeInMillis(update);
+                updateTime = update.getExactDateTimeInMillis();
+                if (DateTimeUtil.isMomentInPast(new Date(updateTime))) {
+                    updateTime = update.getTodayUpdateTimeInMillis() + 24 * 60 * 60 * 1000;
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
+                    update.setExactDate(dateFormat.format(new Date(updateTime)));
+                    Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
+                }
             } catch (ParseException e) {
                 throw new UpdateNotScheduledException("Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime(), e);
             }
@@ -126,14 +134,6 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         } else {
             return Update.getNextRepetitionInMillis(todayUpdateTimeInMillis, update.getRepetitionDays());
         }
-    }
-
-    private long getUpdateExactTimeInMillis(Update update) throws ParseException {
-        SimpleDateFormat updateExactDateTimeFormat = new SimpleDateFormat("HH:mm EEE, d MMM yyyy", Locale.getDefault());
-        Date exactDate = updateExactDateTimeFormat.parse(update.getTime() + " " + update.getExactDate());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(exactDate);
-        return calendar.getTimeInMillis();
     }
 
     private void handleNotScheduledUpdate(Update update, UpdateNotScheduledException e) {
