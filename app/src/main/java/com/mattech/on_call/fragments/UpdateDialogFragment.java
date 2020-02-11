@@ -310,7 +310,7 @@ public class UpdateDialogFragment extends DialogFragment {
 
     private void presetDatePicker() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
         if (exactDate != null) {
             exactDateView.setText(exactDate);
         } else {
@@ -391,14 +391,14 @@ public class UpdateDialogFragment extends DialogFragment {
     }
 
     private Date getDateFromUserInput() throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH mm EEE, d MMM yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH mm " + Update.DATE_FORMAT, Locale.getDefault());
         String userInput = String.format("%d %d %s", hourPicker.getValue(), minutePicker.getValue(), exactDateView.getText());
         return dateFormat.parse(userInput);
     }
 
     private void changeExactDate(@NonNull Day dayToSet) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
         calendar.add(Calendar.DAY_OF_MONTH, dayToSet.shift);
         exactDateView.setText(dateFormat.format(calendar.getTime()));
     }
