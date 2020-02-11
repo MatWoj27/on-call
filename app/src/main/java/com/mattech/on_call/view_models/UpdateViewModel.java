@@ -139,6 +139,6 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     private void handleNotScheduledUpdate(Update update, UpdateNotScheduledException e) {
         Log.e(getClass().getSimpleName(), e.getMessage(), e);
         deleteUpdate(update);
-        Toast.makeText(getApplication(), "The update could not be scheduled so it has been deleted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.update_scheduling_error_info), Toast.LENGTH_SHORT).show();
     }
 }

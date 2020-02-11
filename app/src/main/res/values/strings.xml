@@ -30,4 +30,5 @@
     <string name="retry">Retry</string>
     <string name="tap_to_set_reactor">Tap to set reactor</string>
     <string name="past_update_rescheduled_warning">An update cannot be set to a moment in the past. The update was set for tomorrow</string>
+    <string name="update_scheduling_error_info">The update could not be scheduled so it has been deleted</string>
 </resources>
