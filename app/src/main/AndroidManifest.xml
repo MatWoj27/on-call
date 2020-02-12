@@ -12,15 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activities.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.ForwardingActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/TransparentTheme" />
 
         <receiver android:name=".receivers.ForwardingAppWidgetProvider">
             <intent-filter>
@@ -36,11 +42,6 @@
 
         <receiver android:name=".receivers.SetForwardingRequestReceiver" />
 
-        <activity
-            android:name=".activities.ForwardingActivity"
-            android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:theme="@style/TransparentTheme" />
     </application>
 
 </manifest>
