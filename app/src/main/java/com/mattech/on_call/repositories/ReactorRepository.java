@@ -40,6 +40,11 @@ public class ReactorRepository {
         void reactorRetrieved(Reactor currentReactor);
     }
 
+    @FunctionalInterface
+    public interface UpdatesRetrievedListener {
+        void updatesRetrieved(List<Update> updates);
+    }
+
     public ReactorRepository(Application application) {
         ReactorDatabase database = ReactorDatabase.getInstance(application);
         reactorDAO = database.getReactorDAO();
@@ -84,6 +89,11 @@ public class ReactorRepository {
 
     public LiveData<List<Update>> getUpdates() {
         return updates;
+    }
+
+    public void getActiveUpdates(UpdatesRetrievedListener listener) {
+        GetActiveUpdatesTask task = new GetActiveUpdatesTask(updateDAO, listener);
+        task.execute();
     }
 
     public void addUpdate(Update update) {
@@ -208,6 +218,28 @@ public class ReactorRepository {
             dao.deleteAll();
             dao.insert(reactors[0]);
             return null;
+        }
+    }
+
+    private static class GetActiveUpdatesTask extends AsyncTask<Void, Void, List<Update>> {
+        private UpdateDAO dao;
+        private UpdatesRetrievedListener listener;
+
+        public GetActiveUpdatesTask(UpdateDAO dao, UpdatesRetrievedListener listener) {
+            this.dao = dao;
+            this.listener = listener;
+        }
+
+        @Override
+        protected List<Update> doInBackground(Void... voids) {
+            return dao.getActiveUpdates();
+        }
+
+        @Override
+        protected void onPostExecute(List<Update> updates) {
+            if (listener != null) {
+                listener.updatesRetrieved(updates);
+            }
         }
     }
 

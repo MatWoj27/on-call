@@ -20,7 +20,6 @@ import com.mattech.on_call.utils.DateTimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -85,34 +84,30 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     }
 
     private void scheduleUpdate(Update update) throws UpdateNotScheduledException {
-        Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
-        PendingIntent pendingIntent;
-        long updateTime;
-        if (update.isOneTimeUpdate()) {
-            try {
-                updateTime = update.getExactDateTimeInMillis();
-                if (DateTimeUtil.isMomentInPast(new Date(updateTime))) {
-                    updateTime = update.getTodayUpdateTimeInMillis() + 24 * 60 * 60 * 1000;
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
-                    update.setExactDate(dateFormat.format(new Date(updateTime)));
-                    Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
-                }
-            } catch (ParseException e) {
-                throw new UpdateNotScheduledException("Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime(), e);
-            }
-        } else {
-            try {
-                updateTime = getNextUpdateTimeInMillis(update);
+        try {
+            Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
+            PendingIntent pendingIntent;
+            long updateTime = update.getPlannedUpdateTimeInMillis();
+            if (!update.isOneTimeUpdate()) {
                 intent.putExtra(SetForwardingRequestReceiver.EXTRA_REPETITION_DAYS_TAG, update.getRepetitionDays());
-            } catch (ParseException e) {
+            } else if (DateTimeUtil.isMomentInPast(new Date(updateTime))) {
+                updateTime = update.getTodayUpdateTimeInMillis() + 24 * 60 * 60 * 1000;
+                SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
+                update.setExactDate(dateFormat.format(new Date(updateTime)));
+                Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
+            }
+            intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_ONE_TIME_UPDATE, update.isOneTimeUpdate());
+            intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
+            pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime, pendingIntent);
+        } catch (ParseException e) {
+            if (update.isOneTimeUpdate()) {
+                throw new UpdateNotScheduledException("Time or date string retrieved from Update object has wrong format: " + update.getExactDate() + " " + update.getTime(), e);
+            } else {
                 throw new UpdateNotScheduledException("Time string retrieved from Update object has wrong format: " + update.getTime(), e);
             }
         }
-        intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_ONE_TIME_UPDATE, update.isOneTimeUpdate());
-        intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
-        pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime, pendingIntent);
     }
 
     private void cancelScheduledUpdate(Update update) {
@@ -121,18 +116,6 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent);
-        }
-    }
-
-    private long getNextUpdateTimeInMillis(Update update) throws ParseException {
-        Calendar calendar = Calendar.getInstance();
-        long currentTimeInMillis = calendar.getTimeInMillis();
-        long todayUpdateTimeInMillis = update.getTodayUpdateTimeInMillis();
-        int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2 == -1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 2;
-        if (update.getRepetitionDays()[todayIndex] && todayUpdateTimeInMillis > currentTimeInMillis) {
-            return todayUpdateTimeInMillis;
-        } else {
-            return Update.getNextRepetitionInMillis(todayUpdateTimeInMillis, update.getRepetitionDays());
         }
     }
 

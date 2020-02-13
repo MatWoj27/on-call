@@ -144,6 +144,26 @@ public class Update {
         return tmpCalendar.get(timeField.field);
     }
 
+    public long getPlannedUpdateTimeInMillis() throws ParseException {
+        if (isOneTimeUpdate()) {
+            return getExactDateTimeInMillis();
+        } else {
+            return getNextUpdateTimeInMillis();
+        }
+    }
+
+    private long getNextUpdateTimeInMillis() throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        long currentTimeInMillis = calendar.getTimeInMillis();
+        long todayUpdateTimeInMillis = getTodayUpdateTimeInMillis();
+        int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2 == -1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        if (getRepetitionDays()[todayIndex] && todayUpdateTimeInMillis > currentTimeInMillis) {
+            return todayUpdateTimeInMillis;
+        } else {
+            return Update.getNextRepetitionInMillis(todayUpdateTimeInMillis, getRepetitionDays());
+        }
+    }
+
     public long getTodayUpdateTimeInMillis() throws ParseException {
         Calendar todayCalendar = Calendar.getInstance();
         todayCalendar.set(Calendar.HOUR_OF_DAY, get(TIME.HOUR));
@@ -153,7 +173,7 @@ public class Update {
         return todayCalendar.getTimeInMillis();
     }
 
-    public long getExactDateTimeInMillis() throws ParseException {
+    private long getExactDateTimeInMillis() throws ParseException {
         SimpleDateFormat exactDateTimeFormat = new SimpleDateFormat(TIME_FORMAT + " " + DATE_FORMAT, Locale.getDefault());
         Date exactDate = exactDateTimeFormat.parse(getTime() + " " + getExactDate());
         Calendar calendar = Calendar.getInstance();
