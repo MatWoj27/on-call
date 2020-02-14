@@ -61,11 +61,7 @@ public class ReactorRepository {
     }
 
     public void getReactor(ReactorRetrieveListener listener) {
-        GetReactorTask task = new GetReactorTask(reactorDAO, currentReactor -> {
-            if (listener != null) {
-                listener.reactorRetrieved(currentReactor);
-            }
-        });
+        GetReactorTask task = new GetReactorTask(reactorDAO, listener);
         task.execute();
     }
 
@@ -120,13 +116,9 @@ public class ReactorRepository {
 
     private static class GetReactorTask extends AsyncTask<Void, Void, Reactor> {
         private ReactorDAO dao;
-        private Listener listener;
+        private ReactorRetrieveListener listener;
 
-        interface Listener {
-            void reactorRetrieved(Reactor currentReactor);
-        }
-
-        GetReactorTask(ReactorDAO dao, Listener listener) {
+        GetReactorTask(ReactorDAO dao, ReactorRetrieveListener listener) {
             this.dao = dao;
             this.listener = listener;
         }
