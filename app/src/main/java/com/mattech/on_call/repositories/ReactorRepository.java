@@ -24,6 +24,7 @@ public class ReactorRepository {
     private LiveData<List<Update>> updates;
     private OperationOnUpdateListener updateListener;
 
+    @FunctionalInterface
     public interface OperationOnUpdateListener {
         void updateAdded(Update update);
     }
@@ -36,6 +37,7 @@ public class ReactorRepository {
         void updateFailed();
     }
 
+    @FunctionalInterface
     public interface ReactorRetrieveListener {
         void reactorRetrieved(Reactor currentReactor);
     }
