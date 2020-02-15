@@ -66,17 +66,7 @@ public class ReactorRepository {
     }
 
     public void updateReactor(@Nullable Reactor currentReactor, ReactorUpdateListener listener) {
-        UpdateReactorTask task = new UpdateReactorTask(reactorDAO, currentReactor, newReactor -> {
-            if (listener != null) {
-                if (newReactor == null) {
-                    listener.updateFailed();
-                } else if (currentReactor == null || !currentReactor.getPhoneNumber().equals(newReactor.getPhoneNumber())) {
-                    listener.reactorUpdated(newReactor);
-                } else {
-                    listener.reactorNotChanged();
-                }
-            }
-        });
+        UpdateReactorTask task = new UpdateReactorTask(reactorDAO, currentReactor, listener);
         task.execute();
     }
 
@@ -140,13 +130,9 @@ public class ReactorRepository {
         private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
         private ReactorDAO dao;
         private Reactor currentReactor;
-        Listener listener;
+        ReactorUpdateListener listener;
 
-        interface Listener {
-            void reactorUpdated(Reactor newReactor);
-        }
-
-        UpdateReactorTask(ReactorDAO dao, Reactor currentReactor, Listener listener) {
+        UpdateReactorTask(ReactorDAO dao, Reactor currentReactor, ReactorUpdateListener listener) {
             this.dao = dao;
             this.currentReactor = currentReactor;
             this.listener = listener;
@@ -193,9 +179,15 @@ public class ReactorRepository {
         }
 
         @Override
-        protected void onPostExecute(Reactor reactor) {
+        protected void onPostExecute(Reactor newReactor) {
             if (listener != null) {
-                listener.reactorUpdated(reactor);
+                if (newReactor == null) {
+                    listener.updateFailed();
+                } else if (currentReactor == null || !currentReactor.getPhoneNumber().equals(newReactor.getPhoneNumber())) {
+                    listener.reactorUpdated(newReactor);
+                } else {
+                    listener.reactorNotChanged();
+                }
             }
         }
     }
