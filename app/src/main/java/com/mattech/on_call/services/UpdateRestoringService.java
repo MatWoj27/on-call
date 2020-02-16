@@ -35,7 +35,7 @@ public class UpdateRestoringService extends IntentService {
             try {
                 long updateTime = update.getPlannedUpdateTimeInMillis();
                 if (update.isOneTimeUpdate() && DateTimeUtil.isMomentInPast(new Date(updateTime))) {
-                    repository.changeUpdateEnableState(update.getId(), false);
+                    repository.disableUpdate(update.getId());
                     continue;
                 }
                 scheduleUpdate(update, updateTime);

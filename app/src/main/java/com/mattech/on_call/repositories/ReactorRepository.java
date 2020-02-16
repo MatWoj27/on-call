@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.mattech.on_call.daos.ReactorDAO;
 import com.mattech.on_call.daos.UpdateDAO;
@@ -94,9 +93,9 @@ public class ReactorRepository {
         task.execute(update);
     }
 
-    public void changeUpdateEnableState(int id, boolean enableState) {
-        ChangeUpdateEnableStateTask task = new ChangeUpdateEnableStateTask(updateDAO);
-        task.execute(new Pair<>(id, enableState));
+    public void disableUpdate(int id) {
+        DisableUpdateTask task = new DisableUpdateTask(updateDAO);
+        task.execute(id);
     }
 
     public void deleteUpdate(Update update) {
@@ -267,16 +266,16 @@ public class ReactorRepository {
         }
     }
 
-    private static class ChangeUpdateEnableStateTask extends AsyncTask<Pair<Integer, Boolean>, Void, Void> {
+    private static class DisableUpdateTask extends AsyncTask<Integer, Void, Void> {
         private UpdateDAO dao;
 
-        ChangeUpdateEnableStateTask(UpdateDAO dao) {
+        DisableUpdateTask(UpdateDAO dao) {
             this.dao = dao;
         }
 
         @Override
-        protected Void doInBackground(Pair<Integer, Boolean>... pairs) {
-            dao.updateEnableState(pairs[0].first, pairs[0].second);
+        protected Void doInBackground(Integer... integers) {
+            dao.disableUpdate(integers[0]);
             return null;
         }
     }

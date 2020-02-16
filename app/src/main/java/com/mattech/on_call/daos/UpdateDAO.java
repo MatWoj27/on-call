@@ -27,6 +27,6 @@ public interface UpdateDAO {
     @android.arch.persistence.room.Update
     void update(Update update);
 
-    @Query("UPDATE updates SET enabled = :enableState WHERE id = :id")
-    void updateEnableState(int id, boolean enableState);
+    @Query("UPDATE updates SET enabled = 'false' WHERE id = :id")
+    void disableUpdate(int id);
 }

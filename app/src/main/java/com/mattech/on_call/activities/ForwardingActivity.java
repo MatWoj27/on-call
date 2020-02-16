@@ -72,7 +72,7 @@ public class ForwardingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         repository = new ReactorRepository(getApplication());
         if (intent.hasExtra(EXTRA_DISABLE_UPDATE_ID)) {
-            repository.changeUpdateEnableState(intent.getIntExtra(EXTRA_DISABLE_UPDATE_ID, -1), false);
+            repository.disableUpdate(intent.getIntExtra(EXTRA_DISABLE_UPDATE_ID, -1));
         }
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
