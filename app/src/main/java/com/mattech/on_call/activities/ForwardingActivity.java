@@ -193,12 +193,12 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    private void showNotification(ForwardingResultState state, Reactor reactor) {
+    private void showNotification(ForwardingResultState state, @Nullable Reactor reactor) {
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Intent actionIntent = new Intent(this, ForwardingActivity.class);
         actionIntent.putExtra(ACTION_TAG, state.buttonActionRequestCode);
-        if (state == ForwardingResultState.FORWARDING_SUCCESS) {
+        if (state == ForwardingResultState.FORWARDING_SUCCESS && reactor != null) {
             longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
         }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);
