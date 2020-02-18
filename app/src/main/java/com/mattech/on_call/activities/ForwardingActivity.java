@@ -42,6 +42,8 @@ public class ForwardingActivity extends AppCompatActivity {
     private ReactorRepository repository;
 
     private enum ForwardingResultState {
+        REACTOR_NOT_CHANGED(R.string.reactor_not_changed_title, R.string.reactor_not_changed_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2, STOP_FORWARDING_REQUEST_CODE),
+        UPDATE_FAILURE(R.string.update_failure_title, R.string.update_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1, UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE),
         FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2, STOP_FORWARDING_REQUEST_CODE),
         FORWARDING_CALL_FAILURE(R.string.forwarding_failure_title, R.string.forwarding_call_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1, START_FORWARDING_REQUEST_CODE),
         FORWARDING_FAILURE_NO_REACTOR(R.string.forwarding_failure_title, R.string.forwarding_no_reactor_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1, UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
@@ -89,13 +91,21 @@ public class ForwardingActivity extends AppCompatActivity {
 
                         @Override
                         public void reactorNotChanged() {
-                            // to be implemented
-                            finish();
+                            SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
+                            if (preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false)) {
+                                cancelActiveForwardingResultNotification();
+                                showNotification(ForwardingResultState.REACTOR_NOT_CHANGED, null);
+                                finish();
+                            } else {
+                                startForwarding(currentReactor);
+                            }
                         }
 
                         @Override
                         public void updateFailed() {
-                            // to be implemented
+                            cancelActiveForwardingResultNotification();
+                            showNotification(ForwardingResultState.UPDATE_FAILURE, null);
+                            finish();
                         }
                     });
                 });
