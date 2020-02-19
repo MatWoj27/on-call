@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.mattech.on_call.daos.ReactorDAO;
 import com.mattech.on_call.daos.UpdateDAO;
@@ -12,11 +13,20 @@ import com.mattech.on_call.databases.UpdateDatabase;
 import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ReactorRepository {
     public static final String REACTOR_CHANGED = "REACTOR_CHANGED";
-    private static final String webApiUrl = "http://10.84.136.193/api/v1/onCall/Sky/L2";
+    private static final String webApiUrl = "http://192.168.43.74:8080/api/reactors?team=L2";
     private ReactorDAO reactorDAO;
     private UpdateDAO updateDAO;
     private LiveData<Reactor> reactorLiveData;
@@ -129,7 +139,11 @@ public class ReactorRepository {
         private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
         private ReactorDAO dao;
         private Reactor currentReactor;
-        ReactorUpdateListener listener;
+        private ReactorUpdateListener listener;
+        private final OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
 
         UpdateReactorTask(ReactorDAO dao, Reactor currentReactor, ReactorUpdateListener listener) {
             this.dao = dao;
@@ -140,39 +154,23 @@ public class ReactorRepository {
         @Override
         protected Reactor doInBackground(Void... voids) {
             Reactor result = null;
-//            OkHttpClient client = new OkHttpClient();
-//            Request request = new Request.Builder()
-//                    .get()
-//                    .url(webApiUrl)
-//                    .build();
-//            try {
-//                Response response = client.newCall(request).execute();
-//                String body = response.body().string();
-//                result = OnCallPerson.fromJson(new JSONObject(body));
-//                if (result == null) {
-//                    new Handler().postDelayed(() -> new UpdateOnCallPersonTask(currentReactor, dao).execute(), 30 * 1000);
-//                } else if (currentReactor == null || !currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
-//                    dao.insert(result);
-//                }
-//            } catch (IOException | JSONException e) {
-//                Log.e(ERROR_TAG, "error", e);
-//            }
-            result = new Reactor();
-            if (currentReactor == null || currentReactor.getPhoneNumber().equals("876456779")) {
-                result.setName("Adam Nowak");
-                result.setMail("adam.nowak@mail.com");
-                result.setPhoneNumber("767456986");
-            } else {
-                result.setName("Jan Kowalski");
-                result.setMail("jan.kowalski@mail.com");
-                result.setPhoneNumber("876456779");
-            }
-            if (result != null) {
-                if (currentReactor == null) {
-                    dao.insert(result);
-                } else if (!currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
-                    dao.updateReactor(currentReactor.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
+            Request request = new Request.Builder()
+                    .get()
+                    .url(webApiUrl)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                String body = response.body().string();
+                result = Reactor.fromJson(new JSONObject(body));
+                if (result != null) {
+                    if (currentReactor == null) {
+                        dao.insert(result);
+                    } else if (!currentReactor.getPhoneNumber().equals(result.getPhoneNumber())) {
+                        dao.updateReactor(currentReactor.getPhoneNumber(), result.getPhoneNumber(), result.getName(), result.getMail());
+                    }
                 }
+            } catch (IOException | JSONException e) {
+                Log.e(ERROR_TAG, "error", e);
             }
             return result;
         }
