@@ -50,6 +50,7 @@ public class Update {
     public Update() {
     }
 
+    @Ignore
     public Update(boolean enabled, boolean oneTimeUpdate, boolean[] repetitionDays, String exactDate, @NonNull String time) {
         this.enabled = enabled;
         this.oneTimeUpdate = oneTimeUpdate;
@@ -58,6 +59,7 @@ public class Update {
         this.time = time;
     }
 
+    @Ignore
     public Update(Update update) {
         this.id = update.id;
         this.enabled = update.enabled;
