@@ -8,16 +8,12 @@
     android:weightSum="8"
     tools:context="com.mattech.on_call.activities.MainActivity">
 
-    <TextView
+    <fragment
+        android:id="@+id/header_fragment"
+        android:name="com.mattech.on_call.fragments.HeaderFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"
-        android:gravity="bottom"
-        android:paddingLeft="20dp"
-        android:text="@string/app_name"
-        android:textColor="@android:color/white"
-        android:textSize="30sp" />
+        android:layout_weight="1" />
 
     <FrameLayout
         android:layout_width="match_parent"

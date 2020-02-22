@@ -23,6 +23,32 @@
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
+    <!-- Style for settings dialog window -->
+    <style name="SettingsDialogTheme" parent="AppTheme">
+        <item name="android:editTextStyle">@style/RoundedEditTextStyle</item>
+        <item name="android:textViewStyle">@style/SettingTextViewStyle</item>
+        <item name="android:background">@drawable/widget_rounded_background</item>
+    </style>
+
+    <style name="RoundedEditTextStyle" parent="AppTheme">
+        <item name="android:background">@drawable/rounded_stroke_edit_text_background</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColorHint">@color/disabledInactive</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SettingTextViewStyle" parent="AppTheme">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <!-- Style for number pickers (hour and minute) in update dialog window -->
     <style name="NumberPickerStyle" parent="AppTheme">
         <item name="android:editTextColor">@color/colorSecondary</item>
