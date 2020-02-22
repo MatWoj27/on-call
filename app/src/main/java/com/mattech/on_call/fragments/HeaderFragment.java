@@ -22,6 +22,10 @@ public class HeaderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_header, container, false);
         ButterKnife.bind(this, view);
+        settings.setOnClickListener(v -> {
+            SettingsDialogFragment fragment = new SettingsDialogFragment();
+            fragment.show(getActivity().getSupportFragmentManager(), "settings");
+        });
         return view;
     }
 }
