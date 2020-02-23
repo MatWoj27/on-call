@@ -141,7 +141,7 @@ public class UpdateDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
+        View view = requireActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
         ButterKnife.bind(this, view);
         TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         if (savedInstanceState != null) {

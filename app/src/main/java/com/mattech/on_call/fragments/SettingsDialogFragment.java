@@ -32,7 +32,7 @@ public class SettingsDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_settings, null);
+        View view = requireActivity().getLayoutInflater().inflate(R.layout.dialog_settings, null);
         ButterKnife.bind(this, view);
         saveBtn.setOnClickListener(v -> dismiss());
         builder.setView(view);
