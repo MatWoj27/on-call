@@ -2,6 +2,7 @@ package com.mattech.on_call.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
@@ -36,7 +37,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_update_list, container, true);
         ButterKnife.bind(this, view);
