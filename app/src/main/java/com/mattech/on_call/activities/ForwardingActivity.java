@@ -20,6 +20,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.mattech.on_call.fragments.SettingsDialogFragment;
 import com.mattech.on_call.receivers.ForwardingAppWidgetProvider;
 import com.mattech.on_call.events.ForwardingEvent;
 import com.mattech.on_call.R;
@@ -79,35 +80,12 @@ public class ForwardingActivity extends AppCompatActivity {
         switch (intent.getIntExtra(ACTION_TAG, 0)) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
-                    repository.updateReactor(currentReactor, new ReactorRepository.ReactorUpdateListener() {
-                        @Override
-                        public void reactorUpdated(Reactor newReactor) {
-                            Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
-                            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, newReactor.getName());
-                            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, newReactor.getPhoneNumber());
-                            sendBroadcast(reactorChangedIntent);
-                            startForwarding(newReactor);
-                        }
-
-                        @Override
-                        public void reactorNotChanged() {
-                            SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
-                            if (preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false)) {
-                                cancelActiveForwardingResultNotification();
-                                showNotification(ForwardingResultState.REACTOR_NOT_CHANGED, null);
-                                finish();
-                            } else {
-                                startForwarding(currentReactor);
-                            }
-                        }
-
-                        @Override
-                        public void updateFailed() {
-                            cancelActiveForwardingResultNotification();
-                            showNotification(ForwardingResultState.UPDATE_FAILURE, null);
-                            finish();
-                        }
-                    });
+                    ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
+                    SharedPreferences webApiPreferences = getSharedPreferences(SettingsDialogFragment.WEB_API_PREFERENCES_NAME, MODE_PRIVATE);
+                    String webApiIp = webApiPreferences.getString(SettingsDialogFragment.WEB_API_IP_PREFERENCE_KEY, "");
+                    String webApiPort = webApiPreferences.getString(SettingsDialogFragment.WEB_API_PORT_PREFERENCE_KEY, "");
+                    String webApiTeam = webApiPreferences.getString(SettingsDialogFragment.WEB_API_TEAM_PREFERENCE_KEY, "");
+                    repository.updateReactor(currentReactor, listener, webApiIp, webApiPort, webApiTeam);
                 });
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
@@ -234,6 +212,42 @@ public class ForwardingActivity extends AppCompatActivity {
             if (notification.getId() == NOTIFICATION_ID) {
                 notificationManager.cancel(NOTIFICATION_ID);
             }
+        }
+    }
+
+    private class ReactorUpdateListener implements ReactorRepository.ReactorUpdateListener {
+        private Reactor currentReactor;
+
+        ReactorUpdateListener(@NonNull Reactor currentReactor) {
+            this.currentReactor = currentReactor;
+        }
+
+        @Override
+        public void reactorUpdated(Reactor newReactor) {
+            Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
+            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, newReactor.getName());
+            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, newReactor.getPhoneNumber());
+            sendBroadcast(reactorChangedIntent);
+            startForwarding(newReactor);
+        }
+
+        @Override
+        public void reactorNotChanged() {
+            SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
+            if (preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false)) {
+                cancelActiveForwardingResultNotification();
+                showNotification(ForwardingResultState.REACTOR_NOT_CHANGED, null);
+                finish();
+            } else {
+                startForwarding(currentReactor);
+            }
+        }
+
+        @Override
+        public void updateFailed() {
+            cancelActiveForwardingResultNotification();
+            showNotification(ForwardingResultState.UPDATE_FAILURE, null);
+            finish();
         }
     }
 }

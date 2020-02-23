@@ -3,6 +3,7 @@ package com.mattech.on_call.repositories;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -26,7 +27,7 @@ import okhttp3.Response;
 
 public class ReactorRepository {
     public static final String REACTOR_CHANGED = "REACTOR_CHANGED";
-    private static final String webApiUrl = "http://192.168.43.74:8080/api/reactors?team=L2";
+    private static final String reactorsEndpoint = "/api/reactors?team=";
     private ReactorDAO reactorDAO;
     private UpdateDAO updateDAO;
     private LiveData<Reactor> reactorLiveData;
@@ -74,9 +75,10 @@ public class ReactorRepository {
         task.execute();
     }
 
-    public void updateReactor(@Nullable Reactor currentReactor, ReactorUpdateListener listener) {
+    public void updateReactor(@Nullable Reactor currentReactor, ReactorUpdateListener listener,
+                              @NonNull String ipAddress, @NonNull String port, @NonNull String team) {
         UpdateReactorTask task = new UpdateReactorTask(reactorDAO, currentReactor, listener);
-        task.execute();
+        task.execute(ipAddress, port, team);
     }
 
     public void setCustomReactor(Reactor customReactor) {
@@ -135,7 +137,7 @@ public class ReactorRepository {
         }
     }
 
-    private static class UpdateReactorTask extends AsyncTask<Void, Void, Reactor> {
+    private static class UpdateReactorTask extends AsyncTask<String, Void, Reactor> {
         private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
         private ReactorDAO dao;
         private Reactor currentReactor;
@@ -152,11 +154,12 @@ public class ReactorRepository {
         }
 
         @Override
-        protected Reactor doInBackground(Void... voids) {
+        protected Reactor doInBackground(String... strings) {
+            String requestUrl = "http://" + strings[0] + ":" + strings[1] + reactorsEndpoint + strings[2];
             Reactor result = null;
             Request request = new Request.Builder()
                     .get()
-                    .url(webApiUrl)
+                    .url(requestUrl)
                     .build();
             try {
                 Response response = client.newCall(request).execute();
