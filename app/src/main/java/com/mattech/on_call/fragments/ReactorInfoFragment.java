@@ -22,6 +22,12 @@ import butterknife.ButterKnife;
 public class ReactorInfoFragment extends Fragment {
     private ReactorViewModel viewModel;
 
+    @BindView(R.id.no_reactor_info)
+    TextView noReactorInfo;
+
+    @BindView(R.id.no_reactor_hint)
+    TextView noReactorHint;
+
     @BindView(R.id.reactor_name)
     TextView reactorName;
 
@@ -52,6 +58,11 @@ public class ReactorInfoFragment extends Fragment {
 
     private void updateUI(Reactor reactor) {
         if (getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED) && reactor != null) {
+            noReactorInfo.setVisibility(View.GONE);
+            noReactorHint.setVisibility(View.GONE);
+            reactorName.setVisibility(View.VISIBLE);
+            reactorPhoneNumber.setVisibility(View.VISIBLE);
+            reactorMail.setVisibility(View.VISIBLE);
             reactorName.setText(reactor.getName());
             reactorPhoneNumber.setText(reactor.getPhoneNumber());
             reactorMail.setText(reactor.getMail());

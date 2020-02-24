@@ -42,4 +42,6 @@
     <string name="team_name_hint">eg. Sky AM L2</string>
     <string name="web_service_port_text">Web service port number</string>
     <string name="web_service_port_hint">eg. 8080</string>
+    <string name="no_reactor_info">No reactor available</string>
+    <string name="no_reactor_hint">Synchronize with the web service</string>
 </resources>
