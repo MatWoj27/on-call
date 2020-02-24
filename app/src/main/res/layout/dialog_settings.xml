@@ -5,6 +5,7 @@
     <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/widget_rounded_background"
         android:orientation="vertical"
         android:theme="@style/SettingsDialogTheme"
         tools:context="com.mattech.on_call.fragments.SettingsDialogFragment">

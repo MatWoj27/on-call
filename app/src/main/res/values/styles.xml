@@ -27,7 +27,7 @@
     <style name="SettingsDialogTheme" parent="AppTheme">
         <item name="android:editTextStyle">@style/RoundedEditTextStyle</item>
         <item name="android:textViewStyle">@style/SettingTextViewStyle</item>
-        <item name="android:background">@drawable/widget_rounded_background</item>
+        <item name="colorAccent">@color/colorSecondary</item>
     </style>
 
     <style name="RoundedEditTextStyle" parent="AppTheme">
