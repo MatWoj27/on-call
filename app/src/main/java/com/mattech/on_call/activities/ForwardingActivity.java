@@ -122,7 +122,6 @@ public class ForwardingActivity extends AppCompatActivity {
             String callForwardingString = String.format("*21*%s#", String.valueOf(reactor.getPhoneNumber()));
             makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE, reactor);
         } else {
-            cancelActiveForwardingResultNotification();
             showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, reactor);
         }
     }
@@ -151,7 +150,6 @@ public class ForwardingActivity extends AppCompatActivity {
                     boolean callForwardingActive = preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false);
                     switch (requestCode) {
                         case START_FORWARDING_REQUEST_CODE:
-                            cancelActiveForwardingResultNotification();
                             if (cfi || !callForwardingActive) {
                                 preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, true).apply();
                                 showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
@@ -202,6 +200,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 .addAction(action)
                 .setAutoCancel(true)
                 .build();
+        cancelActiveForwardingResultNotification();
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
@@ -235,7 +234,6 @@ public class ForwardingActivity extends AppCompatActivity {
         public void reactorNotChanged() {
             SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
             if (preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false)) {
-                cancelActiveForwardingResultNotification();
                 showNotification(ForwardingResultState.REACTOR_NOT_CHANGED, null);
                 finish();
             } else {
@@ -245,7 +243,6 @@ public class ForwardingActivity extends AppCompatActivity {
 
         @Override
         public void updateFailed() {
-            cancelActiveForwardingResultNotification();
             showNotification(ForwardingResultState.UPDATE_FAILURE, null);
             finish();
         }
