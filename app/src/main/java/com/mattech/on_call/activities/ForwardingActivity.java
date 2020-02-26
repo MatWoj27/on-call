@@ -142,36 +142,8 @@ public class ForwardingActivity extends AppCompatActivity {
             requestPermissions(missingPermissions.toArray(new String[missingPermissions.size()]), requestCode);
         } else {
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-            telephonyManager.listen(new PhoneStateListener() {
-                @Override
-                public void onCallForwardingIndicatorChanged(boolean cfi) {
-                    super.onCallForwardingIndicatorChanged(cfi);
-                    SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
-                    boolean callForwardingActive = preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false);
-                    switch (requestCode) {
-                        case START_FORWARDING_REQUEST_CODE:
-                            if (cfi || !callForwardingActive) {
-                                preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, true).apply();
-                                showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
-                                sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
-                            } else {
-                                showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
-                            }
-                            break;
-                        case STOP_FORWARDING_REQUEST_CODE:
-                            if (cfi) {
-                                cancelActiveForwardingResultNotification();
-                                Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_canceled_info), Toast.LENGTH_SHORT).show();
-                                sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
-                                preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false).apply();
-                            } else if (callForwardingActive) {
-                                Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_cancellation_failure_info), Toast.LENGTH_SHORT).show();
-                            }
-                            break;
-                    }
-                    finish();
-                }
-            }, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
+            telephonyManager.listen(new CallForwardingIndicatorListener(reactor, requestCode),
+                    PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
             Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);
             Uri gsmCode = Uri.fromParts("tel", callForwardingString, "#");
             callForwardingIntent.setData(gsmCode);
@@ -244,6 +216,45 @@ public class ForwardingActivity extends AppCompatActivity {
         @Override
         public void updateFailed() {
             showNotification(ForwardingResultState.UPDATE_FAILURE, null);
+            finish();
+        }
+    }
+
+    private class CallForwardingIndicatorListener extends PhoneStateListener {
+        private Reactor reactor;
+        private int requestCode;
+
+        CallForwardingIndicatorListener(@Nullable Reactor reactor, int requestCode) {
+            this.reactor = reactor;
+            this.requestCode = requestCode;
+        }
+
+        @Override
+        public void onCallForwardingIndicatorChanged(boolean cfi) {
+            super.onCallForwardingIndicatorChanged(cfi);
+            SharedPreferences preferences = getSharedPreferences(CALL_FORWARDING_PREFERENCES_NAME, MODE_PRIVATE);
+            boolean callForwardingActive = preferences.getBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false);
+            switch (requestCode) {
+                case START_FORWARDING_REQUEST_CODE:
+                    if (cfi || !callForwardingActive) {
+                        preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, true).apply();
+                        showNotification(ForwardingResultState.FORWARDING_SUCCESS, reactor);
+                        sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STARTED));
+                    } else {
+                        showNotification(ForwardingResultState.FORWARDING_CALL_FAILURE, null);
+                    }
+                    break;
+                case STOP_FORWARDING_REQUEST_CODE:
+                    if (cfi) {
+                        cancelActiveForwardingResultNotification();
+                        Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_canceled_info), Toast.LENGTH_SHORT).show();
+                        sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
+                        preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false).apply();
+                    } else if (callForwardingActive) {
+                        Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_cancellation_failure_info), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
             finish();
         }
     }
