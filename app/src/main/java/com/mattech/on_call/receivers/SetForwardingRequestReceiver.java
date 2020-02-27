@@ -26,7 +26,7 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
             Intent nextUpdateIntent = new Intent(context, SetForwardingRequestReceiver.class);
             nextUpdateIntent.putExtra(EXTRA_UPDATE_ID, updateId);
             nextUpdateIntent.putExtra(EXTRA_REPETITION_DAYS_TAG, repetitionDays);
-            nextUpdateIntent.putExtra(EXTRA_IS_ONE_TIME_UPDATE, true);
+            nextUpdateIntent.putExtra(EXTRA_IS_ONE_TIME_UPDATE, false);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, updateId, nextUpdateIntent, 0);
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextUpdateTargetTime, pendingIntent);
