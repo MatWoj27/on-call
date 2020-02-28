@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.mattech.on_call.activities.ForwardingActivity;
 import com.mattech.on_call.models.Update;
@@ -34,6 +35,9 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
             forwardIntent.putExtra(ForwardingActivity.EXTRA_DISABLE_UPDATE_ID, updateId);
         }
         forwardIntent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+            forwardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         context.startActivity(forwardIntent);
     }
 }

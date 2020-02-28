@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.mattech.on_call.repositories.ReactorRepository;
@@ -27,6 +28,9 @@ public class ReactorViewModel extends AndroidViewModel {
     public void updateReactor() {
         Intent intent = new Intent(getApplication().getApplicationContext(), ForwardingActivity.class);
         intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         getApplication().getApplicationContext().startActivity(intent);
     }
 }
