@@ -2,6 +2,7 @@ package com.mattech.on_call.activities;
 
 import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +39,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
     public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
+    private final String FORWARDING_NOTIFICATION_CHANNEL_ID = "forwarding-notification";
     private final int NOTIFICATION_ID = 1;
     private final String CALL_FORWARDING_PREFERENCES_NAME = "call-forwarding-info";
     private final String CALL_FORWARDING_ACTIVE_PREFERENCE_KEY = "CALL_FORWARDING_ACTIVE";
@@ -152,6 +155,7 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void showNotification(ForwardingResultState state, @Nullable Reactor reactor) {
+        createNotificationChannel();
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Intent actionIntent = new Intent(this, ForwardingActivity.class);
@@ -162,7 +166,11 @@ public class ForwardingActivity extends AppCompatActivity {
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);
         Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
                 getResources().getString(state.buttonTextId), buttonPendingIntent).build();
-        Notification notification = new Notification.Builder(this)
+        Notification.Builder builder = new Notification.Builder(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(FORWARDING_NOTIFICATION_CHANNEL_ID);
+        }
+        Notification notification = builder
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
                 .setContentText(getResources().getString(state.textId))
@@ -173,12 +181,23 @@ public class ForwardingActivity extends AppCompatActivity {
                 .setAutoCancel(true)
                 .build();
         cancelActiveForwardingResultNotification();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String name = getString(R.string.forwarding_notification_channel_name);
+            String description = getString(R.string.forwarding_notification_channel_description);
+            NotificationChannel channel = new NotificationChannel(FORWARDING_NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
     private void cancelActiveForwardingResultNotification() {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
         for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
             if (notification.getId() == NOTIFICATION_ID) {
                 notificationManager.cancel(NOTIFICATION_ID);
