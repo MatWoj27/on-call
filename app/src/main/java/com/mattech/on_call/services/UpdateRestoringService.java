@@ -3,7 +3,6 @@ package com.mattech.on_call.services;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -46,7 +45,7 @@ public class UpdateRestoringService extends IntentService {
     }
 
     private void scheduleUpdate(Update update, long updateTimeInMillis) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = getSystemService(AlarmManager.class);
         Intent intent = new Intent(this, SetForwardingRequestReceiver.class);
         if (!update.isOneTimeUpdate()) {
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_REPETITION_DAYS_TAG, update.getRepetitionDays());

@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -144,7 +143,7 @@ public class ForwardingActivity extends AppCompatActivity {
         if (missingPermissions.size() > 0) {
             requestPermissions(missingPermissions.toArray(new String[missingPermissions.size()]), requestCode);
         } else {
-            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            TelephonyManager telephonyManager = getSystemService(TelephonyManager.class);
             telephonyManager.listen(new CallForwardingIndicatorListener(reactor, requestCode),
                     PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
             Intent callForwardingIntent = new Intent(Intent.ACTION_CALL);

@@ -5,7 +5,6 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -99,7 +98,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_ONE_TIME_UPDATE, update.isOneTimeUpdate());
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
             pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+            AlarmManager alarmManager = getApplication().getSystemService(AlarmManager.class);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime, pendingIntent);
         } catch (ParseException e) {
             if (update.isOneTimeUpdate()) {
@@ -111,7 +110,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     }
 
     private void cancelScheduledUpdate(Update update) {
-        AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = getApplication().getSystemService(AlarmManager.class);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
