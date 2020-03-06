@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.mattech.on_call.R;
-import com.mattech.on_call.utils.IpAddressValidator;
+import com.mattech.on_call.utils.IpAddressUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +43,8 @@ public class SettingsDialogFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         presetViews();
         saveBtn.setOnClickListener(v -> {
-            if (IpAddressValidator.isValidIPv4(webServiceIp.getText().toString())) {
-                updatePreferenceIfChanged(WEB_API_IP_PREFERENCE_KEY, webServiceIp.getText().toString());
+            if (IpAddressUtil.isValidIPv4(webServiceIp.getText().toString())) {
+                updatePreferenceIfChanged(WEB_API_IP_PREFERENCE_KEY, IpAddressUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
             }
             updatePreferenceIfChanged(WEB_API_PORT_PREFERENCE_KEY, webServicePort.getText().toString());
             updatePreferenceIfChanged(WEB_API_TEAM_PREFERENCE_KEY, teamName.getText().toString());
