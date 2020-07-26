@@ -12,8 +12,10 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,7 +61,9 @@ public class ForwardingActivity extends AppCompatActivity {
         int pendingIntentRequestCode;
         int buttonActionRequestCode;
 
-        ForwardingResultState(int titleId, int textId, int iconId, int buttonTextId, int buttonIconId, int pendingIntentRequestCode, int buttonActionRequestCode) {
+        ForwardingResultState(@StringRes int titleId, @StringRes int textId, @DrawableRes int iconId,
+                              @StringRes int buttonTextId, @DrawableRes int buttonIconId,
+                              int pendingIntentRequestCode, int buttonActionRequestCode) {
             this.titleId = titleId;
             this.textId = textId;
             this.iconId = iconId;
