@@ -121,7 +121,7 @@ public class ForwardingActivity extends AppCompatActivity {
 
     private void startForwarding(Reactor reactor) {
         if (reactor != null && reactor.getPhoneNumber() != null) {
-            String callForwardingString = String.format("*21*%s#", String.valueOf(reactor.getPhoneNumber()));
+            String callForwardingString = String.format("*21*%s#", reactor.getPhoneNumber());
             makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE, reactor);
         } else {
             showNotification(ForwardingResultState.FORWARDING_FAILURE_NO_REACTOR, reactor);
