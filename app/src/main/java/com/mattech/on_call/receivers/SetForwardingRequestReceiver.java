@@ -21,7 +21,7 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
         Intent forwardIntent = new Intent(context, ForwardingActivity.class);
         int updateId = intent.getIntExtra(EXTRA_UPDATE_ID, 0);
         if (!intent.getBooleanExtra(EXTRA_IS_ONE_TIME_UPDATE, false)) {
-            boolean repetitionDays[] = intent.getBooleanArrayExtra(EXTRA_REPETITION_DAYS_TAG);
+            boolean[] repetitionDays = intent.getBooleanArrayExtra(EXTRA_REPETITION_DAYS_TAG);
             long updateTargetTime = intent.getLongExtra(EXTRA_UPDATE_TARGET_TIME, 0);
             long nextUpdateTargetTime = Update.getNextRepetitionInMillis(updateTargetTime, repetitionDays);
             Intent nextUpdateIntent = new Intent(context, SetForwardingRequestReceiver.class);

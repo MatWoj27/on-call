@@ -137,7 +137,7 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void makeCall(String callForwardingString, int requestCode, @Nullable Reactor reactor) {
-        String permissions[] = {Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
+        String[] permissions = {Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE};
         List<String> missingPermissions = new ArrayList<>();
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {

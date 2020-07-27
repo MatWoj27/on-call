@@ -21,7 +21,7 @@ public class UpdateTypeConverters {
     }
 
     @TypeConverter
-    public static String booleanArrayToString(boolean array[]) {
+    public static String booleanArrayToString(boolean[] array) {
         return gson.toJson(array);
     }
 }

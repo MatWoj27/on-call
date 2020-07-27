@@ -24,7 +24,7 @@ public class Update {
     private boolean oneTimeUpdate;
 
     @TypeConverters(UpdateTypeConverters.class)
-    private boolean repetitionDays[];
+    private boolean[] repetitionDays;
     private String exactDate;
 
     @NonNull
@@ -114,7 +114,7 @@ public class Update {
         return repetitionDays;
     }
 
-    public void setRepetitionDays(boolean repetitionDays[]) {
+    public void setRepetitionDays(boolean[] repetitionDays) {
         this.repetitionDays = repetitionDays;
     }
 
@@ -185,7 +185,7 @@ public class Update {
         return calendar.getTimeInMillis();
     }
 
-    public static long getNextRepetitionInMillis(long previousUpdateTimeInMillis, @NonNull boolean repetitionDays[]) {
+    public static long getNextRepetitionInMillis(long previousUpdateTimeInMillis, @NonNull boolean[] repetitionDays) {
         Calendar calendar = Calendar.getInstance();
         long nextUpdateTargetTime = 0;
         int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 2 == -1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 2;
