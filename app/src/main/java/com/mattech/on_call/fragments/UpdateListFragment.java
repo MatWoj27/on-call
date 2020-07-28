@@ -46,17 +46,18 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
         recyclerView.setAdapter(adapter);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 viewModel.deleteUpdate(adapter.getUpdateAt(viewHolder.getAdapterPosition() - 1));
             }
 
             @Override
-            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 return viewHolder.getAdapterPosition() == 0 ? 0 : super.getSwipeDirs(recyclerView, viewHolder);
             }
         }).attachToRecyclerView(recyclerView);
