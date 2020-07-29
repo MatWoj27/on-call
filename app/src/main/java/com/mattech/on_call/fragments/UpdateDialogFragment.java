@@ -241,7 +241,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private class DayClickListener implements View.OnClickListener {
         private int index;
 
-        public DayClickListener(int index) {
+        DayClickListener(int index) {
             this.index = index;
         }
 
