@@ -44,6 +44,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private boolean initiallyDateSetToToday = true;
     private boolean currentlyDateSetToToday = true;
     private final TimeTickListener timeTickListener = new TimeTickListener();
+    private final NumberPicker.Formatter timePickerFormatter = i -> String.format("%02d", i);
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
@@ -264,15 +265,15 @@ public class UpdateDialogFragment extends DialogFragment {
     }
 
     private void presetTimePickers(int hour, int minute) {
+        presetHourPicker(hour);
+        presetMinutePicker(minute);
+    }
+
+    private void presetHourPicker(int hour) {
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(23);
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
         hourPicker.setValue(hour);
-        minutePicker.setValue(minute);
-        NumberPicker.Formatter formatter = i -> String.format("%02d", i);
-        hourPicker.setFormatter(formatter);
-        minutePicker.setFormatter(formatter);
+        hourPicker.setFormatter(timePickerFormatter);
         hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (initiallyDateSetToToday) {
                 int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -294,6 +295,13 @@ public class UpdateDialogFragment extends DialogFragment {
                 }
             }
         });
+    }
+
+    private void presetMinutePicker(int minute) {
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+        minutePicker.setValue(minute);
+        minutePicker.setFormatter(timePickerFormatter);
         minutePicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (initiallyDateSetToToday && hourPicker.getValue() == Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
                 int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
