@@ -212,7 +212,7 @@ public class UpdateDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(IS_EDIT_TAG, isEdit);
         outState.putInt(EDIT_UPDATE_ID_TAG, editUpdateId);
