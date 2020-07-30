@@ -54,19 +54,21 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
 
     @Override
     public void addUpdate() {
-        UpdateDialogFragment fragment = new UpdateDialogFragment();
-        fragment.setListener(this);
-        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CardViewTheme);
-        fragment.show(getActivity().getSupportFragmentManager(), "add_update");
+        getUpdateDialogFragment().show(getActivity().getSupportFragmentManager(), "add_update");
     }
 
     @Override
     public void editUpdate(Update updateToEdit) {
+        UpdateDialogFragment fragment = getUpdateDialogFragment();
+        fragment.setUpdateToEdit(updateToEdit);
+        fragment.show(getActivity().getSupportFragmentManager(), "edit_update");
+    }
+
+    private UpdateDialogFragment getUpdateDialogFragment() {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
         fragment.setListener(this);
-        fragment.setUpdateToEdit(updateToEdit);
         fragment.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CardViewTheme);
-        fragment.show(getActivity().getSupportFragmentManager(), "edit_update");
+        return fragment;
     }
 
     @Override
