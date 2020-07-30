@@ -2,6 +2,7 @@ package com.mattech.on_call.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,8 +109,9 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return position;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
         View view;
         switch (viewType) {
