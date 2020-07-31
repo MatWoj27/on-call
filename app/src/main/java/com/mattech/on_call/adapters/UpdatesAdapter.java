@@ -83,8 +83,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         TextView[] getDayViewsArray() {
-            TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
-            return dayViews;
+            return new TextView[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         }
     }
 
