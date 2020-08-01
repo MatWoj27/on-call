@@ -29,7 +29,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private List<Update> updates = new ArrayList<>();
     private UpdateListener listener;
     private volatile boolean clickEnabled = true;
-    public static final long ADD_ITEM_ID = -2;
+    private static final long ADD_ITEM_ID = -2;
 
     public interface UpdateListener {
         void addUpdate();
