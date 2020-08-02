@@ -28,7 +28,7 @@ public class Update {
     private String exactDate;
 
     @NonNull
-    private String time;
+    private String time = "12:00";
 
     @Ignore
     public static final String TIME_FORMAT = "HH:mm";
@@ -126,11 +126,12 @@ public class Update {
         this.exactDate = exactDate;
     }
 
+    @NonNull
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(@NonNull String time) {
         this.time = time;
     }
 
