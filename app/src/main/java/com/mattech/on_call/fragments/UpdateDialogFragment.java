@@ -98,7 +98,7 @@ public class UpdateDialogFragment extends DialogFragment {
     Button okBtn;
 
     public interface OnFragmentInteractionListener {
-        void updateCreated(Update update);
+        void updateCreated(@NonNull Update update);
 
         void updateEdited(Update update);
 
@@ -226,6 +226,7 @@ public class UpdateDialogFragment extends DialogFragment {
         outState.putBoolean(CURR_DATE_SET_TO_TODAY_TAG, currentlyDateSetToToday);
     }
 
+    @NonNull
     private Update createUpdateFromInput() {
         Update update = new Update();
         if (isEdit) {

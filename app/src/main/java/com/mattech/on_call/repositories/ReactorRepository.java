@@ -95,7 +95,7 @@ public class ReactorRepository {
         task.execute();
     }
 
-    public void addUpdate(Update update) {
+    public void addUpdate(@NonNull Update update) {
         InsertUpdateTask task = new InsertUpdateTask(updateDAO, updateListener);
         task.execute(update);
     }
@@ -233,20 +233,20 @@ public class ReactorRepository {
         private UpdateDAO dao;
         private OperationOnUpdateListener listener;
 
-        InsertUpdateTask(UpdateDAO dao, OperationOnUpdateListener listener) {
+        InsertUpdateTask(@NonNull UpdateDAO dao, @Nullable OperationOnUpdateListener listener) {
             this.dao = dao;
             this.listener = listener;
         }
 
         @Override
-        protected Update doInBackground(Update... updates) {
-            Long id = dao.insert(updates[0]);
-            updates[0].setId(id.intValue());
+        protected Update doInBackground(@NonNull Update... updates) {
+            long id = dao.insert(updates[0]);
+            updates[0].setId((int) id);
             return updates[0];
         }
 
         @Override
-        protected void onPostExecute(Update update) {
+        protected void onPostExecute(@NonNull Update update) {
             if (listener != null) {
                 listener.updateAdded(update);
             }
@@ -284,12 +284,12 @@ public class ReactorRepository {
     private static class DeleteUpdateTask extends AsyncTask<Update, Void, Void> {
         UpdateDAO dao;
 
-        DeleteUpdateTask(UpdateDAO dao) {
+        DeleteUpdateTask(@NonNull UpdateDAO dao) {
             this.dao = dao;
         }
 
         @Override
-        protected Void doInBackground(Update... updates) {
+        protected Void doInBackground(@NonNull Update... updates) {
             dao.deleteById(updates[0].getId());
             return null;
         }

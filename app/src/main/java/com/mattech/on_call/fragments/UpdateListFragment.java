@@ -77,7 +77,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     }
 
     @Override
-    public void updateCreated(Update update) {
+    public void updateCreated(@NonNull Update update) {
         viewModel.addUpdate(update);
     }
 

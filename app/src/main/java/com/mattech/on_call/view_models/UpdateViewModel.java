@@ -34,7 +34,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         reactorRepository.setUpdateListener(this);
     }
 
-    public void addUpdate(Update update) {
+    public void addUpdate(@NonNull Update update) {
         reactorRepository.addUpdate(update);
     }
 
@@ -62,7 +62,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         reactorRepository.updateUpdate(update);
     }
 
-    public void deleteUpdate(Update update) {
+    public void deleteUpdate(@NonNull Update update) {
         if (update.isEnabled()) {
             cancelScheduledUpdate(update);
         }
