@@ -110,7 +110,7 @@ public class ReactorRepository {
         task.execute(id);
     }
 
-    public void deleteUpdate(Update update) {
+    public void deleteUpdate(@NonNull Update update) {
         DeleteUpdateTask task = new DeleteUpdateTask(updateDAO);
         task.execute(update);
     }
