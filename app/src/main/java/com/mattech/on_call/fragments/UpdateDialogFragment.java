@@ -234,7 +234,7 @@ public class UpdateDialogFragment extends DialogFragment {
         }
         update.setEnabled(true);
         update.setOneTimeUpdate(!displayDays);
-        update.setTime(String.valueOf(hourPicker.getValue()) + ":" + String.valueOf(minutePicker.getValue()));
+        update.setTime(hourPicker.getValue() + ":" + minutePicker.getValue());
         update.setExactDate(exactDateView.getText().toString());
         update.setRepetitionDays(activeDays);
         return update;
