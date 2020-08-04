@@ -116,8 +116,8 @@ public class ReactorRepository {
     }
 
     private static class GetReactorTask extends AsyncTask<Void, Void, Reactor> {
-        private ReactorDAO dao;
-        private ReactorRetrieveListener listener;
+        ReactorDAO dao;
+        ReactorRetrieveListener listener;
 
         GetReactorTask(ReactorDAO dao, ReactorRetrieveListener listener) {
             this.dao = dao;
@@ -138,11 +138,11 @@ public class ReactorRepository {
     }
 
     private static class UpdateReactorTask extends AsyncTask<String, Void, Reactor> {
-        private final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
-        private ReactorDAO dao;
-        private Reactor currentReactor;
-        private ReactorUpdateListener listener;
-        private final OkHttpClient client = new OkHttpClient.Builder()
+        final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
+        ReactorDAO dao;
+        Reactor currentReactor;
+        ReactorUpdateListener listener;
+        final OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
                 .build();
@@ -193,7 +193,7 @@ public class ReactorRepository {
     }
 
     private static class InsertReactorTask extends AsyncTask<Reactor, Void, Void> {
-        private ReactorDAO dao;
+        ReactorDAO dao;
 
         InsertReactorTask(ReactorDAO dao) {
             this.dao = dao;
@@ -208,8 +208,8 @@ public class ReactorRepository {
     }
 
     private static class GetActiveUpdatesTask extends AsyncTask<Void, Void, List<Update>> {
-        private UpdateDAO dao;
-        private UpdatesRetrievedListener listener;
+        UpdateDAO dao;
+        UpdatesRetrievedListener listener;
 
         GetActiveUpdatesTask(UpdateDAO dao, UpdatesRetrievedListener listener) {
             this.dao = dao;
@@ -230,8 +230,8 @@ public class ReactorRepository {
     }
 
     private static class InsertUpdateTask extends AsyncTask<Update, Void, Update> {
-        private UpdateDAO dao;
-        private OperationOnUpdateListener listener;
+        UpdateDAO dao;
+        OperationOnUpdateListener listener;
 
         InsertUpdateTask(@NonNull UpdateDAO dao, @Nullable OperationOnUpdateListener listener) {
             this.dao = dao;
@@ -268,7 +268,7 @@ public class ReactorRepository {
     }
 
     private static class DisableUpdateTask extends AsyncTask<Integer, Void, Void> {
-        private UpdateDAO dao;
+        UpdateDAO dao;
 
         DisableUpdateTask(UpdateDAO dao) {
             this.dao = dao;
