@@ -61,7 +61,7 @@ public class SettingsDialogFragment extends DialogFragment {
         teamName.setText(sharedPreferences.getString(WEB_API_TEAM_PREFERENCE_KEY, ""));
     }
 
-    private void updatePreferenceIfChanged(String key, String newValue) {
+    private void updatePreferenceIfChanged(String key, @NonNull String newValue) {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
         String currentValue = sharedPreferences.getString(key, null);
         if (!newValue.trim().isEmpty() && (currentValue == null || !currentValue.equals(newValue))) {
