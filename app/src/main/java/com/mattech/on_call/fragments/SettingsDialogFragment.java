@@ -3,6 +3,7 @@ package com.mattech.on_call.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -66,6 +67,15 @@ public class SettingsDialogFragment extends DialogFragment {
         String currentValue = sharedPreferences.getString(key, null);
         if (!newValue.trim().isEmpty() && (currentValue == null || !currentValue.equals(newValue))) {
             sharedPreferences.edit().putString(key, newValue).apply();
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getTargetFragment() instanceof DialogInterface.OnDismissListener) {
+            DialogInterface.OnDismissListener listener = (DialogInterface.OnDismissListener) getTargetFragment();
+            listener.onDismiss(dialog);
         }
     }
 }
