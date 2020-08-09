@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mattech.on_call.fragments.SettingsDialogFragment;
@@ -40,10 +41,13 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
     public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
+
+    private static final String ERROR_TAG = ForwardingActivity.class.getSimpleName();
     private final String FORWARDING_NOTIFICATION_CHANNEL_ID = "forwarding-notification";
     private final int NOTIFICATION_ID = 1;
     private final String CALL_FORWARDING_PREFERENCES_NAME = "call-forwarding-info";
     private final String CALL_FORWARDING_ACTIVE_PREFERENCE_KEY = "CALL_FORWARDING_ACTIVE";
+
     private ReactorRepository repository;
 
     private enum ForwardingResultState {
@@ -83,7 +87,29 @@ public class ForwardingActivity extends AppCompatActivity {
         if (intent.hasExtra(EXTRA_DISABLE_UPDATE_ID)) {
             repository.disableUpdate(intent.getIntExtra(EXTRA_DISABLE_UPDATE_ID, -1));
         }
-        switch (intent.getIntExtra(ACTION_TAG, 0)) {
+        handleForwardingAction(intent.getIntExtra(ACTION_TAG, 0));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int resultCode : grantResults) {
+            if (resultCode != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, getResources().getString(R.string.missing_permissions_info), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        switch (requestCode) {
+            case START_FORWARDING_REQUEST_CODE:
+                repository.getReactor(this::startForwarding);
+                break;
+            case STOP_FORWARDING_REQUEST_CODE:
+                stopForwarding();
+                break;
+        }
+    }
+
+    private void handleForwardingAction(final int actionCode) {
+        switch (actionCode) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
                     ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
@@ -101,24 +127,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 repository.getReactor(this::startForwarding);
                 break;
             default:
-                break;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        for (int resultCode : grantResults) {
-            if (resultCode != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, getResources().getString(R.string.missing_permissions_info), Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-        switch (requestCode) {
-            case START_FORWARDING_REQUEST_CODE:
-                repository.getReactor(this::startForwarding);
-                break;
-            case STOP_FORWARDING_REQUEST_CODE:
-                stopForwarding();
+                Log.wtf(ERROR_TAG, "Unknown action request code received: " + actionCode);
                 break;
         }
     }
