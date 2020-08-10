@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.mattech.on_call.daos.UpdateDAO;
 import com.mattech.on_call.models.Update;
@@ -14,7 +15,8 @@ public abstract class UpdateDatabase extends RoomDatabase {
 
     public abstract UpdateDAO getUpdateDAO();
 
-    public static UpdateDatabase getInstance(final Context context) {
+    @NonNull
+    public static UpdateDatabase getInstance(@NonNull final Context context) {
         if (instance == null) {
             synchronized (UpdateDatabase.class) {
                 if (instance == null) {
