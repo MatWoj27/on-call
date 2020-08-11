@@ -1,5 +1,7 @@
 package com.mattech.on_call.utils;
 
+import android.support.annotation.NonNull;
+
 import java.util.regex.Pattern;
 
 public class IpAddressUtil {
@@ -8,11 +10,12 @@ public class IpAddressUtil {
             ZERO_TO_255 + "\\." + ZERO_TO_255;
     private static final Pattern IPV4_PATTERN = Pattern.compile(IPV4_REGEX);
 
-    public static boolean isValidIPv4(String address) {
+    public static boolean isValidIPv4(@NonNull String address) {
         return IPV4_PATTERN.matcher(address).matches();
     }
 
-    public static String removeIPv4LeadingZeros(String address) {
+    @NonNull
+    public static String removeIPv4LeadingZeros(@NonNull String address) {
         StringBuilder result = new StringBuilder();
         String[] octets = address.split("\\.");
         for (String octet : octets) {
