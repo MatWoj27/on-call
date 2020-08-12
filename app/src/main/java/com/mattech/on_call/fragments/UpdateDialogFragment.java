@@ -192,8 +192,8 @@ public class UpdateDialogFragment extends DialogFragment {
                 } else {
                     listener.updateCreated(createUpdateFromInput());
                 }
-                dismiss();
             }
+            dismiss();
         });
         cancelBtn.setOnClickListener(v -> dismiss());
         builder.setView(view);
