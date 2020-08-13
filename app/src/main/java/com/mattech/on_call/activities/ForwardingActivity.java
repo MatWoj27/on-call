@@ -216,7 +216,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
 
         @Override
-        public void reactorUpdated(Reactor newReactor) {
+        public void reactorUpdated(@NonNull Reactor newReactor) {
             Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
             reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, newReactor.getName());
             reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, newReactor.getPhoneNumber());
