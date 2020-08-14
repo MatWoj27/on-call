@@ -48,7 +48,7 @@ public class Reactor {
                 try {
                     field.set(reactor, value);
                 } catch (IllegalAccessException e) {
-                    Log.e(ERROR_TAG, "error", e);
+                    Log.e(ERROR_TAG, "Could not set " + field.getName() + " field using reflection because it is either inaccessible or final", e);
                     return null;
                 }
             }
