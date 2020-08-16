@@ -2,4 +2,5 @@
 <resources>
     <dimen name="component_margin">8dp</dimen>
     <dimen name="day_view_diameter">30dp</dimen>
+    <dimen name="update_item_height">64dp</dimen>
 </resources>
