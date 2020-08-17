@@ -132,7 +132,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    private void startForwarding(Reactor reactor) {
+    private void startForwarding(@Nullable Reactor reactor) {
         if (reactor != null && !reactor.getPhoneNumber().isEmpty()) {
             String callForwardingString = String.format("*21*%s#", reactor.getPhoneNumber());
             makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE, reactor);
