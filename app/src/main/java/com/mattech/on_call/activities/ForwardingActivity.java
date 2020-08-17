@@ -133,7 +133,7 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void startForwarding(Reactor reactor) {
-        if (reactor != null && reactor.getPhoneNumber() != null) {
+        if (reactor != null && !reactor.getPhoneNumber().isEmpty()) {
             String callForwardingString = String.format("*21*%s#", reactor.getPhoneNumber());
             makeCall(callForwardingString, START_FORWARDING_REQUEST_CODE, reactor);
         } else {
@@ -225,7 +225,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
 
         @Override
-        public void reactorUpdated(Reactor newReactor) {
+        public void reactorUpdated(@NonNull Reactor newReactor) {
             Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
             reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, newReactor.getName());
             reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, newReactor.getPhoneNumber());
