@@ -64,8 +64,8 @@ public class SettingsDialogFragment extends DialogFragment {
 
     private void updatePreferenceIfChanged(String key, @NonNull String newValue) {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String currentValue = sharedPreferences.getString(key, null);
-        if (!newValue.trim().isEmpty() && (currentValue == null || !currentValue.equals(newValue))) {
+        String currentValue = sharedPreferences.getString(key, "");
+        if (!newValue.trim().isEmpty() && !currentValue.equals(newValue)) {
             sharedPreferences.edit().putString(key, newValue).apply();
         }
     }
