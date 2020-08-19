@@ -44,6 +44,7 @@
     <string name="web_service_port_hint">eg. 8080</string>
     <string name="no_reactor_info">No reactor available</string>
     <string name="no_reactor_hint">Synchronize with the web service</string>
+    <string name="web_service_ip_not_configured_warning">The ip address of the web service must be configured in order to update the reactor</string>
 
     <!-- Forwarding notification channel info -->
     <string name="forwarding_notification_channel_name">Forwarding notifications</string>
