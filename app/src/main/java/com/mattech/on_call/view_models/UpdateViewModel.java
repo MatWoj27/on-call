@@ -51,7 +51,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         }
     }
 
-    public void updateUpdate(Update update) {
+    public void updateUpdate(@NonNull Update update) {
         if (update.isEnabled()) {
             try {
                 scheduleUpdate(update);
@@ -69,7 +69,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         reactorRepository.deleteUpdate(update);
     }
 
-    public void updateEnableStatusChanged(Update update) {
+    public void updateEnableStatusChanged(@NonNull Update update) {
         if (update.isEnabled()) {
             try {
                 scheduleUpdate(update);

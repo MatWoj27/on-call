@@ -72,7 +72,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     }
 
     @Override
-    public void updateEnableStatusChanged(Update update) {
+    public void updateEnableStatusChanged(@NonNull Update update) {
         viewModel.updateEnableStatusChanged(update);
     }
 
@@ -82,7 +82,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     }
 
     @Override
-    public void updateEdited(Update editedUpdate) {
+    public void updateEdited(@NonNull Update editedUpdate) {
         viewModel.updateUpdate(editedUpdate);
     }
 

@@ -256,7 +256,7 @@ public class ReactorRepository {
     private static class UpdateUpdateTask extends AsyncTask<Update, Void, Void> {
         UpdateDAO dao;
 
-        UpdateUpdateTask(UpdateDAO dao) {
+        UpdateUpdateTask(@NonNull UpdateDAO dao) {
             this.dao = dao;
         }
 
