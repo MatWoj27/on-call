@@ -270,7 +270,7 @@ public class ReactorRepository {
     private static class DisableUpdateTask extends AsyncTask<Integer, Void, Void> {
         UpdateDAO dao;
 
-        DisableUpdateTask(UpdateDAO dao) {
+        DisableUpdateTask(@NonNull UpdateDAO dao) {
             this.dao = dao;
         }
 
