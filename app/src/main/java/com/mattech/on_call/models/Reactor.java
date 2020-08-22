@@ -39,12 +39,7 @@ public class Reactor {
             if (attr != null) {
                 String jsonFieldName = attr.name().equals("") ? field.getName() : attr.name();
                 field.setAccessible(true);
-                Object value;
-                if (attr.required()) {
-                    value = json.get(jsonFieldName);
-                } else {
-                    value = json.opt(jsonFieldName);
-                }
+                Object value = attr.required() ? json.get(jsonFieldName) : json.opt(jsonFieldName);
                 try {
                     field.set(reactor, value);
                 } catch (IllegalAccessException e) {
