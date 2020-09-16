@@ -3,10 +3,13 @@ package com.mattech.on_call.view_models;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.mattech.on_call.fragments.SettingsDialogFragment;
 import com.mattech.on_call.repositories.ReactorRepository;
 import com.mattech.on_call.activities.ForwardingActivity;
 import com.mattech.on_call.models.Reactor;
@@ -25,12 +28,26 @@ public class ReactorViewModel extends AndroidViewModel {
         return reactor;
     }
 
-    public void updateReactor() {
+    public boolean onUpdateReactorClick() {
+        if (webApiPreferencesSet()) {
+            updateReactor();
+            return true;
+        }
+        return false;
+    }
+
+    private void updateReactor() {
         Intent intent = new Intent(getApplication().getApplicationContext(), ForwardingActivity.class);
         intent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         getApplication().getApplicationContext().startActivity(intent);
+    }
+
+    private boolean webApiPreferencesSet() {
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(SettingsDialogFragment.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String currentValue = sharedPreferences.getString(SettingsDialogFragment.WEB_API_IP_PREFERENCE_KEY, "");
+        return !currentValue.isEmpty();
     }
 }

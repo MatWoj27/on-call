@@ -1,9 +1,7 @@
 package com.mattech.on_call.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,9 +38,7 @@ public class ReactorInfoFragment extends Fragment implements DialogInterface.OnD
         View view = binding.getRoot();
         ButterKnife.bind(this, view);
         updateNowBtn.setOnClickListener(v -> {
-            if (webApiPreferencesSet()) {
-                viewModel.updateReactor();
-            } else {
+            if (!viewModel.onUpdateReactorClick()) {
                 showSettingsFragment();
             }
         });
@@ -59,12 +55,6 @@ public class ReactorInfoFragment extends Fragment implements DialogInterface.OnD
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
         clickEnabled = true;
-    }
-
-    private boolean webApiPreferencesSet() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(SettingsDialogFragment.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String currentValue = sharedPreferences.getString(SettingsDialogFragment.WEB_API_IP_PREFERENCE_KEY, "");
-        return !currentValue.isEmpty();
     }
 
     private synchronized void showSettingsFragment() {
