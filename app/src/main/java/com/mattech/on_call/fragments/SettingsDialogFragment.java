@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.mattech.on_call.Constants;
 import com.mattech.on_call.R;
 import com.mattech.on_call.utils.IpAddressUtil;
 
@@ -19,10 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingsDialogFragment extends DialogFragment {
-    public static final String WEB_API_PREFERENCES_NAME = "web-api-preferences";
-    public static final String WEB_API_IP_PREFERENCE_KEY = "web-api-ip";
-    public static final String WEB_API_PORT_PREFERENCE_KEY = "web-api-port";
-    public static final String WEB_API_TEAM_PREFERENCE_KEY = "team-name";
 
     @BindView(R.id.web_service_ip)
     EditText webServiceIp;
@@ -45,10 +42,10 @@ public class SettingsDialogFragment extends DialogFragment {
         presetViews();
         saveBtn.setOnClickListener(v -> {
             if (IpAddressUtil.isValidIPv4(webServiceIp.getText().toString())) {
-                updatePreferenceIfChanged(WEB_API_IP_PREFERENCE_KEY, IpAddressUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
+                updatePreferenceIfChanged(Constants.WEB_API_IP_PREFERENCE_KEY, IpAddressUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
             }
-            updatePreferenceIfChanged(WEB_API_PORT_PREFERENCE_KEY, webServicePort.getText().toString());
-            updatePreferenceIfChanged(WEB_API_TEAM_PREFERENCE_KEY, teamName.getText().toString());
+            updatePreferenceIfChanged(Constants.WEB_API_PORT_PREFERENCE_KEY, webServicePort.getText().toString());
+            updatePreferenceIfChanged(Constants.WEB_API_TEAM_PREFERENCE_KEY, teamName.getText().toString());
             dismiss();
         });
         builder.setView(view);
@@ -56,14 +53,14 @@ public class SettingsDialogFragment extends DialogFragment {
     }
 
     private void presetViews() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        webServiceIp.setText(sharedPreferences.getString(WEB_API_IP_PREFERENCE_KEY, ""));
-        webServicePort.setText(sharedPreferences.getString(WEB_API_PORT_PREFERENCE_KEY, ""));
-        teamName.setText(sharedPreferences.getString(WEB_API_TEAM_PREFERENCE_KEY, ""));
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        webServiceIp.setText(sharedPreferences.getString(Constants.WEB_API_IP_PREFERENCE_KEY, ""));
+        webServicePort.setText(sharedPreferences.getString(Constants.WEB_API_PORT_PREFERENCE_KEY, ""));
+        teamName.setText(sharedPreferences.getString(Constants.WEB_API_TEAM_PREFERENCE_KEY, ""));
     }
 
     private void updatePreferenceIfChanged(String key, @NonNull String newValue) {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
         String currentValue = sharedPreferences.getString(key, "");
         if (!newValue.trim().isEmpty() && !currentValue.equals(newValue)) {
             sharedPreferences.edit().putString(key, newValue).apply();

@@ -24,7 +24,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mattech.on_call.fragments.SettingsDialogFragment;
+import com.mattech.on_call.Constants;
 import com.mattech.on_call.receivers.ForwardingAppWidgetProvider;
 import com.mattech.on_call.events.ForwardingEvent;
 import com.mattech.on_call.R;
@@ -113,10 +113,10 @@ public class ForwardingActivity extends AppCompatActivity {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
                     ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
-                    SharedPreferences webApiPreferences = getSharedPreferences(SettingsDialogFragment.WEB_API_PREFERENCES_NAME, MODE_PRIVATE);
-                    String webApiIp = webApiPreferences.getString(SettingsDialogFragment.WEB_API_IP_PREFERENCE_KEY, "");
-                    String webApiPort = webApiPreferences.getString(SettingsDialogFragment.WEB_API_PORT_PREFERENCE_KEY, "");
-                    String webApiTeam = webApiPreferences.getString(SettingsDialogFragment.WEB_API_TEAM_PREFERENCE_KEY, "");
+                    SharedPreferences webApiPreferences = getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, MODE_PRIVATE);
+                    String webApiIp = webApiPreferences.getString(Constants.WEB_API_IP_PREFERENCE_KEY, "");
+                    String webApiPort = webApiPreferences.getString(Constants.WEB_API_PORT_PREFERENCE_KEY, "");
+                    String webApiTeam = webApiPreferences.getString(Constants.WEB_API_TEAM_PREFERENCE_KEY, "");
                     repository.updateReactor(currentReactor, listener, webApiIp, webApiPort, webApiTeam);
                 });
                 break;

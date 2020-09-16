@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.mattech.on_call.fragments.SettingsDialogFragment;
+import com.mattech.on_call.Constants;
 import com.mattech.on_call.repositories.ReactorRepository;
 import com.mattech.on_call.activities.ForwardingActivity;
 import com.mattech.on_call.models.Reactor;
@@ -46,8 +46,8 @@ public class ReactorViewModel extends AndroidViewModel {
     }
 
     private boolean webApiPreferencesSet() {
-        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(SettingsDialogFragment.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String currentValue = sharedPreferences.getString(SettingsDialogFragment.WEB_API_IP_PREFERENCE_KEY, "");
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String currentValue = sharedPreferences.getString(Constants.WEB_API_IP_PREFERENCE_KEY, "");
         return !currentValue.isEmpty();
     }
 }
