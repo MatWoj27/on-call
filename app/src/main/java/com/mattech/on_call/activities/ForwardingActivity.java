@@ -24,7 +24,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.mattech.on_call.Constants;
+import com.mattech.on_call.models.WebApiSettings;
 import com.mattech.on_call.receivers.ForwardingAppWidgetProvider;
 import com.mattech.on_call.events.ForwardingEvent;
 import com.mattech.on_call.R;
@@ -113,11 +113,7 @@ public class ForwardingActivity extends AppCompatActivity {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
                     ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
-                    SharedPreferences webApiPreferences = getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, MODE_PRIVATE);
-                    String webApiIp = webApiPreferences.getString(Constants.WEB_API_IP_PREFERENCE_KEY, "");
-                    String webApiPort = webApiPreferences.getString(Constants.WEB_API_PORT_PREFERENCE_KEY, "");
-                    String webApiTeam = webApiPreferences.getString(Constants.WEB_API_TEAM_PREFERENCE_KEY, "");
-                    repository.updateReactor(currentReactor, listener, webApiIp, webApiPort, webApiTeam);
+                    repository.updateReactor(currentReactor, listener, WebApiSettings.getCurrentSettings(this));
                 });
                 break;
             case STOP_FORWARDING_REQUEST_CODE:

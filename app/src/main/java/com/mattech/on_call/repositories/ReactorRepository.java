@@ -13,6 +13,7 @@ import com.mattech.on_call.databases.ReactorDatabase;
 import com.mattech.on_call.databases.UpdateDatabase;
 import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.models.Update;
+import com.mattech.on_call.models.WebApiSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,9 +77,9 @@ public class ReactorRepository {
     }
 
     public void updateReactor(@Nullable Reactor currentReactor, ReactorUpdateListener listener,
-                              @NonNull String ipAddress, @NonNull String port, @NonNull String team) {
+                              @NonNull WebApiSettings webApiSettings) {
         UpdateReactorTask task = new UpdateReactorTask(reactorDAO, currentReactor, listener);
-        task.execute(ipAddress, port, team);
+        task.execute(webApiSettings);
     }
 
     public void setCustomReactor(Reactor customReactor) {
@@ -137,7 +138,7 @@ public class ReactorRepository {
         }
     }
 
-    private static class UpdateReactorTask extends AsyncTask<String, Void, Reactor> {
+    private static class UpdateReactorTask extends AsyncTask<WebApiSettings, Void, Reactor> {
         final String ERROR_TAG = UpdateReactorTask.class.getSimpleName();
         ReactorDAO dao;
         Reactor currentReactor;
@@ -154,8 +155,9 @@ public class ReactorRepository {
         }
 
         @Override
-        protected Reactor doInBackground(String... strings) {
-            String requestUrl = "http://" + strings[0] + ":" + strings[1] + reactorsEndpoint + strings[2];
+        protected Reactor doInBackground(WebApiSettings... settings) {
+            WebApiSettings webApiSettings = settings[0];
+            String requestUrl = "http://" + webApiSettings.getIp() + ":" + webApiSettings.getPort() + reactorsEndpoint + webApiSettings.getTeam();
             Reactor result = null;
             Request request = new Request.Builder()
                     .get()
