@@ -14,6 +14,8 @@ import android.widget.EditText;
 
 import com.mattech.on_call.Constants;
 import com.mattech.on_call.R;
+import com.mattech.on_call.databinding.DialogSettingsBinding;
+import com.mattech.on_call.models.WebApiSettings;
 import com.mattech.on_call.utils.IpAddressUtil;
 
 import butterknife.BindView;
@@ -38,8 +40,9 @@ public class SettingsDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = requireActivity().getLayoutInflater().inflate(R.layout.dialog_settings, null);
+        DialogSettingsBinding binding = DialogSettingsBinding.bind(view);
+        binding.setWebApiSettings(WebApiSettings.getCurrentSettings(requireContext()));
         ButterKnife.bind(this, view);
-        presetViews();
         saveBtn.setOnClickListener(v -> {
             if (IpAddressUtil.isValidIPv4(webServiceIp.getText().toString())) {
                 updatePreferenceIfChanged(Constants.WEB_API_IP_PREFERENCE_KEY, IpAddressUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
@@ -50,13 +53,6 @@ public class SettingsDialogFragment extends DialogFragment {
         });
         builder.setView(view);
         return builder.create();
-    }
-
-    private void presetViews() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        webServiceIp.setText(sharedPreferences.getString(Constants.WEB_API_IP_PREFERENCE_KEY, ""));
-        webServicePort.setText(sharedPreferences.getString(Constants.WEB_API_PORT_PREFERENCE_KEY, ""));
-        teamName.setText(sharedPreferences.getString(Constants.WEB_API_TEAM_PREFERENCE_KEY, ""));
     }
 
     private void updatePreferenceIfChanged(String key, @NonNull String newValue) {

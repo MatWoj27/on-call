@@ -1,84 +1,94 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content">
+<layout>
+    <data>
+        <variable
+            name="webApiSettings"
+            type="com.mattech.on_call.models.WebApiSettings" />
+    </data>
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
 
-    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/widget_rounded_background"
-        android:orientation="vertical"
-        android:theme="@style/SettingsDialogTheme"
-        tools:context="com.mattech.on_call.fragments.SettingsDialogFragment">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"
-            android:text="@string/settings"
-            android:textSize="24sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:text="@string/web_service_ip_text" />
-
-        <EditText
-            android:id="@+id/web_service_ip"
+        <LinearLayout xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="6dp"
-            android:hint="@string/web_service_ip_hint"
-            android:inputType="date" />
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/web_service_port_text" />
+            android:background="@drawable/widget_rounded_background"
+            android:orientation="vertical"
+            android:theme="@style/SettingsDialogTheme"
+            tools:context="com.mattech.on_call.fragments.SettingsDialogFragment">
 
-        <EditText
-            android:id="@+id/web_service_port"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="6dp"
-            android:hint="@string/web_service_port_hint"
-            android:inputType="number" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:text="@string/settings"
+                android:textSize="24sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/team_name_text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/web_service_ip_text" />
 
-        <EditText
-            android:id="@+id/team_name"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="6dp"
-            android:hint="@string/team_name_hint" />
+            <EditText
+                android:id="@+id/web_service_ip"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="6dp"
+                android:text="@{webApiSettings.ip}"
+                android:hint="@string/web_service_ip_hint"
+                android:inputType="date" />
 
-        <Button
-            android:id="@+id/save_btn"
-            android:layout_width="80dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"
-            android:background="@drawable/rounded_btn_background"
-            android:gravity="center"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:text="@string/save"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/web_service_port_text" />
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/web_service_port"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="6dp"
+                android:text="@{webApiSettings.port}"
+                android:hint="@string/web_service_port_hint"
+                android:inputType="number" />
 
-</ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/team_name_text" />
+
+            <EditText
+                android:id="@+id/team_name"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="6dp"
+                android:text="@{webApiSettings.team}"
+                android:hint="@string/team_name_hint" />
+
+            <Button
+                android:id="@+id/save_btn"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:background="@drawable/rounded_btn_background"
+                android:gravity="center"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+</layout>

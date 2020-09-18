@@ -15,7 +15,7 @@ public class WebApiSettings {
     }
 
     public static @NonNull
-    WebApiSettings getInstance(@NonNull Context context) {
+    WebApiSettings getCurrentSettings(@NonNull Context context) {
         WebApiSettings result = new WebApiSettings();
         SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
         result.ip = sharedPreferences.getString(Constants.WEB_API_IP_PREFERENCE_KEY, "");
