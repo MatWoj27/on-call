@@ -28,11 +28,23 @@ public class WebApiSettings {
         return ip;
     }
 
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     public String getPort() {
         return port;
     }
 
+    public void setPort(String port) {
+        this.port = port;
+    }
+
     public String getTeam() {
         return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
     }
 }
