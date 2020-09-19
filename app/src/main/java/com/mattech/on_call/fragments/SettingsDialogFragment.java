@@ -2,6 +2,7 @@ package com.mattech.on_call.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import com.mattech.on_call.R;
 import com.mattech.on_call.databinding.DialogSettingsBinding;
 import com.mattech.on_call.models.WebApiSettings;
 import com.mattech.on_call.utils.IpAddressUtil;
+import com.mattech.on_call.view_models.SettingsViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +43,9 @@ public class SettingsDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = requireActivity().getLayoutInflater().inflate(R.layout.dialog_settings, null);
         DialogSettingsBinding binding = DialogSettingsBinding.bind(view);
-        binding.setWebApiSettings(WebApiSettings.getCurrentSettings(requireContext()));
+        SettingsViewModel viewModel = ViewModelProviders.of(this).get(SettingsViewModel.class);
+        viewModel.setSettings(WebApiSettings.getCurrentSettings(requireContext()));
+        binding.setViewModel(viewModel);
         ButterKnife.bind(this, view);
         saveBtn.setOnClickListener(v -> {
             if (IpAddressUtil.isValidIPv4(webServiceIp.getText().toString())) {

@@ -1,10 +1,11 @@
 <layout>
     <data>
         <variable
-            name="webApiSettings"
-            type="com.mattech.on_call.models.WebApiSettings" />
+            name="viewModel"
+            type="com.mattech.on_call.view_models.SettingsViewModel" />
     </data>
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="300dp"
         android:layout_height="wrap_content">
 
@@ -36,9 +37,10 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="6dp"
-                android:text="@{webApiSettings.ip}"
+                android:text="@{viewModel.settings.ip}"
                 android:hint="@string/web_service_ip_hint"
-                android:inputType="date" />
+                android:inputType="date"
+                app:addTextChangedListener="@{viewModel.ipTextWatcher}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,9 +55,10 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="6dp"
-                android:text="@{webApiSettings.port}"
+                android:text="@{viewModel.settings.port}"
                 android:hint="@string/web_service_port_hint"
-                android:inputType="number" />
+                android:inputType="number"
+                app:addTextChangedListener="@{viewModel.portTextWatcher}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -70,8 +73,9 @@
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="6dp"
-                android:text="@{webApiSettings.team}"
-                android:hint="@string/team_name_hint" />
+                android:text="@{viewModel.settings.team}"
+                android:hint="@string/team_name_hint"
+                app:addTextChangedListener="@{viewModel.teamTextWatcher}" />
 
             <Button
                 android:id="@+id/save_btn"
