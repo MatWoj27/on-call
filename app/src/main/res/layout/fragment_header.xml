@@ -24,6 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:paddingRight="20dp"
-        android:src="@drawable/settings_icon" />
+        android:src="@drawable/settings_icon"
+        android:contentDescription="@string/settings_btn_content_description" />
 
 </RelativeLayout>
