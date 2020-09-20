@@ -64,6 +64,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
         fragment.show(getActivity().getSupportFragmentManager(), "edit_update");
     }
 
+    @NonNull
     private UpdateDialogFragment getUpdateDialogFragment() {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
         fragment.setListener(this);
