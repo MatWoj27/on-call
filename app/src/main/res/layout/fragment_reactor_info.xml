@@ -75,7 +75,8 @@
             android:layout_marginRight="12dp"
             android:background="@drawable/oval_color"
             android:elevation="4dp"
-            android:src="@drawable/sync_icon" />
+            android:src="@drawable/sync_icon"
+            android:contentDescription="@string/update_now_btn_content_description" />
 
     </FrameLayout>
 </layout>
