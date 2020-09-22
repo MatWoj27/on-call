@@ -82,6 +82,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mainContainer.setOnClickListener(v -> itemClicked(getAdapterPosition()));
         }
 
+        @NonNull
         TextView[] getDayViewsArray() {
             return new TextView[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         }
@@ -184,9 +185,9 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void applyColorsToDayViews(UpdateHolder holder, Update update) {
+    private void applyColorsToDayViews(@NonNull UpdateHolder holder, Update update) {
         TextView[] dayViews = holder.getDayViewsArray();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < dayViews.length; i++) {
             int colorId;
             if (update.getRepetitionDays()[i] && update.isEnabled()) {
                 colorId = R.color.enabledActive;
