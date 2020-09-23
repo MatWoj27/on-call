@@ -9,12 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.mattech.on_call.R;
+import com.mattech.on_call.databinding.UpdateItemBinding;
 import com.mattech.on_call.models.Update;
 
 import java.text.ParseException;
@@ -40,6 +40,8 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     class UpdateHolder extends RecyclerView.ViewHolder {
+        private UpdateItemBinding binding;
+
         @BindView(R.id.main_container)
         RelativeLayout mainContainer;
 
@@ -48,9 +50,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @BindView(R.id.update_date)
         TextView date;
-
-        @BindView(R.id.update_days_list)
-        LinearLayout daysContainer;
 
         @BindView(R.id.monday)
         TextView monday;
@@ -76,10 +75,16 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @BindView(R.id.enable_switch)
         Switch enabled;
 
-        UpdateHolder(View itemView) {
-            super(itemView);
+        UpdateHolder(@NonNull UpdateItemBinding binding) {
+            super(binding.getRoot());
             ButterKnife.bind(this, itemView);
+            this.binding = binding;
             mainContainer.setOnClickListener(v -> itemClicked(getAdapterPosition()));
+        }
+
+        void bind(Update update) {
+            binding.setUpdate(update);
+            binding.executePendingBindings();
         }
 
         @NonNull
@@ -113,15 +118,14 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        View view;
         switch (viewType) {
             case 0:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_item, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_item, parent, false);
                 viewHolder = new AddHolder(view);
                 break;
             default:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.update_item, parent, false);
-                viewHolder = new UpdateHolder(view);
+                UpdateItemBinding binding = UpdateItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+                viewHolder = new UpdateHolder(binding);
                 break;
         }
         return viewHolder;
@@ -132,6 +136,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (holder.getItemViewType() != 0) {
             Update update = updates.get(position - 1);
             UpdateHolder updateHolder = (UpdateHolder) holder;
+            updateHolder.bind(update);
             updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
                 if (v.isChecked() != update.isEnabled()) {
                     update.setEnabled(v.isChecked());
@@ -158,15 +163,11 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 updateHolder.time.setTextColor(Color.BLACK);
             }
             if (update.isOneTimeUpdate()) {
-                updateHolder.daysContainer.setVisibility(View.GONE);
-                updateHolder.date.setVisibility(View.VISIBLE);
                 updateHolder.date.setText(update.getExactDate());
                 if (update.isEnabled()) {
                     updateHolder.date.setTextColor(context.getResources().getColor(R.color.disabledActive, null));
                 }
             } else {
-                updateHolder.date.setVisibility(View.GONE);
-                updateHolder.daysContainer.setVisibility(View.VISIBLE);
                 applyColorsToDayViews(updateHolder, update);
             }
         }
