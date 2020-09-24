@@ -108,7 +108,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_margin="8dp"
-            android:checked="false"
+            android:checked="@{update.enabled}"
             android:textColor="@color/colorSecondary" />
 
     </RelativeLayout>

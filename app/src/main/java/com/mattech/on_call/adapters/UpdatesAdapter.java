@@ -159,7 +159,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 updateHolder.time.setText(update.getTime());
             }
             if (update.isEnabled()) {
-                updateHolder.enabled.setChecked(true);
                 updateHolder.time.setTextColor(Color.BLACK);
             }
             if (update.isOneTimeUpdate()) {
