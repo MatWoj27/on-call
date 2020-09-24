@@ -26,7 +26,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/disabledActive" />
+                android:textColor="@{update.enabled ? @android:color/black : @color/disabledActive}" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
