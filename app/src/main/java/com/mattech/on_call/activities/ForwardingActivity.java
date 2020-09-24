@@ -162,7 +162,7 @@ public class ForwardingActivity extends AppCompatActivity {
         }
     }
 
-    private void showNotification(ForwardingResultState state, @Nullable Reactor reactor) {
+    private void showNotification(@NonNull ForwardingResultState state, @Nullable Reactor reactor) {
         createNotificationChannel();
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
