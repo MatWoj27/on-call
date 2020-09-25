@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.mattech.on_call.annotations.JSONAttr;
@@ -32,6 +33,7 @@ public class Reactor {
     public Reactor() {
     }
 
+    @Nullable
     public static Reactor fromJson(JSONObject json) throws JSONException {
         Reactor reactor = new Reactor();
         for (Field field : Reactor.class.getDeclaredFields()) {
