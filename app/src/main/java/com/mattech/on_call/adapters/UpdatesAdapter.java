@@ -158,9 +158,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Log.e(getClass().getSimpleName(), "Time string retrieved from Update object has wrong format: " + update.getTime());
                 updateHolder.time.setText(update.getTime());
             }
-            if (update.isOneTimeUpdate()) {
-                updateHolder.date.setText(update.getExactDate());
-            } else {
+            if (!update.isOneTimeUpdate()) {
                 applyColorsToDayViews(updateHolder, update);
             }
         }

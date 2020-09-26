@@ -7,6 +7,7 @@
             type="com.mattech.on_call.models.Update" />
     </data>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -39,9 +40,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="19, Dec 2019"
+                    android:text="@{update.exactDate}"
                     android:textColor="@{update.enabled ? @color/disabledActive : @color/disabledInactive}"
-                    android:visibility="@{update.isOneTimeUpdate ? View.VISIBLE : View.GONE}" />
+                    android:visibility="@{update.isOneTimeUpdate ? View.VISIBLE : View.GONE}"
+                    tools:text="19, Dec 2019" />
 
                 <LinearLayout
                     android:id="@+id/update_days_list"
