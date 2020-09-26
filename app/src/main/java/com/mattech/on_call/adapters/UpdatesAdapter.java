@@ -160,9 +160,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             if (update.isOneTimeUpdate()) {
                 updateHolder.date.setText(update.getExactDate());
-                if (update.isEnabled()) {
-                    updateHolder.date.setTextColor(context.getResources().getColor(R.color.disabledActive, null));
-                }
             } else {
                 applyColorsToDayViews(updateHolder, update);
             }

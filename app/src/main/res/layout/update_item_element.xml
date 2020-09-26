@@ -40,7 +40,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="19, Dec 2019"
-                    android:textColor="@color/disabledInactive"
+                    android:textColor="@{update.enabled ? @color/disabledActive : @color/disabledInactive}"
                     android:visibility="@{update.isOneTimeUpdate ? View.VISIBLE : View.GONE}" />
 
                 <LinearLayout
