@@ -139,7 +139,7 @@ public class Update {
         return (String.format("%02d", get(TIME.HOUR)) + ":" + String.format("%02d", get(TIME.MINUTE)));
     }
 
-    public int get(TIME timeField) throws ParseException {
+    public int get(@NonNull TIME timeField) throws ParseException {
         SimpleDateFormat timeFormat = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
         Calendar tmpCalendar = Calendar.getInstance();
         Date date = timeFormat.parse(time);
