@@ -59,43 +59,50 @@
                         android:id="@+id/monday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/monday_short" />
+                        android:text="@string/monday_short"
+                        android:textColor="@{update.getDayViewColor(0)}" />
 
                     <TextView
                         android:id="@+id/tuesday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/tuesday_short" />
+                        android:text="@string/tuesday_short"
+                        android:textColor="@{update.getDayViewColor(1)}" />
 
                     <TextView
                         android:id="@+id/wednesday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/wednesday_short" />
+                        android:text="@string/wednesday_short"
+                        android:textColor="@{update.getDayViewColor(2)}" />
 
                     <TextView
                         android:id="@+id/thursday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/thursday_short" />
+                        android:text="@string/thursday_short"
+                        android:textColor="@{update.getDayViewColor(3)}" />
 
                     <TextView
                         android:id="@+id/friday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/friday_short" />
+                        android:text="@string/friday_short"
+                        android:textColor="@{update.getDayViewColor(4)}" />
 
                     <TextView
                         android:id="@+id/saturday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/saturday_short" />
+                        android:text="@string/saturday_short"
+                        android:textColor="@{update.getDayViewColor(5)}" />
 
                     <TextView
                         android:id="@+id/sunday"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sunday_short" />
+                        android:text="@string/sunday_short"
+                        android:textColor="@{update.getDayViewColor(6)}" />
 
                 </LinearLayout>
 

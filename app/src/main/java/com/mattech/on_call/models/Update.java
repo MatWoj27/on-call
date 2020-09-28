@@ -4,8 +4,10 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 
+import com.mattech.on_call.R;
 import com.mattech.on_call.type_converters.UpdateTypeConverters;
 
 import java.text.ParseException;
@@ -184,6 +186,16 @@ public class Update {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
+    }
+
+    @ColorRes
+    public int getDayViewColor(int dayIndex) {
+        if (repetitionDays[dayIndex] && enabled) {
+            return R.color.enabledActive;
+        } else if (repetitionDays[dayIndex]) {
+            return R.color.disabledActive;
+        }
+        return R.color.disabledInactive;
     }
 
     public static long getNextRepetitionInMillis(long previousUpdateTimeInMillis, @NonNull boolean[] repetitionDays) {
