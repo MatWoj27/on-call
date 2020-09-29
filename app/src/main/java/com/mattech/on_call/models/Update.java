@@ -1,5 +1,6 @@
 package com.mattech.on_call.models;
 
+import android.annotation.SuppressLint;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -137,8 +138,9 @@ public class Update {
         this.time = time;
     }
 
+    @SuppressLint("DefaultLocale")
     public String getFormattedTime() throws ParseException {
-        return (String.format("%02d", get(TIME.HOUR)) + ":" + String.format("%02d", get(TIME.MINUTE)));
+        return String.format("%02d:%02d", get(TIME.HOUR), get(TIME.MINUTE));
     }
 
     public int get(@NonNull TIME timeField) throws ParseException {
