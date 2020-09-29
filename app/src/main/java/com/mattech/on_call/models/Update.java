@@ -62,7 +62,7 @@ public class Update {
     }
 
     @Ignore
-    public Update(Update update) {
+    public Update(@NonNull Update update) {
         this.id = update.id;
         this.enabled = update.enabled;
         this.oneTimeUpdate = update.oneTimeUpdate;
