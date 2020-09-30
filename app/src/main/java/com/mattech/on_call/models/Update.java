@@ -213,7 +213,7 @@ public class Update {
         return nextUpdateTargetTime;
     }
 
-    public static int getRemovedItemIndex(List<Update> original, List<Update> changed) {
+    public static int getRemovedItemIndex(@NonNull List<Update> original, @NonNull List<Update> changed) {
         int removedItemIndex = original.size() == changed.size() ? -1 : original.size() - 1;
         for (int i = 0; i < original.size() && i < changed.size(); i++) {
             if (original.get(i).getId() != changed.get(i).getId()) {
