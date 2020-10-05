@@ -224,7 +224,7 @@ public class Update {
         return removedItemIndex;
     }
 
-    public static int getInsertedItemIndex(List<Update> original, List<Update> changed) {
+    public static int getInsertedItemIndex(@NonNull List<Update> original, @NonNull List<Update> changed) {
         int insertedItemIndex = original.size() == changed.size() ? -1 : original.size();
         for (int i = 0; i < original.size() && i < changed.size(); i++) {
             if (original.get(i).getId() != changed.get(i).getId()) {
@@ -235,7 +235,7 @@ public class Update {
         return insertedItemIndex;
     }
 
-    public static int getEditedItemIndex(List<Update> original, List<Update> changed) {
+    public static int getEditedItemIndex(@NonNull List<Update> original, List<Update> changed) {
         int changedItemIndex = -1;
         for (int i = 0; i < original.size() && i < changed.size(); i++) {
             if (!original.get(i).equals(changed.get(i))) {
