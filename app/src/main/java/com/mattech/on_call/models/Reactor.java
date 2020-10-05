@@ -30,9 +30,6 @@ public class Reactor {
     @NonNull
     private String phoneNumber = "";
 
-    public Reactor() {
-    }
-
     @Nullable
     public static Reactor fromJson(JSONObject json) throws JSONException {
         Reactor reactor = new Reactor();
