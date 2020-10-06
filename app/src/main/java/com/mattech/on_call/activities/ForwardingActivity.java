@@ -112,8 +112,13 @@ public class ForwardingActivity extends AppCompatActivity {
         switch (actionCode) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
                 repository.getReactor(currentReactor -> {
-                    ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
-                    repository.updateReactor(currentReactor, listener, WebApiSettings.getCurrentSettings(this));
+                    WebApiSettings webApiSettings = WebApiSettings.getCurrentSettings(this);
+                    if (!webApiSettings.getIp().isEmpty()) {
+                        ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
+                        repository.updateReactor(currentReactor, listener, webApiSettings);
+                    } else {
+                        finish();
+                    }
                 });
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
