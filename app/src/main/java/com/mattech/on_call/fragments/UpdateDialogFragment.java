@@ -441,7 +441,7 @@ public class UpdateDialogFragment extends DialogFragment {
         presetTimePickers(12, 0);
     }
 
-    public void setUpdateToEdit(Update updateToEdit) {
+    public void setUpdateToEdit(@NonNull Update updateToEdit) {
         this.updateToEdit = updateToEdit;
         isEdit = true;
         editUpdateId = updateToEdit.getId();
