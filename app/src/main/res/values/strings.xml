@@ -21,6 +21,7 @@
     <string name="reactor_not_changed_text">Currently set reactor is up to date so it has not been changed</string>
     <string name="update_failure_title">Reactor has not been updated!</string>
     <string name="update_failure_text">Application failed to get the current reactor from the web service</string>
+    <string name="update_failure_no_web_api_ip_text">Reactor has not been updated because IP address of the web service is not set</string>
     <string name="forwarding_success_title">Forwarding has been set successfully!</string>
     <string name="forwarding_success_text">All incoming calls will be forwarded to:</string>
     <string name="forwarding_failure_title">Forwarding has not been set!</string>

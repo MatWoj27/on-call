@@ -40,6 +40,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE = 1;
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
+    public static final int GO_TO_SETTINGS_REQUEST_CODE = 4;
     public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
 
     private static final String ERROR_TAG = ForwardingActivity.class.getSimpleName();
@@ -51,6 +52,7 @@ public class ForwardingActivity extends AppCompatActivity {
     private ReactorRepository repository;
 
     private enum ForwardingResultState {
+        UPDATE_FAILURE_WEB_API_IP_NOT_SET(R.string.update_failure_title, R.string.update_failure_no_web_api_ip_text, R.drawable.failure_icon, R.string.settings, R.drawable.settings_notification_icon, -3, GO_TO_SETTINGS_REQUEST_CODE),
         REACTOR_NOT_CHANGED(R.string.reactor_not_changed_title, R.string.reactor_not_changed_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2, STOP_FORWARDING_REQUEST_CODE),
         UPDATE_FAILURE(R.string.update_failure_title, R.string.update_failure_text, R.drawable.failure_icon, R.string.retry, R.drawable.retry_icon, -1, UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE),
         FORWARDING_SUCCESS(R.string.forwarding_success_title, R.string.forwarding_success_text, R.drawable.success_icon, R.string.stop_forwarding, R.drawable.cancel_icon, -2, STOP_FORWARDING_REQUEST_CODE),
@@ -117,6 +119,7 @@ public class ForwardingActivity extends AppCompatActivity {
                         ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
                         repository.updateReactor(currentReactor, listener, webApiSettings);
                     } else {
+                        showNotification(ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET, null);
                         finish();
                     }
                 });
@@ -171,7 +174,8 @@ public class ForwardingActivity extends AppCompatActivity {
         createNotificationChannel();
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-        Intent actionIntent = new Intent(this, ForwardingActivity.class);
+        Class cls = state == ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET ? MainActivity.class : ForwardingActivity.class;
+        Intent actionIntent = new Intent(this, cls);
         actionIntent.putExtra(ACTION_TAG, state.buttonActionRequestCode);
         if (state == ForwardingResultState.FORWARDING_SUCCESS && reactor != null) {
             longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
