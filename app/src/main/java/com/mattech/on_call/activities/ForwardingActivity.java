@@ -2,7 +2,6 @@ package com.mattech.on_call.activities;
 
 import android.Manifest;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -10,8 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
-import android.os.Build;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +21,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mattech.on_call.Constants;
 import com.mattech.on_call.models.WebApiSettings;
 import com.mattech.on_call.receivers.ForwardingAppWidgetProvider;
 import com.mattech.on_call.events.ForwardingEvent;
@@ -31,6 +29,7 @@ import com.mattech.on_call.R;
 import com.mattech.on_call.repositories.ReactorRepository;
 import com.mattech.on_call.models.Reactor;
 import com.mattech.on_call.utils.DrawableUtil;
+import com.mattech.on_call.utils.NotificationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +43,6 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
 
     private static final String ERROR_TAG = ForwardingActivity.class.getSimpleName();
-    private final String FORWARDING_NOTIFICATION_CHANNEL_ID = "forwarding-notification";
-    private final int NOTIFICATION_ID = 1;
     private final String CALL_FORWARDING_PREFERENCES_NAME = "call-forwarding-info";
     private final String CALL_FORWARDING_ACTIVE_PREFERENCE_KEY = "CALL_FORWARDING_ACTIVE";
 
@@ -171,7 +168,6 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void showNotification(@NonNull ForwardingResultState state, @Nullable Reactor reactor) {
-        createNotificationChannel();
         String longDescription = getResources().getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Class cls = state == ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET ? MainActivity.class : ForwardingActivity.class;
@@ -183,10 +179,7 @@ public class ForwardingActivity extends AppCompatActivity {
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);
         Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
                 getResources().getString(state.buttonTextId), buttonPendingIntent).build();
-        Notification.Builder builder = new Notification.Builder(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(FORWARDING_NOTIFICATION_CHANNEL_ID);
-        }
+        Notification.Builder builder = NotificationUtil.getNotificationBuilder(this, Constants.FORWARDING_CHANNEL_INFO);
         Notification notification = builder
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getResources().getString(state.titleId))
@@ -197,29 +190,9 @@ public class ForwardingActivity extends AppCompatActivity {
                 .addAction(action)
                 .setAutoCancel(true)
                 .build();
-        cancelActiveForwardingResultNotification();
+        NotificationUtil.cancelActiveForwardingResultNotification(this, Constants.FORWARDING_NOTIFICATION_ID);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.notify(NOTIFICATION_ID, notification);
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String name = getString(R.string.forwarding_notification_channel_name);
-            String description = getString(R.string.forwarding_notification_channel_description);
-            NotificationChannel channel = new NotificationChannel(FORWARDING_NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    private void cancelActiveForwardingResultNotification() {
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
-            if (notification.getId() == NOTIFICATION_ID) {
-                notificationManager.cancel(NOTIFICATION_ID);
-            }
-        }
+        notificationManager.notify(Constants.FORWARDING_NOTIFICATION_ID, notification);
     }
 
     private class ReactorUpdateListener implements ReactorRepository.ReactorUpdateListener {
@@ -282,7 +255,7 @@ public class ForwardingActivity extends AppCompatActivity {
                     break;
                 case STOP_FORWARDING_REQUEST_CODE:
                     if (cfi) {
-                        cancelActiveForwardingResultNotification();
+                        NotificationUtil.cancelActiveForwardingResultNotification(ForwardingActivity.this, Constants.FORWARDING_NOTIFICATION_ID);
                         Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_canceled_info), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
                         preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false).apply();
