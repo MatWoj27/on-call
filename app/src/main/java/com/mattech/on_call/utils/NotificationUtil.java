@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
 public class NotificationUtil {
+    public static final String DEFAULT_NOTIFICATION_CHANNEL_ID = "app_default_id";
 
     public static class NotificationChannelInfo {
         private String id;
@@ -30,10 +31,11 @@ public class NotificationUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationChannelInfo != null) {
                 createNotificationChannel(context, notificationChannelInfo.id, context.getString(notificationChannelInfo.name_id), context.getString(notificationChannelInfo.description_id));
+                builder.setChannelId(notificationChannelInfo.id);
             } else {
-                createNotificationChannel(context, "app_default", "", "");
+                createNotificationChannel(context, DEFAULT_NOTIFICATION_CHANNEL_ID, "", "");
+                builder.setChannelId(DEFAULT_NOTIFICATION_CHANNEL_ID);
             }
-            builder.setChannelId(notificationChannelInfo.id);
         }
         return builder;
     }
