@@ -168,7 +168,7 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void showNotification(@NonNull ForwardingResultState state, @Nullable Reactor reactor) {
-        String longDescription = getResources().getString(state.textId);
+        String longDescription = getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Class cls = state == ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET ? MainActivity.class : ForwardingActivity.class;
         Intent actionIntent = new Intent(this, cls);
@@ -178,12 +178,12 @@ public class ForwardingActivity extends AppCompatActivity {
         }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);
         Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
-                getResources().getString(state.buttonTextId), buttonPendingIntent).build();
+                getString(state.buttonTextId), buttonPendingIntent).build();
         Notification.Builder builder = NotificationUtil.getNotificationBuilder(this, Constants.FORWARDING_CHANNEL_INFO);
         Notification notification = builder
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(getResources().getString(state.titleId))
-                .setContentText(getResources().getString(state.textId))
+                .setContentTitle(getString(state.titleId))
+                .setContentText(getString(state.textId))
                 .setStyle(new Notification.BigTextStyle().bigText(longDescription))
                 .setLargeIcon(DrawableUtil.vectorToBitmap(getResources().getDrawable(state.iconId, null)))
                 .setContentIntent(contentTapPendingIntent)
