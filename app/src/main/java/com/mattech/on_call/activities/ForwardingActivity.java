@@ -93,7 +93,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int resultCode : grantResults) {
             if (resultCode != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, getResources().getString(R.string.missing_permissions_info), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.missing_permissions_info), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -256,11 +256,11 @@ public class ForwardingActivity extends AppCompatActivity {
                 case STOP_FORWARDING_REQUEST_CODE:
                     if (cfi) {
                         NotificationUtil.cancelActiveForwardingResultNotification(ForwardingActivity.this, Constants.FORWARDING_NOTIFICATION_ID);
-                        Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_canceled_info), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForwardingActivity.this, getString(R.string.forwarding_canceled_info), Toast.LENGTH_SHORT).show();
                         sendBroadcast(new Intent(ForwardingEvent.FORWARDING_STOPPED));
                         preferences.edit().putBoolean(CALL_FORWARDING_ACTIVE_PREFERENCE_KEY, false).apply();
                     } else if (callForwardingActive) {
-                        Toast.makeText(ForwardingActivity.this, getResources().getString(R.string.forwarding_cancellation_failure_info), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ForwardingActivity.this, getString(R.string.forwarding_cancellation_failure_info), Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
