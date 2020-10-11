@@ -120,7 +120,7 @@ public class ReactorRepository {
         ReactorDAO dao;
         ReactorRetrieveListener listener;
 
-        GetReactorTask(ReactorDAO dao, ReactorRetrieveListener listener) {
+        GetReactorTask(@NonNull ReactorDAO dao, ReactorRetrieveListener listener) {
             this.dao = dao;
             this.listener = listener;
         }
