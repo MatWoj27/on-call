@@ -25,6 +25,9 @@ public class NotificationUtil {
         }
     }
 
+    private NotificationUtil() {
+    }
+
     @NonNull
     public static Notification.Builder getNotificationBuilder(Context context, @Nullable NotificationChannelInfo notificationChannelInfo) {
         Notification.Builder builder = new Notification.Builder(context);
