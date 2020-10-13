@@ -344,7 +344,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 initiallyDateSetToToday = true;
                 currentlyDateSetToToday = false;
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
             } else if (calendar.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR) && calendar.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) {
                 initiallyDateSetToToday = true;
                 currentlyDateSetToToday = true;
