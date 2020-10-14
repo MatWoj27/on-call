@@ -213,7 +213,7 @@ public class ReactorRepository {
         UpdateDAO dao;
         UpdatesRetrievedListener listener;
 
-        GetActiveUpdatesTask(UpdateDAO dao, UpdatesRetrievedListener listener) {
+        GetActiveUpdatesTask(@NonNull UpdateDAO dao, UpdatesRetrievedListener listener) {
             this.dao = dao;
             this.listener = listener;
         }
