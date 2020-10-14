@@ -5,6 +5,9 @@ import java.util.Date;
 
 public class DateTimeUtil {
 
+    private DateTimeUtil() {
+    }
+
     public static boolean isMomentInPast(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND, 0);
