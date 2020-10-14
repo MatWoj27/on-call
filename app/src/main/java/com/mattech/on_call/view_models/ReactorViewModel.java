@@ -3,13 +3,10 @@ package com.mattech.on_call.view_models;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.mattech.on_call.Constants;
 import com.mattech.on_call.models.WebApiSettings;
 import com.mattech.on_call.repositories.ReactorRepository;
 import com.mattech.on_call.activities.ForwardingActivity;
