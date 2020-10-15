@@ -17,7 +17,7 @@ import com.mattech.on_call.Constants;
 import com.mattech.on_call.R;
 import com.mattech.on_call.databinding.DialogSettingsBinding;
 import com.mattech.on_call.models.WebApiSettings;
-import com.mattech.on_call.utils.IpAddressUtil;
+import com.mattech.on_call.utils.WebUtil;
 import com.mattech.on_call.view_models.SettingsViewModel;
 
 import butterknife.BindView;
@@ -48,10 +48,12 @@ public class SettingsDialogFragment extends DialogFragment {
         binding.setViewModel(viewModel);
         ButterKnife.bind(this, view);
         saveBtn.setOnClickListener(v -> {
-            if (IpAddressUtil.isValidIPv4(webServiceIp.getText().toString())) {
-                updatePreferenceIfChanged(Constants.WEB_API_IP_PREFERENCE_KEY, IpAddressUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
+            if (WebUtil.isValidIPv4(webServiceIp.getText().toString())) {
+                updatePreferenceIfChanged(Constants.WEB_API_IP_PREFERENCE_KEY, WebUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
             }
-            updatePreferenceIfChanged(Constants.WEB_API_PORT_PREFERENCE_KEY, webServicePort.getText().toString());
+            if (WebUtil.isValidPortNumber(webServicePort.getText().toString())) {
+                updatePreferenceIfChanged(Constants.WEB_API_PORT_PREFERENCE_KEY, WebUtil.removeLeadingZeros(webServicePort.getText().toString()));
+            }
             updatePreferenceIfChanged(Constants.WEB_API_TEAM_PREFERENCE_KEY, teamName.getText().toString());
             dismiss();
         });
