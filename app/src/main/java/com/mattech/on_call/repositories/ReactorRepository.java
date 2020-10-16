@@ -197,7 +197,7 @@ public class ReactorRepository {
     private static class InsertReactorTask extends AsyncTask<Reactor, Void, Void> {
         ReactorDAO dao;
 
-        InsertReactorTask(ReactorDAO dao) {
+        InsertReactorTask(@NonNull ReactorDAO dao) {
             this.dao = dao;
         }
 
