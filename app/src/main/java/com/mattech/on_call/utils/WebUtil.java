@@ -28,7 +28,7 @@ public class WebUtil {
             if (result.length() > 0) {
                 result.append(".");
             }
-            result.append(octet.replaceFirst("^0+(?!$)", ""));
+            result.append(removeLeadingZeros(octet));
         }
         return result.toString();
     }
