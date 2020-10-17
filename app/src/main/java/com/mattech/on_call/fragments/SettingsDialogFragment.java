@@ -49,23 +49,23 @@ public class SettingsDialogFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         saveBtn.setOnClickListener(v -> {
             if (WebUtil.isValidIPv4(webServiceIp.getText().toString())) {
-                updatePreferenceIfChanged(Constants.WEB_API_IP_PREFERENCE_KEY, WebUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()));
+                updatePreferenceIfChanged(Constants.WEB_API_IP_PREFERENCE_KEY, WebUtil.removeIPv4LeadingZeros(webServiceIp.getText().toString()), false);
             }
             if (WebUtil.isValidPortNumber(webServicePort.getText().toString())) {
-                updatePreferenceIfChanged(Constants.WEB_API_PORT_PREFERENCE_KEY, WebUtil.removeLeadingZeros(webServicePort.getText().toString()));
+                updatePreferenceIfChanged(Constants.WEB_API_PORT_PREFERENCE_KEY, WebUtil.removeLeadingZeros(webServicePort.getText().toString()), true);
             }
-            updatePreferenceIfChanged(Constants.WEB_API_TEAM_PREFERENCE_KEY, teamName.getText().toString());
+            updatePreferenceIfChanged(Constants.WEB_API_TEAM_PREFERENCE_KEY, teamName.getText().toString(), true);
             dismiss();
         });
         builder.setView(view);
         return builder.create();
     }
 
-    private void updatePreferenceIfChanged(String key, @NonNull String newValue) {
+    private void updatePreferenceIfChanged(String key, @NonNull String newValue, boolean emptyAllowed) {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
         String currentValue = sharedPreferences.getString(key, "");
-        if (!newValue.trim().isEmpty() && !currentValue.equals(newValue)) {
-            sharedPreferences.edit().putString(key, newValue).apply();
+        if (newValue.trim().isEmpty() == emptyAllowed && !currentValue.equals(newValue)) {
+            sharedPreferences.edit().putString(key, newValue.trim()).apply();
         }
     }
 
