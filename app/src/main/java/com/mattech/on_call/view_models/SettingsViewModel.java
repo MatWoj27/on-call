@@ -1,10 +1,15 @@
 package com.mattech.on_call.view_models;
 
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import com.mattech.on_call.Constants;
 import com.mattech.on_call.models.WebApiSettings;
+import com.mattech.on_call.utils.WebUtil;
 
 public class SettingsViewModel extends ViewModel {
     public WebApiSettings settings;
@@ -13,6 +18,17 @@ public class SettingsViewModel extends ViewModel {
         if (this.settings == null) {
             this.settings = settings;
         }
+    }
+
+    public void updateSettings(@NonNull Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Constants.WEB_API_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        if (WebUtil.isValidIPv4(settings.getIp())) {
+            updatePreferenceIfChanged(sharedPreferences, Constants.WEB_API_IP_PREFERENCE_KEY, WebUtil.removeIPv4LeadingZeros(settings.getIp()), false);
+        }
+        if (WebUtil.isValidPortNumber(settings.getPort())) {
+            updatePreferenceIfChanged(sharedPreferences, Constants.WEB_API_PORT_PREFERENCE_KEY, WebUtil.removeLeadingZeros(settings.getPort()), true);
+        }
+        updatePreferenceIfChanged(sharedPreferences, Constants.WEB_API_TEAM_PREFERENCE_KEY, settings.getTeam(), true);
     }
 
     public TextWatcher getIpTextWatcher() {
@@ -40,6 +56,13 @@ public class SettingsViewModel extends ViewModel {
                 settings.setTeam(charSequence.toString());
             }
         };
+    }
+
+    private void updatePreferenceIfChanged(@NonNull SharedPreferences sharedPreferences, String key, @NonNull String newValue, boolean emptyAllowed) {
+        String currentValue = sharedPreferences.getString(key, "");
+        if ((emptyAllowed || !newValue.trim().isEmpty()) && !currentValue.equals(newValue)) {
+            sharedPreferences.edit().putString(key, newValue.trim()).apply();
+        }
     }
 
     abstract class SimpleTextWatcher implements TextWatcher {
