@@ -148,7 +148,7 @@ public class ReactorRepository {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .build();
 
-        UpdateReactorTask(ReactorDAO dao, Reactor currentReactor, ReactorUpdateListener listener) {
+        UpdateReactorTask(@NonNull ReactorDAO dao, @Nullable Reactor currentReactor, ReactorUpdateListener listener) {
             this.dao = dao;
             this.currentReactor = currentReactor;
             this.listener = listener;
