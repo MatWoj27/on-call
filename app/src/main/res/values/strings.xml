@@ -48,6 +48,7 @@
     <string name="web_service_ip_not_configured_warning">The ip address of the web service must be configured in order to update the reactor</string>
     <string name="settings_btn_content_description">Go to settings</string>
     <string name="update_now_btn_content_description">Update the reactor now</string>
+    <string name="add_update_btn_content_description">Add new update</string>
 
     <!-- Forwarding notification channel info -->
     <string name="forwarding_notification_channel_name">Forwarding notifications</string>
