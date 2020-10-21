@@ -78,7 +78,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
 
     private void setForwardingButtonFunctionality(Context context, int buttonTextId, Action buttonAction) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.forwarding_widget);
-        views.setTextViewText(R.id.forward_btn, context.getResources().getString(buttonTextId));
+        views.setTextViewText(R.id.forward_btn, context.getString(buttonTextId));
         views.setOnClickPendingIntent(R.id.forward_btn, getPendingIntentForAction(context, buttonAction));
         updateRemoteViews(context, views);
     }
