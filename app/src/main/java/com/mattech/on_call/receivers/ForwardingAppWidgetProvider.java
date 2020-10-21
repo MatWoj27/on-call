@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -88,7 +89,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(new ComponentName(context.getPackageName(), ForwardingAppWidgetProvider.class.getName()), views);
     }
 
-    private PendingIntent getPendingIntentForAction(Context context, Action action) {
+    private PendingIntent getPendingIntentForAction(Context context, @NonNull Action action) {
         Intent intent = new Intent(context, action.cls);
         switch (action) {
             case UPDATE_REACTOR:
