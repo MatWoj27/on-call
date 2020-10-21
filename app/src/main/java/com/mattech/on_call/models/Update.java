@@ -152,11 +152,7 @@ public class Update {
     }
 
     public long getPlannedUpdateTimeInMillis() throws ParseException {
-        if (isOneTimeUpdate()) {
-            return getExactDateTimeInMillis();
-        } else {
-            return getNextUpdateTimeInMillis();
-        }
+        return isOneTimeUpdate() ? getExactDateTimeInMillis() : getNextUpdateTimeInMillis();
     }
 
     private long getNextUpdateTimeInMillis() throws ParseException {
