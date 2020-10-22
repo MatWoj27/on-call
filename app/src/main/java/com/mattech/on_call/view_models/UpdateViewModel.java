@@ -93,7 +93,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
                 updateTime = update.getTodayUpdateTimeInMillis() + 24 * 60 * 60 * 1000;
                 SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
                 update.setExactDate(dateFormat.format(new Date(updateTime)));
-                Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), getApplication().getString(R.string.past_update_rescheduled_warning), Toast.LENGTH_SHORT).show();
             }
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_ONE_TIME_UPDATE, update.isOneTimeUpdate());
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
@@ -121,6 +121,6 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
     private void handleNotScheduledUpdate(Update update, UpdateNotScheduledException e) {
         Log.e(getClass().getSimpleName(), e.getMessage(), e);
         deleteUpdate(update);
-        Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.update_scheduling_error_info), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplication(), getApplication().getString(R.string.update_scheduling_error_info), Toast.LENGTH_SHORT).show();
     }
 }
