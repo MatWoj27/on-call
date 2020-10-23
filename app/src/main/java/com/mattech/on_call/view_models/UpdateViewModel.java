@@ -109,7 +109,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         }
     }
 
-    private void cancelScheduledUpdate(Update update) {
+    private void cancelScheduledUpdate(@NonNull Update update) {
         AlarmManager alarmManager = getApplication().getSystemService(AlarmManager.class);
         Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, PendingIntent.FLAG_NO_CREATE);
