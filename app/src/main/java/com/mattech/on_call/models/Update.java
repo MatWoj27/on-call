@@ -32,6 +32,7 @@ public class Update {
 
     @NonNull
     private String time = "12:00";
+    private String preconfiguredPhoneNumber;
 
     @Ignore
     public static final String TIME_FORMAT = "HH:mm";
@@ -54,12 +55,13 @@ public class Update {
     }
 
     @Ignore
-    public Update(boolean enabled, boolean oneTimeUpdate, boolean[] repetitionDays, String exactDate, @NonNull String time) {
+    public Update(boolean enabled, boolean oneTimeUpdate, boolean[] repetitionDays, String exactDate, @NonNull String time, String preconfiguredPhoneNumber) {
         this.enabled = enabled;
         this.oneTimeUpdate = oneTimeUpdate;
         this.repetitionDays = repetitionDays;
         this.exactDate = exactDate;
         this.time = time;
+        this.preconfiguredPhoneNumber = preconfiguredPhoneNumber;
     }
 
     @Ignore
@@ -70,6 +72,7 @@ public class Update {
         this.repetitionDays = update.repetitionDays;
         this.exactDate = update.exactDate;
         this.time = update.time;
+        this.preconfiguredPhoneNumber = update.preconfiguredPhoneNumber;
     }
 
     @Override
@@ -85,7 +88,8 @@ public class Update {
                     && this.oneTimeUpdate == update.oneTimeUpdate
                     && Arrays.equals(this.repetitionDays, update.repetitionDays)
                     && this.exactDate.equals(update.exactDate)
-                    && this.time.equals(update.time);
+                    && this.time.equals(update.time)
+                    && this.preconfiguredPhoneNumber.equals(update.preconfiguredPhoneNumber);
         }
     }
 
@@ -136,6 +140,14 @@ public class Update {
 
     public void setTime(@NonNull String time) {
         this.time = time;
+    }
+
+    public String getPreconfiguredPhoneNumber() {
+        return preconfiguredPhoneNumber;
+    }
+
+    public void setPreconfiguredPhoneNumber(String preconfiguredPhoneNumber) {
+        this.preconfiguredPhoneNumber = preconfiguredPhoneNumber;
     }
 
     @SuppressLint("DefaultLocale")

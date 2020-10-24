@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "3395c83b446d5c11477beb90037a0f1e",
+    "identityHash": "560026cd83d049ee08f8138790464e53",
     "entities": [
       {
         "tableName": "updates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `oneTimeUpdate` INTEGER NOT NULL, `repetitionDays` TEXT, `exactDate` TEXT, `time` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `enabled` INTEGER NOT NULL, `oneTimeUpdate` INTEGER NOT NULL, `repetitionDays` TEXT, `exactDate` TEXT, `time` TEXT NOT NULL, `preconfiguredPhoneNumber` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,12 @@
             "columnName": "time",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "preconfiguredPhoneNumber",
+            "columnName": "preconfiguredPhoneNumber",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -57,7 +63,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3395c83b446d5c11477beb90037a0f1e\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"560026cd83d049ee08f8138790464e53\")"
     ]
   }
 }
