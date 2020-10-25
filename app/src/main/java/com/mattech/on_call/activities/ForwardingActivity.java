@@ -41,6 +41,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int START_FORWARDING_REQUEST_CODE = 3;
     public static final int GO_TO_SETTINGS_REQUEST_CODE = 4;
     public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
+    public static final String EXTRA_PHONE_NUMBER = "phoneNumber";
 
     private static final String ERROR_TAG = ForwardingActivity.class.getSimpleName();
     private final String CALL_FORWARDING_PREFERENCES_NAME = "call-forwarding-info";
@@ -125,7 +126,14 @@ public class ForwardingActivity extends AppCompatActivity {
                 stopForwarding();
                 break;
             case START_FORWARDING_REQUEST_CODE:
-                repository.getReactor(this::startForwarding);
+                String preconfiguredPhoneNumber = getIntent().getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+                if (preconfiguredPhoneNumber.isEmpty()) {
+                    repository.getReactor(this::startForwarding);
+                } else {
+                    Reactor customReactor = new Reactor();
+                    customReactor.setPhoneNumber(preconfiguredPhoneNumber);
+                    startForwarding(customReactor);
+                }
                 break;
             default:
                 Log.wtf(ERROR_TAG, "Unknown action request code received: " + actionCode);
@@ -173,7 +181,7 @@ public class ForwardingActivity extends AppCompatActivity {
         Class cls = state == ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET ? MainActivity.class : ForwardingActivity.class;
         Intent actionIntent = new Intent(this, cls);
         actionIntent.putExtra(ACTION_TAG, state.buttonActionRequestCode);
-        if (state == ForwardingResultState.FORWARDING_SUCCESS && reactor != null) {
+        if (state == ForwardingResultState.FORWARDING_SUCCESS && reactor != null && reactor.getName() != null) {
             longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
         }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);

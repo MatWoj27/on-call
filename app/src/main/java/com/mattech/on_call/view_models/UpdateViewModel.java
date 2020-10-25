@@ -97,6 +97,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
             }
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_IS_ONE_TIME_UPDATE, update.isOneTimeUpdate());
             intent.putExtra(SetForwardingRequestReceiver.EXTRA_UPDATE_ID, update.getId());
+            intent.putExtra(SetForwardingRequestReceiver.EXTRA_PRECONFIGURED_PHONE_NUMBER, update.getPreconfiguredPhoneNumber());
             pendingIntent = PendingIntent.getBroadcast(getApplication(), update.getId(), intent, 0);
             AlarmManager alarmManager = getApplication().getSystemService(AlarmManager.class);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime, pendingIntent);

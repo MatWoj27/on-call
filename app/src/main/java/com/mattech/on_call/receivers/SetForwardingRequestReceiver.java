@@ -16,6 +16,7 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
     public static final String EXTRA_UPDATE_ID = "updateId";
     public static final String EXTRA_REPETITION_DAYS_TAG = "repetitionDays";
     public static final String EXTRA_UPDATE_TARGET_TIME = "android.intent.extra.ALARM_TARGET_TIME";
+    public static final String EXTRA_PRECONFIGURED_PHONE_NUMBER = "preconfiguredPhoneNumber";
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
@@ -25,7 +26,9 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
         } else {
             forwardIntent.putExtra(ForwardingActivity.EXTRA_DISABLE_UPDATE_ID, intent.getIntExtra(EXTRA_UPDATE_ID, 0));
         }
-        forwardIntent.putExtra(ForwardingActivity.ACTION_TAG, ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE);
+        String preconfiguredPhoneNumber = intent.getStringExtra(EXTRA_PRECONFIGURED_PHONE_NUMBER);
+        forwardIntent.putExtra(ForwardingActivity.ACTION_TAG, preconfiguredPhoneNumber.isEmpty() ? ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE : ForwardingActivity.START_FORWARDING_REQUEST_CODE);
+        forwardIntent.putExtra(ForwardingActivity.EXTRA_PHONE_NUMBER, preconfiguredPhoneNumber);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
             forwardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
