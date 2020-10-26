@@ -117,6 +117,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
+            android:contentDescription="@string/update_type_switch_content_description"
             android:src="@drawable/calendar" />
 
     </RelativeLayout>
