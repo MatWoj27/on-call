@@ -432,6 +432,7 @@ public class UpdateDialogFragment extends DialogFragment {
         displayDays = !updateToEdit.isOneTimeUpdate();
         activeDays = Arrays.copyOf(updateToEdit.getRepetitionDays(), updateToEdit.getRepetitionDays().length);
         exactDate = updateToEdit.getExactDate();
+        phoneNumber.setText(updateToEdit.getPreconfiguredPhoneNumber());
         try {
             presetTimePickers(updateToEdit.get(Update.TIME.HOUR), updateToEdit.get(Update.TIME.MINUTE));
         } catch (ParseException e) {
