@@ -155,7 +155,7 @@ public class ReactorRepository {
         }
 
         @Override
-        protected Reactor doInBackground(WebApiSettings... settings) {
+        protected Reactor doInBackground(@NonNull WebApiSettings... settings) {
             WebApiSettings webApiSettings = settings[0];
             String requestUrl = "http://" + webApiSettings.getIp() + ":" + webApiSettings.getPort() + reactorsEndpoint + webApiSettings.getTeam();
             Reactor result = null;
@@ -202,7 +202,7 @@ public class ReactorRepository {
         }
 
         @Override
-        protected Void doInBackground(Reactor... reactors) {
+        protected Void doInBackground(@NonNull Reactor... reactors) {
             dao.deleteAll();
             dao.insert(reactors[0]);
             return null;
@@ -263,7 +263,7 @@ public class ReactorRepository {
         }
 
         @Override
-        protected Void doInBackground(Update... updates) {
+        protected Void doInBackground(@NonNull Update... updates) {
             dao.update(updates[0]);
             return null;
         }
@@ -277,7 +277,7 @@ public class ReactorRepository {
         }
 
         @Override
-        protected Void doInBackground(Integer... integers) {
+        protected Void doInBackground(@NonNull Integer... integers) {
             dao.disableUpdate(integers[0]);
             return null;
         }
