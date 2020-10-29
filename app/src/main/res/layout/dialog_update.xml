@@ -3,6 +3,7 @@
     android:layout_width="300dp"
     android:layout_height="220dp"
     android:orientation="vertical"
+    android:background="@android:color/white"
     android:theme="@style/CardViewTheme">
 
     <LinearLayout

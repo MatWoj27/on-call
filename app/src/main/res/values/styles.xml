@@ -13,7 +13,6 @@
     <style name="CardViewTheme" parent="AppTheme">
         <item name="android:buttonStyle">@style/ButtonStyle</item>
         <item name="colorAccent">@color/colorSecondary</item>
-        <item name="android:background">@android:color/white</item>
         <item name="android:colorControlHighlight">@color/lightGray</item>
     </style>
 
