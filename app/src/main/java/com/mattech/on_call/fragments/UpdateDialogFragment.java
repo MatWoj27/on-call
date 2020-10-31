@@ -1,17 +1,25 @@
 package com.mattech.on_call.fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,6 +34,7 @@ import com.mattech.on_call.utils.DateTimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +55,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private boolean currentlyDateSetToToday = true;
     private final TimeTickListener timeTickListener = new TimeTickListener();
     private final NumberPicker.Formatter timePickerFormatter = i -> String.format("%02d", i);
+    private ArrayList<String> phoneNumberList = new ArrayList<>();
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
@@ -156,6 +166,7 @@ public class UpdateDialogFragment extends DialogFragment {
         } else {
             presetCreateUpdateDialog();
         }
+        presetPhoneNumberAutoCompletion();
         presetDatePicker();
         if (!displayDays) {
             displayExactDateLayout();
@@ -230,6 +241,16 @@ public class UpdateDialogFragment extends DialogFragment {
         outState.putBoolean(CURR_DATE_SET_TO_TODAY_TAG, currentlyDateSetToToday);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        for (int resultCode : grantResults) {
+            if (resultCode != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        readContacts();
+    }
+
     @NonNull
     private Update createUpdateFromInput() {
         Update update = new Update();
@@ -267,6 +288,41 @@ public class UpdateDialogFragment extends DialogFragment {
                 displayDays = false;
                 displayExactDateLayout();
             }
+        }
+    }
+
+    private void presetPhoneNumberAutoCompletion() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 100);
+        } else {
+            readContacts();
+        }
+    }
+
+    private void readContacts() {
+        ContentResolver contentResolver = requireContext().getContentResolver();
+        Cursor contactCursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        if (contactCursor != null && contactCursor.moveToFirst()) {
+            do {
+                if (contactCursor.getInt(contactCursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    String id = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID));
+                    Cursor phoneCursor = contentResolver.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?",
+                            new String[]{id},
+                            null);
+                    if (phoneCursor != null && phoneCursor.moveToFirst()) {
+                        do {
+                            phoneNumberList.add(phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                        } while (phoneCursor.moveToNext());
+                        phoneCursor.close();
+                    }
+                }
+            } while (contactCursor.moveToNext());
+            contactCursor.close();
+            ArrayAdapter<String> phoneNumberAdapter = new ArrayAdapter<>(requireContext(), R.layout.simple_text_item, phoneNumberList);
+            phoneNumber.setAdapter(phoneNumberAdapter);
         }
     }
 
