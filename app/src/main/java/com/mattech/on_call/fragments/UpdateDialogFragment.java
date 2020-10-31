@@ -12,8 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -93,7 +93,7 @@ public class UpdateDialogFragment extends DialogFragment {
     ImageView updateTypeSwitch;
 
     @BindView(R.id.reactor_phone_number)
-    EditText phoneNumber;
+    AutoCompleteTextView phoneNumber;
 
     @BindView(R.id.cancel_btn)
     Button cancelBtn;
