@@ -452,7 +452,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 currentlyDateSetToToday = true;
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e(getClass().getSimpleName(), "Could not check if the exact date is not set to a moment in the past because parsing user input to date failed", e);
         }
         getContext().registerReceiver(timeTickListener, new IntentFilter(Intent.ACTION_TIME_TICK));
         days.setVisibility(View.GONE);
