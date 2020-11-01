@@ -454,7 +454,7 @@ public class UpdateDialogFragment extends DialogFragment {
         } catch (ParseException e) {
             Log.e(getClass().getSimpleName(), "Could not check if the exact date is not set to a moment in the past because parsing user input to date failed", e);
         }
-        getContext().registerReceiver(timeTickListener, new IntentFilter(Intent.ACTION_TIME_TICK));
+        requireContext().registerReceiver(timeTickListener, new IntentFilter(Intent.ACTION_TIME_TICK));
         days.setVisibility(View.GONE);
         exactDateView.setVisibility(View.VISIBLE);
         updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
