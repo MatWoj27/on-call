@@ -56,6 +56,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private final TimeTickListener timeTickListener = new TimeTickListener();
     private final NumberPicker.Formatter timePickerFormatter = i -> String.format("%02d", i);
     private ArrayList<String> phoneNumberList = new ArrayList<>();
+    TextView[] dayViews;
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
@@ -158,7 +159,7 @@ public class UpdateDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = requireActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
         ButterKnife.bind(this, view);
-        TextView[] dayViews = {monday, tuesday, wednesday, thursday, friday, saturday, sunday};
+        dayViews = new TextView[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         if (savedInstanceState != null) {
             readStateFromBundle(savedInstanceState);
         } else if (updateToEdit != null) {
@@ -177,29 +178,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 displayDayViewAsActive(dayViews[i]);
             }
         }
-        updateTypeSwitch.setOnClickListener(v -> {
-            if (displayDays) {
-                displayExactDateLayout();
-            } else {
-                getContext().unregisterReceiver(timeTickListener);
-                boolean isAnyActiveDay = false;
-                exactDateView.setVisibility(View.GONE);
-                days.setVisibility(View.VISIBLE);
-                for (int i = 0; i < 7; i++) {
-                    if (activeDays[i]) {
-                        displayDayViewAsActive(dayViews[i]);
-                        isAnyActiveDay = true;
-                    }
-                }
-                if (!isAnyActiveDay) {
-                    int tomorrowIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
-                    activeDays[tomorrowIndex] = true;
-                    displayDayViewAsActive(dayViews[tomorrowIndex]);
-                }
-                updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.calendar, null));
-            }
-            displayDays = !displayDays;
-        });
+        updateTypeSwitch.setOnClickListener(v -> onUpdateTypeChanged());
         okBtn.setOnClickListener(v -> {
             if (listener != null) {
                 if (isEdit) {
@@ -249,6 +228,30 @@ public class UpdateDialogFragment extends DialogFragment {
             }
         }
         readContacts();
+    }
+
+    private void onUpdateTypeChanged() {
+        if (displayDays) {
+            displayExactDateLayout();
+        } else {
+            getContext().unregisterReceiver(timeTickListener);
+            boolean isAnyActiveDay = false;
+            exactDateView.setVisibility(View.GONE);
+            days.setVisibility(View.VISIBLE);
+            for (int i = 0; i < 7; i++) {
+                if (activeDays[i]) {
+                    displayDayViewAsActive(dayViews[i]);
+                    isAnyActiveDay = true;
+                }
+            }
+            if (!isAnyActiveDay) {
+                int tomorrowIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+                activeDays[tomorrowIndex] = true;
+                displayDayViewAsActive(dayViews[tomorrowIndex]);
+            }
+            updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.calendar, null));
+        }
+        displayDays = !displayDays;
     }
 
     @NonNull
