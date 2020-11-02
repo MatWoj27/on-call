@@ -280,15 +280,21 @@ public class UpdateDialogFragment extends DialogFragment {
                 displayDayViewAsActive((TextView) view);
             } else {
                 displayDayViewAsInactive((TextView) view);
-                for (int i = 0; i < 7; i++) {
-                    if (activeDays[i]) {
-                        return;
-                    }
+                if (!isAnyDayActive()) {
+                    displayDays = false;
+                    displayExactDateLayout();
                 }
-                displayDays = false;
-                displayExactDateLayout();
             }
         }
+    }
+
+    private boolean isAnyDayActive() {
+        for (boolean activeDay : activeDays) {
+            if (activeDay) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void presetPhoneNumberAutoCompletion() {
