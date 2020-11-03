@@ -137,7 +137,7 @@ public class UpdateDialogFragment extends DialogFragment {
                     currentlyDateSetToToday = true;
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
+                Log.e(getClass().getSimpleName(), "Could not check if the update should be rescheduled to tomorrow because parsing user input to date failed", e);
             }
         }
     }
