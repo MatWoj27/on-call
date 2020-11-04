@@ -172,7 +172,7 @@ public class UpdateDialogFragment extends DialogFragment {
         if (!displayDays) {
             displayExactDateLayout();
         }
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < dayViews.length && i < activeDays.length; i++) {
             dayViews[i].setOnClickListener(new DayClickListener(i));
             if (displayDays && activeDays[i]) {
                 displayDayViewAsActive(dayViews[i]);
@@ -238,7 +238,7 @@ public class UpdateDialogFragment extends DialogFragment {
             boolean isAnyActiveDay = false;
             exactDateView.setVisibility(View.GONE);
             days.setVisibility(View.VISIBLE);
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < activeDays.length && i < dayViews.length; i++) {
                 if (activeDays[i]) {
                     displayDayViewAsActive(dayViews[i]);
                     isAnyActiveDay = true;
