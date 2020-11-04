@@ -115,7 +115,7 @@ public class UpdateDialogFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void updateCreated(@NonNull Update update);
 
-        void updateEdited(Update update);
+        void updateEdited(@NonNull Update update);
 
         void windowDisappeared();
     }
