@@ -434,7 +434,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
                 dialog.show();
             } catch (ParseException e) {
-                e.printStackTrace();
+                Log.e(getClass().getSimpleName(), "Could not display date picker because parsing currently set exact date failed", e);
             }
         });
     }
