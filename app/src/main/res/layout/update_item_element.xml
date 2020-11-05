@@ -29,7 +29,19 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@{update.enabled ? @android:color/black : @color/disabledActive}" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/date_container"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:contentDescription="@string/update_preconfigured_phone_indicator_content_description"
+                android:src="@drawable/call_forwarding_icon"
+                android:tint="@{update.enabled ? @color/enabledActive : @color/disabledInactive}"
+                android:visibility="@{update.preconfiguredPhoneNumber.empty ? View.GONE : View.VISIBLE}" />
+
             <FrameLayout
+                android:id="@+id/date_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"

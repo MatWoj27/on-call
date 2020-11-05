@@ -51,6 +51,7 @@
     <string name="add_update_btn_content_description">Add new update</string>
     <string name="update_type_switch_content_description">Switch between repeating and one-time update</string>
     <string name="update_preconfigured_phone_number_hint">Configure phone number (optional)</string>
+    <string name="update_preconfigured_phone_indicator_content_description">Icon indicating whether the preconfigured phone number is added to the update</string>
 
     <!-- Forwarding notification channel info -->
     <string name="forwarding_notification_channel_name">Forwarding notifications</string>
