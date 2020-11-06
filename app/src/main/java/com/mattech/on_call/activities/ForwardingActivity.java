@@ -131,7 +131,9 @@ public class ForwardingActivity extends AppCompatActivity {
                     repository.getReactor(this::startForwarding);
                 } else {
                     Reactor customReactor = new Reactor();
+                    customReactor.setName(getString(R.string.preconfigured_phone_number_reactor_display_name));
                     customReactor.setPhoneNumber(preconfiguredPhoneNumber);
+                    notifyReactorChange(customReactor);
                     startForwarding(customReactor);
                 }
                 break;
@@ -203,6 +205,13 @@ public class ForwardingActivity extends AppCompatActivity {
         notificationManager.notify(Constants.FORWARDING_NOTIFICATION_ID, notification);
     }
 
+    private void notifyReactorChange(@NonNull Reactor reactor) {
+        Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
+        reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, reactor.getName());
+        reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, reactor.getPhoneNumber());
+        sendBroadcast(reactorChangedIntent);
+    }
+
     private class ReactorUpdateListener implements ReactorRepository.ReactorUpdateListener {
         private Reactor currentReactor;
 
@@ -212,10 +221,7 @@ public class ForwardingActivity extends AppCompatActivity {
 
         @Override
         public void reactorUpdated(@NonNull Reactor newReactor) {
-            Intent reactorChangedIntent = new Intent(ReactorRepository.REACTOR_CHANGED);
-            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_NAME_TAG, newReactor.getName());
-            reactorChangedIntent.putExtra(ForwardingAppWidgetProvider.REACTOR_PHONE_NUMBER_TAG, newReactor.getPhoneNumber());
-            sendBroadcast(reactorChangedIntent);
+            notifyReactorChange(newReactor);
             startForwarding(newReactor);
         }
 
