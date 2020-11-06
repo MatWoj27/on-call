@@ -68,7 +68,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private void displayReactor(Context context, String name, String phoneNumber) {
+    private void displayReactor(@NonNull Context context, String name, String phoneNumber) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.forwarding_widget);
         views.setInt(R.id.set_reactor, "setVisibility", View.GONE);
         views.setInt(R.id.reactor_info, "setVisibility", View.VISIBLE);
@@ -77,7 +77,7 @@ public class ForwardingAppWidgetProvider extends AppWidgetProvider {
         updateRemoteViews(context, views);
     }
 
-    private void setForwardingButtonFunctionality(Context context, int buttonTextId, Action buttonAction) {
+    private void setForwardingButtonFunctionality(@NonNull Context context, int buttonTextId, Action buttonAction) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.forwarding_widget);
         views.setTextViewText(R.id.forward_btn, context.getString(buttonTextId));
         views.setOnClickPendingIntent(R.id.forward_btn, getPendingIntentForAction(context, buttonAction));
