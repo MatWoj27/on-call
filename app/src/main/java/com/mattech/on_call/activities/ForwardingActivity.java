@@ -40,6 +40,7 @@ public class ForwardingActivity extends AppCompatActivity {
     public static final int STOP_FORWARDING_REQUEST_CODE = 2;
     public static final int START_FORWARDING_REQUEST_CODE = 3;
     public static final int GO_TO_SETTINGS_REQUEST_CODE = 4;
+    public static final int CUSTOM_PHONE_NUMBER_START_FORWARDING_REQUEST_CODE = 5;
     public static final String EXTRA_DISABLE_UPDATE_ID = "disableUpdateId";
     public static final String EXTRA_PHONE_NUMBER = "phoneNumber";
 
@@ -126,16 +127,10 @@ public class ForwardingActivity extends AppCompatActivity {
                 stopForwarding();
                 break;
             case START_FORWARDING_REQUEST_CODE:
-                String preconfiguredPhoneNumber = getIntent().getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-                if (preconfiguredPhoneNumber.isEmpty()) {
-                    repository.getReactor(this::startForwarding);
-                } else {
-                    Reactor customReactor = new Reactor();
-                    customReactor.setName(getString(R.string.preconfigured_phone_number_reactor_display_name));
-                    customReactor.setPhoneNumber(preconfiguredPhoneNumber);
-                    notifyReactorChange(customReactor);
-                    startForwarding(customReactor);
-                }
+                repository.getReactor(this::startForwarding);
+                break;
+            case CUSTOM_PHONE_NUMBER_START_FORWARDING_REQUEST_CODE:
+                handleCustomPhoneNumberForwardingAction();
                 break;
             default:
                 Log.wtf(ERROR_TAG, "Unknown action request code received: " + actionCode);
@@ -203,6 +198,15 @@ public class ForwardingActivity extends AppCompatActivity {
         NotificationUtil.cancelActiveForwardingResultNotification(this, Constants.FORWARDING_NOTIFICATION_ID);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.notify(Constants.FORWARDING_NOTIFICATION_ID, notification);
+    }
+
+    private void handleCustomPhoneNumberForwardingAction() {
+        String preconfiguredPhoneNumber = getIntent().getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+        Reactor customReactor = new Reactor();
+        customReactor.setName(getString(R.string.preconfigured_phone_number_reactor_display_name));
+        customReactor.setPhoneNumber(preconfiguredPhoneNumber);
+        notifyReactorChange(customReactor);
+        startForwarding(customReactor);
     }
 
     private void notifyReactorChange(@NonNull Reactor reactor) {

@@ -27,7 +27,7 @@ public class SetForwardingRequestReceiver extends BroadcastReceiver {
             forwardIntent.putExtra(ForwardingActivity.EXTRA_DISABLE_UPDATE_ID, intent.getIntExtra(EXTRA_UPDATE_ID, 0));
         }
         String preconfiguredPhoneNumber = intent.getStringExtra(EXTRA_PRECONFIGURED_PHONE_NUMBER);
-        forwardIntent.putExtra(ForwardingActivity.ACTION_TAG, preconfiguredPhoneNumber.isEmpty() ? ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE : ForwardingActivity.START_FORWARDING_REQUEST_CODE);
+        forwardIntent.putExtra(ForwardingActivity.ACTION_TAG, preconfiguredPhoneNumber.isEmpty() ? ForwardingActivity.UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE : ForwardingActivity.CUSTOM_PHONE_NUMBER_START_FORWARDING_REQUEST_CODE);
         forwardIntent.putExtra(ForwardingActivity.EXTRA_PHONE_NUMBER, preconfiguredPhoneNumber);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
             forwardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
