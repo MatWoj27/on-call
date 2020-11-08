@@ -3,10 +3,12 @@ package com.mattech.on_call.models;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.mattech.on_call.R;
 import com.mattech.on_call.annotations.JSONAttr;
 
 import org.json.JSONException;
@@ -48,6 +50,14 @@ public class Reactor {
             }
         }
         return reactor;
+    }
+
+    @NonNull
+    public static Reactor getCustomReactor(@NonNull Context context, @NonNull String phoneNumber) {
+        Reactor customReactor = new Reactor();
+        customReactor.name = context.getString(R.string.preconfigured_phone_number_reactor_display_name);
+        customReactor.phoneNumber = phoneNumber;
+        return customReactor;
     }
 
     public String getName() {
