@@ -201,7 +201,7 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void handleCustomPhoneNumberForwardingAction() {
-        String preconfiguredPhoneNumber = getIntent().getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+        String preconfiguredPhoneNumber = getIntent().getStringExtra(EXTRA_PHONE_NUMBER);
         Reactor customReactor = new Reactor();
         customReactor.setName(getString(R.string.preconfigured_phone_number_reactor_display_name));
         customReactor.setPhoneNumber(preconfiguredPhoneNumber);
