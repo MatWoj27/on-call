@@ -112,16 +112,7 @@ public class ForwardingActivity extends AppCompatActivity {
     private void handleForwardingAction(final int actionCode) {
         switch (actionCode) {
             case UPDATE_REACTOR_AND_START_FORWARDING_REQUEST_CODE:
-                repository.getReactor(currentReactor -> {
-                    WebApiSettings webApiSettings = WebApiSettings.getCurrentSettings(this);
-                    if (!webApiSettings.getIp().isEmpty()) {
-                        ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
-                        repository.updateReactor(currentReactor, listener, webApiSettings);
-                    } else {
-                        showNotification(ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET, null);
-                        finish();
-                    }
-                });
+                updateReactorAndStartForwarding();
                 break;
             case STOP_FORWARDING_REQUEST_CODE:
                 stopForwarding();
@@ -136,6 +127,19 @@ public class ForwardingActivity extends AppCompatActivity {
                 Log.wtf(ERROR_TAG, "Unknown action request code received: " + actionCode);
                 break;
         }
+    }
+
+    private void updateReactorAndStartForwarding() {
+        repository.getReactor(currentReactor -> {
+            WebApiSettings webApiSettings = WebApiSettings.getCurrentSettings(this);
+            if (!webApiSettings.getIp().isEmpty()) {
+                ReactorUpdateListener listener = new ReactorUpdateListener(currentReactor);
+                repository.updateReactor(currentReactor, listener, webApiSettings);
+            } else {
+                showNotification(ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET, null);
+                finish();
+            }
+        });
     }
 
     private void startForwarding(@Nullable Reactor reactor) {
