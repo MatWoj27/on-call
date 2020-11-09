@@ -82,7 +82,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         reactorRepository.updateUpdate(update);
     }
 
-    private void scheduleUpdate(Update update) throws UpdateNotScheduledException {
+    private void scheduleUpdate(@NonNull Update update) throws UpdateNotScheduledException {
         try {
             Intent intent = new Intent(getApplication(), SetForwardingRequestReceiver.class);
             PendingIntent pendingIntent;
