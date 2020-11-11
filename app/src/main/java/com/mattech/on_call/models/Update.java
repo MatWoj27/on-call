@@ -5,7 +5,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.content.Context;
 import android.support.annotation.ColorRes;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.mattech.on_call.R;
@@ -198,14 +200,14 @@ public class Update {
         return calendar.getTimeInMillis();
     }
 
-    @ColorRes
-    public int getDayViewColor(int dayIndex) {
+    public int getDayViewColor(@NonNull Context context, @IntRange(from = 0, to = 6) int dayIndex) {
+        @ColorRes int colorId = R.color.disabledInactive;
         if (repetitionDays[dayIndex] && enabled) {
-            return R.color.enabledActive;
+            colorId = R.color.enabledActive;
         } else if (repetitionDays[dayIndex]) {
-            return R.color.disabledActive;
+            colorId = R.color.disabledActive;
         }
-        return R.color.disabledInactive;
+        return context.getColor(colorId);
     }
 
     public static long getNextRepetitionInMillis(long previousUpdateTimeInMillis, @NonNull boolean[] repetitionDays) {

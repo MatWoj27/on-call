@@ -1,7 +1,5 @@
 package com.mattech.on_call.adapters;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,7 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context context;
     private List<Update> updates = new ArrayList<>();
     private UpdateListener listener;
     private volatile boolean clickEnabled = true;
@@ -86,11 +83,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             binding.setUpdate(update);
             binding.executePendingBindings();
         }
-
-        @NonNull
-        TextView[] getDayViewsArray() {
-            return new TextView[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
-        }
     }
 
     class AddHolder extends RecyclerView.ViewHolder {
@@ -103,10 +95,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ButterKnife.bind(this, itemView);
             addBtn.setOnClickListener(v -> itemClicked(getAdapterPosition()));
         }
-    }
-
-    public UpdatesAdapter(Context context) {
-        this.context = context;
     }
 
     @Override
@@ -136,21 +124,16 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (holder.getItemViewType() != 0) {
             Update update = updates.get(position - 1);
             UpdateHolder updateHolder = (UpdateHolder) holder;
+            updateHolder.enabled.setOnCheckedChangeListener(null);
             updateHolder.bind(update);
             updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
                 if (v.isChecked() != update.isEnabled()) {
-                    update.setEnabled(v.isChecked());
                     if (listener != null) {
-                        listener.updateEnableStatusChanged(new Update(update));
+                        Update changedUpdate = new Update(update);
+                        changedUpdate.setEnabled(v.isChecked());
+                        listener.updateEnableStatusChanged(changedUpdate);
                     }
                 }
-                if (update.isOneTimeUpdate()) {
-                    updateHolder.date.setTextColor(context.getResources().getColor(update.isEnabled() ? R.color.disabledActive :
-                            R.color.disabledInactive, null));
-                } else {
-                    applyColorsToDayViews(updateHolder, update);
-                }
-                updateHolder.time.setTextColor(update.isEnabled() ? Color.BLACK : context.getColor(R.color.disabledActive));
             });
             try {
                 updateHolder.time.setText(update.getFormattedTime());
@@ -171,21 +154,6 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             }
             clickEnabled = false;
-        }
-    }
-
-    private void applyColorsToDayViews(@NonNull UpdateHolder holder, Update update) {
-        TextView[] dayViews = holder.getDayViewsArray();
-        for (int i = 0; i < dayViews.length; i++) {
-            int colorId;
-            if (update.getRepetitionDays()[i] && update.isEnabled()) {
-                colorId = R.color.enabledActive;
-            } else if (update.getRepetitionDays()[i]) {
-                colorId = R.color.disabledActive;
-            } else {
-                colorId = R.color.disabledInactive;
-            }
-            dayViews[i].setTextColor(context.getResources().getColor(colorId, null));
         }
     }
 
