@@ -127,12 +127,10 @@ public class UpdatesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             updateHolder.enabled.setOnCheckedChangeListener(null);
             updateHolder.bind(update);
             updateHolder.enabled.setOnCheckedChangeListener((v, b) -> {
-                if (v.isChecked() != update.isEnabled()) {
-                    if (listener != null) {
-                        Update changedUpdate = new Update(update);
-                        changedUpdate.setEnabled(v.isChecked());
-                        listener.updateEnableStatusChanged(changedUpdate);
-                    }
+                if (v.isChecked() != update.isEnabled() && listener != null) {
+                    Update changedUpdate = new Update(update);
+                    changedUpdate.setEnabled(v.isChecked());
+                    listener.updateEnableStatusChanged(changedUpdate);
                 }
             });
             try {
