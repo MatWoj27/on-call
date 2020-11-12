@@ -1,6 +1,7 @@
 package com.mattech.on_call.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -469,6 +470,7 @@ public class UpdateDialogFragment extends DialogFragment {
         updateTypeSwitch.setImageDrawable(getResources().getDrawable(R.drawable.repeat, null));
     }
 
+    @SuppressLint("DefaultLocale")
     private Date getDateFromUserInput() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH mm " + Update.DATE_FORMAT, Locale.getDefault());
         String userInput = String.format("%d %d %s", hourPicker.getValue(), minutePicker.getValue(), exactDateView.getText());
