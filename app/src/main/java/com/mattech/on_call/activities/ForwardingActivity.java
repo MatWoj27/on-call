@@ -177,14 +177,10 @@ public class ForwardingActivity extends AppCompatActivity {
     }
 
     private void showNotification(@NonNull ForwardingResultState state, @Nullable Reactor reactor) {
-        String longDescription = getString(state.textId);
         PendingIntent contentTapPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
         Class cls = state == ForwardingResultState.UPDATE_FAILURE_WEB_API_IP_NOT_SET ? MainActivity.class : ForwardingActivity.class;
         Intent actionIntent = new Intent(this, cls);
         actionIntent.putExtra(ACTION_TAG, state.buttonActionRequestCode);
-        if (state == ForwardingResultState.FORWARDING_SUCCESS && reactor != null && reactor.getName() != null) {
-            longDescription = String.format(longDescription + "\n%s\n%s\n%s", reactor.getName(), reactor.getPhoneNumber(), reactor.getMail());
-        }
         PendingIntent buttonPendingIntent = PendingIntent.getActivity(this, state.pendingIntentRequestCode, actionIntent, 0);
         Notification.Action action = new Notification.Action.Builder(Icon.createWithResource(this, state.buttonIconId),
                 getString(state.buttonTextId), buttonPendingIntent).build();
@@ -193,7 +189,7 @@ public class ForwardingActivity extends AppCompatActivity {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(state.titleId))
                 .setContentText(getString(state.textId))
-                .setStyle(new Notification.BigTextStyle().bigText(longDescription))
+                .setStyle(getNotificationStyle(state, reactor))
                 .setLargeIcon(DrawableUtil.vectorToBitmap(getResources().getDrawable(state.iconId, null)))
                 .setContentIntent(contentTapPendingIntent)
                 .addAction(action)
@@ -202,6 +198,18 @@ public class ForwardingActivity extends AppCompatActivity {
         NotificationUtil.cancelActiveForwardingResultNotification(this, Constants.FORWARDING_NOTIFICATION_ID);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.notify(Constants.FORWARDING_NOTIFICATION_ID, notification);
+    }
+
+    @NonNull
+    private Notification.Style getNotificationStyle(@NonNull ForwardingResultState state, @Nullable Reactor reactor) {
+        String longDescription = getString(state.textId);
+        if (state == ForwardingResultState.FORWARDING_SUCCESS && reactor != null && reactor.getName() != null) {
+            longDescription = String.format(longDescription + "\n%s\n%s", reactor.getName(), reactor.getPhoneNumber());
+            if (reactor.getMail() != null) {
+                longDescription += "\n" + reactor.getMail();
+            }
+        }
+        return new Notification.BigTextStyle().bigText(longDescription);
     }
 
     private void handleCustomPhoneNumberForwardingAction() {
