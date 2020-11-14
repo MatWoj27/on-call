@@ -119,7 +119,7 @@ public class UpdateViewModel extends AndroidViewModel implements ReactorReposito
         }
     }
 
-    private void handleNotScheduledUpdate(Update update, UpdateNotScheduledException e) {
+    private void handleNotScheduledUpdate(@NonNull Update update, UpdateNotScheduledException e) {
         Log.e(getClass().getSimpleName(), e.getMessage(), e);
         deleteUpdate(update);
         Toast.makeText(getApplication(), getApplication().getString(R.string.update_scheduling_error_info), Toast.LENGTH_SHORT).show();
