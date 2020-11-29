@@ -55,6 +55,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private boolean initiallyDateSetToToday = true;
     private boolean currentlyDateSetToToday = true;
     private final TimeTickListener timeTickListener = new TimeTickListener();
+    @SuppressLint("DefaultLocale")
     private final NumberPicker.Formatter timePickerFormatter = i -> String.format("%02d", i);
     private ArrayList<String> phoneNumberList = new ArrayList<>();
     TextView[] dayViews;
