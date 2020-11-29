@@ -58,7 +58,7 @@ public class UpdateListFragment extends Fragment implements UpdatesAdapter.Updat
     }
 
     @Override
-    public void editUpdate(Update updateToEdit) {
+    public void editUpdate(@NonNull Update updateToEdit) {
         UpdateDialogFragment fragment = getUpdateDialogFragment();
         fragment.setUpdateToEdit(updateToEdit);
         fragment.show(requireActivity().getSupportFragmentManager(), "edit_update");
