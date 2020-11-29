@@ -174,12 +174,7 @@ public class UpdateDialogFragment extends DialogFragment {
         if (!displayDays) {
             displayExactDateLayout();
         }
-        for (int i = 0; i < dayViews.length && i < activeDays.length; i++) {
-            dayViews[i].setOnClickListener(new DayClickListener(i));
-            if (displayDays && activeDays[i]) {
-                displayDayViewAsActive(dayViews[i]);
-            }
-        }
+        presetDayViews();
         updateTypeSwitch.setOnClickListener(v -> onUpdateTypeChanged());
         okBtn.setOnClickListener(v -> {
             if (listener != null) {
@@ -439,6 +434,15 @@ public class UpdateDialogFragment extends DialogFragment {
                 Log.e(getClass().getSimpleName(), "Could not display date picker because parsing currently set exact date failed", e);
             }
         });
+    }
+
+    private void presetDayViews() {
+        for (int i = 0; i < dayViews.length && i < activeDays.length; i++) {
+            dayViews[i].setOnClickListener(new DayClickListener(i));
+            if (displayDays && activeDays[i]) {
+                displayDayViewAsActive(dayViews[i]);
+            }
+        }
     }
 
     private void displayDayViewAsActive(@NonNull TextView dayTextView) {
