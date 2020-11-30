@@ -58,7 +58,7 @@ public class UpdateDialogFragment extends DialogFragment {
     @SuppressLint("DefaultLocale")
     private final NumberPicker.Formatter timePickerFormatter = i -> String.format("%02d", i);
     private ArrayList<String> phoneNumberList = new ArrayList<>();
-    TextView[] dayViews;
+    private TextView[] dayViews;
     private final String DISPLAY_DAYS_TAG = "displayDays";
     private final String HOUR_TAG = "hour";
     private final String MINUTE_TAG = "minute";
