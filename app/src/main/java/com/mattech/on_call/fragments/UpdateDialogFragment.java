@@ -57,6 +57,7 @@ public class UpdateDialogFragment extends DialogFragment {
     private final TimeTickListener timeTickListener = new TimeTickListener();
     @SuppressLint("DefaultLocale")
     private final NumberPicker.Formatter timePickerFormatter = i -> String.format("%02d", i);
+    private final SimpleDateFormat exactDateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
     private ArrayList<String> phoneNumberList = new ArrayList<>();
     private TextView[] dayViews;
     private final String DISPLAY_DAYS_TAG = "displayDays";
@@ -386,7 +387,6 @@ public class UpdateDialogFragment extends DialogFragment {
 
     private void presetDatePicker() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
         if (exactDate != null) {
             exactDateView.setText(exactDate);
         } else {
@@ -396,7 +396,7 @@ public class UpdateDialogFragment extends DialogFragment {
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
                 currentlyDateSetToToday = false;
             }
-            exactDateView.setText(dateFormat.format(calendar.getTime()));
+            exactDateView.setText(exactDateFormat.format(calendar.getTime()));
         }
         DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
             calendar.set(Calendar.YEAR, year);
@@ -419,11 +419,11 @@ public class UpdateDialogFragment extends DialogFragment {
                 initiallyDateSetToToday = false;
                 currentlyDateSetToToday = false;
             }
-            exactDateView.setText(dateFormat.format(calendar.getTime()));
+            exactDateView.setText(exactDateFormat.format(calendar.getTime()));
         };
         exactDateView.setOnClickListener(v -> {
             try {
-                Date date = dateFormat.parse(exactDateView.getText().toString());
+                Date date = exactDateFormat.parse(exactDateView.getText().toString());
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
                 DatePickerDialog dialog = new DatePickerDialog(getContext(), dateSetListener,
@@ -484,9 +484,8 @@ public class UpdateDialogFragment extends DialogFragment {
 
     private void changeExactDate(@NonNull Day dayToSet) {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Update.DATE_FORMAT, Locale.getDefault());
         calendar.add(Calendar.DAY_OF_MONTH, dayToSet.shift);
-        exactDateView.setText(dateFormat.format(calendar.getTime()));
+        exactDateView.setText(exactDateFormat.format(calendar.getTime()));
     }
 
     private void readStateFromBundle(@NonNull Bundle bundle) {
