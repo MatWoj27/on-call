@@ -162,7 +162,6 @@ public class UpdateDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = requireActivity().getLayoutInflater().inflate(R.layout.dialog_update, null);
         ButterKnife.bind(this, view);
-        dayViews = new TextView[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         if (savedInstanceState != null) {
             readStateFromBundle(savedInstanceState);
         } else if (updateToEdit != null) {
@@ -437,6 +436,7 @@ public class UpdateDialogFragment extends DialogFragment {
     }
 
     private void presetDayViews() {
+        dayViews = new TextView[]{monday, tuesday, wednesday, thursday, friday, saturday, sunday};
         for (int i = 0; i < dayViews.length && i < activeDays.length; i++) {
             dayViews[i].setOnClickListener(new DayClickListener(i));
             if (displayDays && activeDays[i]) {
