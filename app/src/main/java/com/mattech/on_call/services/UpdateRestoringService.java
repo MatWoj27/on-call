@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -29,7 +30,7 @@ public class UpdateRestoringService extends IntentService {
         repository.getActiveUpdates(this::restoreActiveUpdates);
     }
 
-    private void restoreActiveUpdates(List<Update> activeUpdates) {
+    private void restoreActiveUpdates(@NonNull List<Update> activeUpdates) {
         for (Update update : activeUpdates) {
             try {
                 long updateTime = update.getPlannedUpdateTimeInMillis();
