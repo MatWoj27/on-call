@@ -176,16 +176,7 @@ public class UpdateDialogFragment extends DialogFragment {
         }
         presetDayViews();
         updateTypeSwitch.setOnClickListener(v -> onUpdateTypeChanged());
-        okBtn.setOnClickListener(v -> {
-            if (listener != null) {
-                if (isEdit) {
-                    listener.updateEdited(createUpdateFromInput());
-                } else {
-                    listener.updateCreated(createUpdateFromInput());
-                }
-            }
-            dismiss();
-        });
+        okBtn.setOnClickListener(v -> onOkClick());
         cancelBtn.setOnClickListener(v -> dismiss());
         builder.setView(view);
         return builder.create();
@@ -225,6 +216,17 @@ public class UpdateDialogFragment extends DialogFragment {
             }
         }
         readContacts();
+    }
+
+    private void onOkClick() {
+        if (listener != null) {
+            if (isEdit) {
+                listener.updateEdited(createUpdateFromInput());
+            } else {
+                listener.updateCreated(createUpdateFromInput());
+            }
+        }
+        dismiss();
     }
 
     private void onUpdateTypeChanged() {
