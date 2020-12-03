@@ -16,8 +16,10 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 
-@Entity(tableName = "reactors")
+@Entity(tableName = Reactor.TABLE_NAME)
 public class Reactor {
+    public static final String TABLE_NAME = "reactors";
+
     @Ignore
     private static final String ERROR_TAG = Reactor.class.getSimpleName();
 
