@@ -12,21 +12,21 @@ import java.util.List;
 @Dao
 public interface UpdateDAO {
 
-    @Query("DELETE FROM updates WHERE id = :id")
+    @Query("DELETE FROM " + Update.TABLE_NAME + " WHERE id = :id")
     void deleteById(int id);
 
     @Insert
     long insert(Update update);
 
-    @Query("SELECT * FROM updates")
+    @Query("SELECT * FROM " + Update.TABLE_NAME)
     LiveData<List<Update>> getUpdates();
 
-    @Query("SELECT * FROM updates WHERE enabled = 1")
+    @Query("SELECT * FROM " + Update.TABLE_NAME + " WHERE enabled = 1")
     List<Update> getActiveUpdates();
 
     @android.arch.persistence.room.Update
     void update(Update update);
 
-    @Query("UPDATE updates SET enabled = 'false' WHERE id = :id")
+    @Query("UPDATE " + Update.TABLE_NAME + " SET enabled = 'false' WHERE id = :id")
     void disableUpdate(int id);
 }

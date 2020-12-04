@@ -21,8 +21,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-@Entity(tableName = "updates")
+@Entity(tableName = Update.TABLE_NAME)
 public class Update {
+    public static final String TABLE_NAME = "updates";
+
     @PrimaryKey(autoGenerate = true)
     private int id;
     private boolean enabled;
