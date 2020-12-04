@@ -45,7 +45,7 @@ public class UpdateRestoringService extends IntentService {
         }
     }
 
-    private void scheduleUpdate(Update update, long updateTimeInMillis) {
+    private void scheduleUpdate(@NonNull Update update, long updateTimeInMillis) {
         AlarmManager alarmManager = getSystemService(AlarmManager.class);
         Intent intent = new Intent(this, SetForwardingRequestReceiver.class);
         if (!update.isOneTimeUpdate()) {
