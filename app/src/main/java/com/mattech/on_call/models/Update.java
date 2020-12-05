@@ -38,10 +38,7 @@ public class Update {
     private String time = "12:00";
     private String preconfiguredPhoneNumber;
 
-    @Ignore
     public static final String TIME_FORMAT = "HH:mm";
-
-    @Ignore
     public static final String DATE_FORMAT = "EEE, d MMM yyyy";
 
     public enum TIME {
