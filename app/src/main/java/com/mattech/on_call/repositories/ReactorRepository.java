@@ -58,7 +58,7 @@ public class ReactorRepository {
         void updatesRetrieved(List<Update> updates);
     }
 
-    public ReactorRepository(Application application) {
+    public ReactorRepository(@NonNull Application application) {
         ReactorDatabase database = ReactorDatabase.getInstance(application);
         reactorDAO = database.getReactorDAO();
         UpdateDatabase updateDatabase = UpdateDatabase.getInstance(application);
