@@ -44,7 +44,7 @@ public class ReactorViewModel extends AndroidViewModel {
     }
 
     private boolean webApiPreferencesSet() {
-        WebApiSettings webApiSettings = WebApiSettings.getCurrentSettings(getApplication().getApplicationContext());
+        WebApiSettings webApiSettings = WebApiSettings.getCurrentSettings(getApplication());
         return !webApiSettings.getIp().isEmpty();
     }
 }
