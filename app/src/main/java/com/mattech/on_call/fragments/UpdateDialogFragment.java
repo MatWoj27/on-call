@@ -233,7 +233,7 @@ public class UpdateDialogFragment extends DialogFragment {
         if (displayDays) {
             displayExactDateLayout();
         } else {
-            getContext().unregisterReceiver(timeTickListener);
+            requireContext().unregisterReceiver(timeTickListener);
             boolean isAnyActiveDay = false;
             exactDateView.setVisibility(View.GONE);
             days.setVisibility(View.VISIBLE);
